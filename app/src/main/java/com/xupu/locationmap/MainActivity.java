@@ -1,0 +1,119 @@
+package com.xupu.locationmap;
+
+import android.content.Intent;
+import android.os.Bundle;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
+
+import android.view.MenuInflater;
+import android.view.View;
+
+import androidx.core.view.GravityCompat;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+
+import android.view.MenuItem;
+
+import com.google.android.material.navigation.NavigationView;
+import com.xupu.locationmap.common.tools.AndroidTool;
+import com.xupu.locationmap.projectmanager.page.NongHuPage;
+import com.xupu.locationmap.projectmanager.page.ProjectPage;
+import com.xupu.locationmap.usermanager.page.Login;
+import com.xupu.locationmap.usermanager.service.UserService;
+
+import androidx.drawerlayout.widget.DrawerLayout;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
+import android.view.Menu;
+import android.widget.ImageView;
+
+public class MainActivity extends AppCompatActivity
+        implements NavigationView.OnNavigationItemSelectedListener {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+        navigationView.setNavigationItemSelectedListener(this);
+        init();
+    }
+
+    /**
+     * 检查用户是否登录
+     *设置 Android tool 的active
+     */
+    private void init() {
+        AndroidTool.setMainActivity(this);
+        //UserService.Login();
+    }
+
+    @Override
+    public void onBackPressed() {
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+
+    @SuppressWarnings("StatementWithEmptyBody")
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+
+
+
+        // Handle navigation view item clicks here.
+        int id = item.getItemId();
+        Intent intent;
+        switch (id){
+            case R.id.m_myproject:
+                 intent = new Intent(this, ProjectPage.class);
+                startActivity(intent);
+                break;
+            case R.id.m_lowmapmanager:
+                 intent = new Intent(this, Login.class);
+                startActivity(intent);
+                break;
+            case R.id.m_jtcy:
+                intent = new Intent(this, NongHuPage.class);
+                startActivity(intent);
+                break;
+            case R.id.m_help:
+                break;
+        }
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        //inflater.inflate(R.menu.activity_main_drawer, menu);
+        setHeadOnClick();
+        return true;
+    }
+
+    private void setHeadOnClick() {
+        ImageView imageView = this.findViewById(R.id.headImage);
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                UserService.Login();
+            }
+        });
+    }
+}

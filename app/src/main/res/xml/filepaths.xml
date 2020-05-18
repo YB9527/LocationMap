@@ -1,0 +1,7 @@
+<resources>
+    <paths>
+        <external-path path="" name="sdcard_files"/>
+        <external-files-path path="" name="camera_has_sdcard"/>
+        <files-path path="" name="camera_no_sdcard"/>
+        </paths>
+</resources>
