@@ -12,10 +12,14 @@
             android:id="@+id/m_lowmapmanager"
             android:icon="@drawable/ic_menu_gallery"
             android:title="底图管理" />
+
         <item
-            android:id="@+id/m_jtcy"
+            android:id="@+id/m_tablelist"
             android:icon="@drawable/ic_menu_gallery"
-            android:title="农户" />
+            android:title="数据">
+        </item>
+
+
     </group>
 
     <item android:title="Communicate">
@@ -26,6 +30,5 @@
                 android:title="帮助" />
         </menu>
     </item>
-
 
 </menu>

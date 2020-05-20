@@ -4,36 +4,105 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import com.xupu.locationmap.MainActivity;
 import com.xupu.locationmap.R;
+import com.xupu.locationmap.common.tools.AndroidTool;
+import com.xupu.locationmap.usermanager.po.User;
+import com.xupu.locationmap.usermanager.service.UserService;
 
-public class Login extends AppCompatActivity {
+public class Login extends AppCompatActivity implements View.OnClickListener {
+
+
+    ImageView imageView;
+    TextView textView;
+    int count = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        AndroidTool.setFullWindow(this);
 
         setContentView(R.layout.activity_login);
+        imageView = findViewById(R.id.imageView);
+        textView = findViewById(R.id.textView);
+        init();
 
-        //Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        //setSupportActionBar(toolbar);//设置toolbar
-        //getSupportActionBar().setDisplayHomeAsUpEnabled(true); // 给左上角图标的左边加上一个返回的图标 。
 
     }
 
-    //activity类中的方法
+    private void init() {
+        //图片增加事件
+        imageView.setOnTouchListener(new OnSwipeTouchListener(getApplicationContext()) {
+            public void onSwipeTop() {
+            }
+
+            public void onSwipeRight() {
+                count=2;
+                if (count % 2 == 0) {
+                    imageView.setImageResource(R.drawable.good_night_img);
+                    textView.setText("Night");
+
+                } else {
+                    imageView.setImageResource(R.drawable.good_morning_img);
+                    textView.setText("Morning");
+                }
+            }
+
+            public void onSwipeLeft() {
+                if (count % 2 == 0) {
+                    imageView.setImageResource(R.drawable.good_night_img);
+                    textView.setText("Night");
+
+                } else {
+                    imageView.setImageResource(R.drawable.good_morning_img);
+                    textView.setText("Morning");
+                }
+            }
+
+            public void onSwipeBottom() {
+            }
+
+        });
+        findViewById(R.id.btu_sign_in).setOnClickListener(this);
+        findViewById(R.id.btu_sign_up).setOnClickListener(this);
+    }
+
+
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == android.R.id.home)
-        {
-            finish();
-            return true;
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.btu_sign_in:
+                Toast.makeText(this, "登录成功", Toast.LENGTH_SHORT).show();
+                //this.finish();
+                Intent intent = new Intent(this, MainActivity.class);
+                User test = new User();
+                UserService.setUser(test);
+                startActivity(intent);
+                break;
+            case R.id.btu_sign_up:
+               toSignUp();
+                break;
+            default:
+                break;
+
         }
-        return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * 到注册页面
+     */
+    private void toSignUp() {
+        Intent intent = new Intent(this, Regist.class);
+        startActivity(intent);
+    }
 }

@@ -6,13 +6,12 @@ import android.os.Bundle;
 
 import com.xupu.locationmap.R;
 
-public class NongHuPage extends AppCompatActivity {
-
-
+public class LowMapManager extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_nong_hu);
+        setTitle("底图管理");
+        setContentView(R.layout.activity_low_map_manager);
     }
 }

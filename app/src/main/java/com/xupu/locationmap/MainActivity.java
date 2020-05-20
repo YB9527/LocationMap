@@ -3,9 +3,6 @@ package com.xupu.locationmap;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
-
 import android.view.MenuInflater;
 import android.view.View;
 
@@ -16,10 +13,10 @@ import android.view.MenuItem;
 
 import com.google.android.material.navigation.NavigationView;
 import com.xupu.locationmap.common.tools.AndroidTool;
-import com.xupu.locationmap.projectmanager.page.NongHuPage;
+import com.xupu.locationmap.projectmanager.page.LowMapManager;
 import com.xupu.locationmap.projectmanager.page.ProjectPage;
-import com.xupu.locationmap.usermanager.page.Login;
-import com.xupu.locationmap.usermanager.service.UserService;
+import com.xupu.locationmap.projectmanager.page.TableListPage;
+import com.xupu.locationmap.usermanager.page.UserInfo;
 
 import androidx.drawerlayout.widget.DrawerLayout;
 
@@ -35,6 +32,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        AndroidTool.setFullWindow(this);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -55,7 +53,6 @@ public class MainActivity extends AppCompatActivity
      */
     private void init() {
         AndroidTool.setMainActivity(this);
-        //UserService.Login();
     }
 
     @Override
@@ -73,8 +70,6 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
 
-
-
         // Handle navigation view item clicks here.
         int id = item.getItemId();
         Intent intent;
@@ -84,11 +79,11 @@ public class MainActivity extends AppCompatActivity
                 startActivity(intent);
                 break;
             case R.id.m_lowmapmanager:
-                 intent = new Intent(this, Login.class);
+                 intent = new Intent(this, LowMapManager.class);
                 startActivity(intent);
                 break;
-            case R.id.m_jtcy:
-                intent = new Intent(this, NongHuPage.class);
+            case R.id.m_tablelist:
+                intent = new Intent(this, TableListPage.class);
                 startActivity(intent);
                 break;
             case R.id.m_help:
@@ -107,12 +102,16 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
+    /**
+     * 点击头像，到用户设置
+     */
     private void setHeadOnClick() {
         ImageView imageView = this.findViewById(R.id.headImage);
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                UserService.Login();
+                Intent intent = new Intent(MainActivity.this, UserInfo.class);
+                MainActivity.this.startActivity(intent);
             }
         });
     }

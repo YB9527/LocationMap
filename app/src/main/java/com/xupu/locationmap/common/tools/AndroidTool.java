@@ -1,8 +1,13 @@
 package com.xupu.locationmap.common.tools;
 
+import android.app.Activity;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.xupu.locationmap.usermanager.page.Login;
 
 
 /**
@@ -19,6 +24,7 @@ public class AndroidTool {
     public static AppCompatActivity getMainActivity() {
         return activity;
     }
+
     /**
      * 弹出提示窗口
      *
@@ -42,8 +48,13 @@ public class AndroidTool {
         getMainActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                showToast(tip,status);
+                showToast(tip, status);
             }
         });
+    }
+
+    public static void setFullWindow(Activity activity) {
+        activity.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        //activity.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
     }
 }
