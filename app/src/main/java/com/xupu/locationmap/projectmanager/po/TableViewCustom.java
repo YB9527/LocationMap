@@ -1,8 +1,10 @@
 package com.xupu.locationmap.projectmanager.po;
 
+import androidx.fragment.app.Fragment;
+
+import android.os.Bundle;
 import android.view.View;
 
-import com.xupu.locationmap.projectmanager.page.ItemFragment;
 
 import java.util.Map;
 
@@ -14,25 +16,30 @@ public class TableViewCustom {
     /**
      * 数据对象
      */
-    private Class tClass;
+    private Class<? extends Fragment> itemFragMentClass;
     /**
      * 表格名称
      */
     private String tableName;
-    private ItemFragment itemFragMent;
+
     /**
      * 当个item 显示的内容
      */
     private Map<View, FiledCustom> map;
 
+    /**
+     * 给table 注入的 数据（po）
+     */
+    private Bundle bundle;
 
-    public Class gettClass() {
-        return tClass;
+
+    public TableViewCustom(String tableName, Class<? extends Fragment> itemFragMentClass, Map<View, FiledCustom> map, Bundle bundle) {
+        this.itemFragMentClass = itemFragMentClass;
+        this.tableName = tableName;
+        this.map = map;
+        this.bundle = bundle;
     }
 
-    public void settClass(Class tClass) {
-        this.tClass = tClass;
-    }
 
     public String getTableName() {
         return tableName;
@@ -42,12 +49,12 @@ public class TableViewCustom {
         this.tableName = tableName;
     }
 
-    public ItemFragment getItemFragMent() {
-        return itemFragMent;
+    public Class<? extends Fragment> getItemFragMentClass() {
+        return itemFragMentClass;
     }
 
-    public void setItemFragMent(ItemFragment itemFragMent) {
-        this.itemFragMent = itemFragMent;
+    public void setItemFragMentClass(Class<? extends Fragment> itemFragMentClass) {
+        this.itemFragMentClass = itemFragMentClass;
     }
 
     public Map<View, FiledCustom> getMap() {
@@ -56,5 +63,13 @@ public class TableViewCustom {
 
     public void setMap(Map<View, FiledCustom> map) {
         this.map = map;
+    }
+
+    public Bundle getBundle() {
+        return bundle;
+    }
+
+    public void setBundle(Bundle bundle) {
+        this.bundle = bundle;
     }
 }

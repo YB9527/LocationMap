@@ -13,6 +13,12 @@ public class XZDM {
     private String remark;
     private String referid;
 
+    public XZDM(){
+
+    }
+    public XZDM(String code,String caption){
+
+    }
     public String getId() {
         return id;
     }

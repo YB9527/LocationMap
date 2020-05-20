@@ -20,5 +20,6 @@ public class ProjectPage extends AppCompatActivity {
                 .transparentNavigationBar()  //透明导航栏，不写默认黑色(设置此方法，fullScreen()方法自动为true)
                 .transparentBar()  .navigationBarDarkIcon(true) .init();*/
         setContentView(R.layout.activity_project);
+
     }
 }
