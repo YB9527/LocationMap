@@ -16,7 +16,10 @@
             android:id="@+id/m_lowmapmanager"
             android:icon="@drawable/ic_menu_gallery"
             android:title="底图管理" />
-
+        <item
+            android:id="@+id/m_nfmanager"
+            android:icon="@drawable/ic_menu_gallery"
+            android:title="农户管理"/>
         <item
             android:id="@+id/m_tablelist"
             android:icon="@drawable/ic_menu_gallery"

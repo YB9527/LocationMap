@@ -1,8 +1,6 @@
 package com.xupu.locationmap.projectmanager.page;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 
 import android.os.Bundle;
 import android.view.View;
@@ -13,34 +11,31 @@ import com.xupu.locationmap.R;
 import com.xupu.locationmap.common.po.MyCallback;
 import com.xupu.locationmap.common.po.ResultData;
 import com.xupu.locationmap.common.tools.AndroidTool;
-import com.xupu.locationmap.projectmanager.page.dummy.DummyContent;
 import com.xupu.locationmap.projectmanager.po.BtuFiledCustom;
 import com.xupu.locationmap.projectmanager.po.EditFiledCusom;
 import com.xupu.locationmap.projectmanager.po.FiledCustom;
 import com.xupu.locationmap.projectmanager.po.ItemDataCustom;
-import com.xupu.locationmap.projectmanager.po.SugProject;
 import com.xupu.locationmap.projectmanager.po.TableDataCustom;
 import com.xupu.locationmap.projectmanager.po.XZDM;
-import com.xupu.locationmap.projectmanager.service.ProjectService;
 import com.xupu.locationmap.projectmanager.service.XZQYService;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class XZQYPage extends AppCompatActivity implements ItemFragment2.OnListFragmentInteractionListener {
+public class XZQYPage extends AppCompatActivity  {
 
     Button btuAdd;
     AddItemFragment addItemFragment;
     ItemFragment itemFragment;
-    ItemFragment2 itemFragment2;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         AndroidTool.setFullWindow(this);
         setTitle("请选择任务区域");
-        setContentView(R.layout.activity_xzqypage);
+        setContentView(R.layout.activity_table_one);
         init();
         initAddItemFragment();
         //itemFragment2 = new ItemFragment2();
@@ -66,7 +61,8 @@ public class XZQYPage extends AppCompatActivity implements ItemFragment2.OnListF
         btuAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showMain(false);
+
+                XZQYPage.this.showMain(false);
             }
         });
 
@@ -136,7 +132,7 @@ public class XZQYPage extends AppCompatActivity implements ItemFragment2.OnListF
                 showMain(true);
             }
         });
-        ItemDataCustom itemDataCustom = new ItemDataCustom((JSONObject) JSONObject.toJSON(new XZDM()), filedCustomMap);
+        ItemDataCustom itemDataCustom = new ItemDataCustom(R.layout.fragment_add_item, (JSONObject) JSONObject.toJSON(new XZDM()), filedCustomMap);
         addItemFragment = new AddItemFragment(itemDataCustom);
         getSupportFragmentManager().beginTransaction().add(R.id.fl, addItemFragment, "item").hide(addItemFragment).commit();
 
@@ -154,8 +150,5 @@ public class XZQYPage extends AppCompatActivity implements ItemFragment2.OnListF
     }
 
 
-    @Override
-    public void onListFragmentInteraction(DummyContent.DummyItem item) {
 
-    }
 }

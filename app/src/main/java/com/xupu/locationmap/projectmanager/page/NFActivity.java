@@ -1,31 +1,52 @@
 package com.xupu.locationmap.projectmanager.page;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.FileProvider;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.alibaba.fastjson.JSONObject;
 import com.xupu.locationmap.R;
 import com.xupu.locationmap.common.po.MyCallback;
 import com.xupu.locationmap.common.po.ResultData;
 import com.xupu.locationmap.common.tools.AndroidTool;
-import com.xupu.locationmap.projectmanager.page.dummy.DummyContent;
+import com.xupu.locationmap.common.tools.MediaTool;
+import com.xupu.locationmap.common.tools.Tool;
 import com.xupu.locationmap.projectmanager.po.BtuFiledCustom;
 import com.xupu.locationmap.projectmanager.po.EditFiledCusom;
 import com.xupu.locationmap.projectmanager.po.FiledCustom;
 import com.xupu.locationmap.projectmanager.po.ItemDataCustom;
+import com.xupu.locationmap.projectmanager.po.Media;
+import com.xupu.locationmap.projectmanager.po.MediaType;
+import com.xupu.locationmap.projectmanager.po.NF;
 import com.xupu.locationmap.projectmanager.po.TableDataCustom;
 import com.xupu.locationmap.projectmanager.po.XZDM;
+import com.xupu.locationmap.projectmanager.service.ItemListService;
+import com.xupu.locationmap.projectmanager.service.MediaService;
 import com.xupu.locationmap.projectmanager.service.XZQYService;
 
+import java.io.File;
+import java.lang.reflect.Array;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class NFActivity extends AppCompatActivity {
-
+    private static String lookinfoTagName = "LookInfoFragment";
+    private static String listTagName = "list";
+    private static String itemTagName = "item";
+    private static String Table_Name = "NF";
     Button btuAdd;
     AddItemFragment addItemFragment;
     ItemFragment itemFragment;
@@ -35,7 +56,7 @@ public class NFActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         AndroidTool.setFullWindow(this);
         setTitle("农户数据");
-        setContentView(R.layout.activity_nf);
+        setContentView(R.layout.activity_table_one);
         init();
         initAddItemFragment();
         //itemFragment2 = new ItemFragment2();
@@ -61,15 +82,14 @@ public class NFActivity extends AppCompatActivity {
         btuAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showMain(false);
+                showFragment(itemTagName);
             }
         });
 
-
-        List<XZDM> xzdms = XZQYService.findAll();
+        List<NF> nfs = ItemListService.findAll(Table_Name + "_", NF.class);
         Map<Integer, FiledCustom> map = new HashMap<>();
-        map.put(R.id.code, new FiledCustom("code"));
-        map.put(R.id.caption, new FiledCustom("caption"));
+        map.put(R.id.name, new FiledCustom("name"));
+        map.put(R.id.bz, new FiledCustom("bz"));
         map.put(R.id.btu_delete, new BtuFiledCustom<JSONObject>("删除") {
             @Override
             public void OnClick(ResultData<JSONObject> resultData) {
@@ -79,75 +99,175 @@ public class NFActivity extends AppCompatActivity {
                 itemFragment.remove(resultData.getT());
             }
         });
-        map.put(R.id.btu_select, new BtuFiledCustom<JSONObject>("选择") {
+        map.put(R.id.btu_lookinfo, new BtuFiledCustom<JSONObject>("查看") {
             @Override
             public void OnClick(ResultData<JSONObject> resultData) {
                 JSONObject jsonObject = resultData.getT();
-                XZDM xzdm = jsonObject.toJavaObject(XZDM.class);
-                AndroidTool.confirm(NFActivity.this, "确定要选择这个区域吗？", new MyCallback() {
-                    @Override
-                    public void call(ResultData resultData) {
-                        if (resultData.getStatus() == 0) {
-                            XZQYService.setCurrentXZDM(xzdm);
-                            setMyTitle();
-                            AndroidTool.showAnsyTost("当前区域是：" + xzdm.getCaption(), 0);
-                        }
-                    }
-                });
+                //跳到详细信息页面
+                toLookInfoFragment(jsonObject);
             }
         });
 
-        TableDataCustom tableDataCustom = new TableDataCustom(R.layout.fragment_xzqy_item, map, xzdms);
+        TableDataCustom tableDataCustom = new TableDataCustom(R.layout.fragment_nf_item, map, nfs);
         itemFragment = new ItemFragment(tableDataCustom);
-
+        //主页面显示
         getSupportFragmentManager().beginTransaction()
-                .add(R.id.fl, itemFragment, "list")   // 此处的R.id.fragment_container是要盛放fragment的父容器'
+                .add(R.id.fl, itemFragment, listTagName)   // 此处的R.id.fragment_container是要盛放fragment的父容器'
                 .commit();
     }
 
     /**
-     * 初始化 新增item窗口
+     * 到详细信息页面
+     *
+     * @param jsonObject
+     */
+    private void toLookInfoFragment(JSONObject jsonObject) {
+
+        LookInfoFragment lookInfoFragment;
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag(lookinfoTagName);
+        if (fragment == null) {
+            ItemDataCustom itemDataCustom = getLookInfoFragmentItemDataCustom();
+            lookInfoFragment = new LookInfoFragment(itemDataCustom);
+            getSupportFragmentManager().beginTransaction().add(R.id.fl, lookInfoFragment, lookinfoTagName).commit();
+
+        } else {
+            lookInfoFragment = (LookInfoFragment) fragment;
+        }
+        lookInfoFragment.setJSONbject(jsonObject);
+
+        showFragment("LookInfoFragment");
+    }
+
+    /**
+     * 详细信息页面中对象的封装
+     *
+     * @return
+     */
+    private ItemDataCustom getLookInfoFragmentItemDataCustom() {
+        Map<Integer, FiledCustom> filedCustomMap = new HashMap<>();
+        filedCustomMap.put(R.id.name, new EditFiledCusom("name", true));
+        filedCustomMap.put(R.id.bz, new EditFiledCusom("bz", false));
+        filedCustomMap.put(R.id.btu_submit, new BtuFiledCustom<JSONObject>("修改") {
+            @Override
+            public void OnClick(ResultData<JSONObject> resultData) {
+                JSONObject jsonObject = resultData.getT();
+                //更新listview
+                itemFragment.update(jsonObject);
+                NF nf = jsonObject.toJavaObject(NF.class);
+                ItemListService.updateByMark(Table_Name + "_" + nf.getId(), nf);
+                showFragment(listTagName);
+            }
+        }.setCheck(true).setReturn(true));
+        filedCustomMap.put(R.id.btu_cancel, new BtuFiledCustom("取消") {
+            @Override
+            public void OnClick(ResultData resultData) {
+                showFragment(listTagName);
+            }
+        });
+
+        //添加照片的按钮
+        filedCustomMap.put(R.id.btu_add_sfz_photo, new BtuFiledCustom<JSONObject>("添加身份证照片") {
+            @Override
+            public void OnClick(ResultData<JSONObject> resultData) {
+                //添加照片
+                NF nf = resultData.getT().toJavaObject(NF.class);
+                Media media =  MediaService.getMedia(nf,MediaType.Photo,"身份证");
+                MediaTool.to(NFActivity.this,101,media);
+                //输入照片名字
+                //拍照
+                //保存到本地
+                //更新到数据库
+            }
+        });
+        filedCustomMap.put(R.id.btu_add_hkb_photo, new BtuFiledCustom("添加户口本照片") {
+            @Override
+            public void OnClick(ResultData resultData) {
+                showFragment(listTagName);
+            }
+        });
+        filedCustomMap.put(R.id.btu_add_fw_photo, new BtuFiledCustom("添加房屋照片") {
+            @Override
+            public void OnClick(ResultData resultData) {
+                showFragment(listTagName);
+            }
+        });
+
+        ItemDataCustom itemDataCustom = new ItemDataCustom(R.layout.fragment_nf_item_info, (JSONObject) JSONObject.toJSON(new NF()), filedCustomMap);
+        return itemDataCustom;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case 101:
+                if (resultCode == RESULT_OK) {
+                    // 将拍摄的照片显示出来
+                }
+                break;
+            default:
+                break;
+        }
+    }
+
+    /**
+     * 初始化 添加item 面
      */
     private void initAddItemFragment() {
 
         Map<Integer, FiledCustom> filedCustomMap = new HashMap<>();
-        filedCustomMap.put(R.id.code, new EditFiledCusom("code", true));
-        filedCustomMap.put(R.id.caption, new EditFiledCusom("caption", true));
+        filedCustomMap.put(R.id.name, new EditFiledCusom("name", true));
+        filedCustomMap.put(R.id.bz, new EditFiledCusom("bz", false));
 
-        filedCustomMap.put(R.id.btu_submit, new BtuFiledCustom<JSONObject>("确定") {
+        filedCustomMap.put(R.id.btu_submit, new BtuFiledCustom<JSONObject>("添加") {
             @Override
             public void OnClick(ResultData<JSONObject> resultData) {
                 JSONObject jsonObject = resultData.getT();
-                XZDM xzdm = jsonObject.toJavaObject(XZDM.class);
-                XZQYService.addXZDM(xzdm);
+                NF nf = jsonObject.toJavaObject(NF.class);
+                ItemListService.addItem(Table_Name , jsonObject);
                 itemFragment.addItem(jsonObject);
-                showMain(true);
+                showFragment(listTagName);
                 //init();
             }
         }.setCheck(true));
         filedCustomMap.put(R.id.btu_cancel, new BtuFiledCustom("取消") {
             @Override
             public void OnClick(ResultData resultData) {
-                showMain(true);
+                showFragment(listTagName);
             }
         });
-        ItemDataCustom itemDataCustom = new ItemDataCustom((JSONObject) JSONObject.toJSON(new XZDM()), filedCustomMap);
+        ItemDataCustom itemDataCustom = new ItemDataCustom(R.layout.fragment_nf_item_add, (JSONObject) JSONObject.toJSON(new NF()), filedCustomMap);
         addItemFragment = new AddItemFragment(itemDataCustom);
-        getSupportFragmentManager().beginTransaction().add(R.id.fl, addItemFragment, "item").hide(addItemFragment).commit();
+        getSupportFragmentManager().beginTransaction().add(R.id.fl, addItemFragment, itemTagName).hide(addItemFragment).commit();
 
     }
 
-    public void showMain(boolean ishow) {
-        if (ishow) {
-            getSupportFragmentManager().beginTransaction().hide(addItemFragment).show(itemFragment).commit();
-            btuAdd.setVisibility(View.VISIBLE);
+    /**
+     * 显示fragment
+     *
+     * @param tagName
+     */
+    private void showFragment(String tagName) {
+        AndroidTool.showFragment(this, tagName);
+        if (tagName.equals(listTagName)) {
+            showMain(true);
         } else {
-            getSupportFragmentManager().beginTransaction().show(addItemFragment).hide(itemFragment).commit();
-            btuAdd.setVisibility(View.GONE);
+            showMain(false);
         }
 
     }
 
-
-
+    /**
+     * 是否显示主页面
+     *
+     * @param isShow
+     */
+    public void showMain(boolean isShow) {
+        if (isShow) {
+            btuAdd.setVisibility(View.VISIBLE);
+        } else {
+            btuAdd.setVisibility(View.GONE);
+        }
+    }
 }

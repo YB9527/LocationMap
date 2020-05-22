@@ -51,7 +51,6 @@ public class TableListPage extends AppCompatActivity {
         setTitle("数据");
         setContentView(R.layout.activity_table_list);
 
-
         List<TableViewCustom> tableViewCustomList = new ArrayList<>();
         List<XZDM> xzdms = new ArrayList<>();
         xzdms.add(new XZDM("aa","123"));

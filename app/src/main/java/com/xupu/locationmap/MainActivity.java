@@ -16,6 +16,7 @@ import com.ogaclejapan.smarttablayout.utils.v4.Bundler;
 import com.xupu.locationmap.common.tools.AndroidTool;
 import com.xupu.locationmap.projectmanager.page.ItemFragment;
 import com.xupu.locationmap.projectmanager.page.LowMapManager;
+import com.xupu.locationmap.projectmanager.page.NFActivity;
 import com.xupu.locationmap.projectmanager.page.ProjectPage;
 import com.xupu.locationmap.projectmanager.page.TableListPage;
 import com.xupu.locationmap.projectmanager.page.XZQYPage;
@@ -97,6 +98,10 @@ public class MainActivity extends AppCompatActivity
                 break;
             case R.id.m_lowmapmanager:
                  intent = new Intent(this, LowMapManager.class);
+                startActivity(intent);
+                break;
+            case R.id.m_nfmanager:
+                intent = new Intent(this, NFActivity.class);
                 startActivity(intent);
                 break;
             case R.id.m_tablelist:

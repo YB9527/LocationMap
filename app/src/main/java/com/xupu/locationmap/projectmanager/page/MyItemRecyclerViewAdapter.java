@@ -95,6 +95,7 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
 
 
 
+
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
         public JSONObject mItem;
@@ -127,4 +128,8 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
         this.mValues.remove(index);
         this.notifyDataSetChanged();
     }
+    public void update(JSONObject jsonObject) {
+        this.notifyDataSetChanged();
+    }
+
 }
