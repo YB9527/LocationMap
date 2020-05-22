@@ -9,6 +9,10 @@
             android:icon="@drawable/ic_menu_camera"
             android:title="我的项目" />
         <item
+            android:id="@+id/m_xzqy"
+            android:icon="@drawable/ic_menu_gallery"
+            android:title="行政区域" />
+        <item
             android:id="@+id/m_lowmapmanager"
             android:icon="@drawable/ic_menu_gallery"
             android:title="底图管理" />

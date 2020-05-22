@@ -47,7 +47,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
             }
 
             public void onSwipeRight() {
-                count=2;
+                count++;
                 if (count % 2 == 0) {
                     imageView.setImageResource(R.drawable.good_night_img);
                     textView.setText("Night");

@@ -1,8 +1,13 @@
 package com.xupu.locationmap.projectmanager.po;
 
 import android.content.Intent;
+import android.os.Build;
 
-public class XZDM {
+import androidx.annotation.RequiresApi;
+
+import java.util.Objects;
+
+public  class XZDM {
     private String id;
     private String parentid;
     private Integer sid;
@@ -17,7 +22,8 @@ public class XZDM {
 
     }
     public XZDM(String code,String caption){
-
+        this.code =code;
+        this.caption =caption;
     }
     public String getId() {
         return id;
@@ -89,6 +95,20 @@ public class XZDM {
 
     public void setReferid(String referid) {
         this.referid = referid;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        XZDM xzdm = (XZDM) o;
+        return id.equals(xzdm.id);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 
     @Override

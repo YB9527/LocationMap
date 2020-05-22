@@ -2,7 +2,7 @@ package com.xupu.locationmap.projectmanager.po;
 
 public class Redis {
     private String id;
-    private String xzdmid;
+    private String mark;
     private String json;
 
     public String getId() {
@@ -13,12 +13,12 @@ public class Redis {
         this.id = id;
     }
 
-    public String getXzdmid() {
-        return xzdmid;
+    public String getMark() {
+        return mark;
     }
 
-    public void setXzdmid(String xzdmid) {
-        this.xzdmid = xzdmid;
+    public void setMark(String mark) {
+        this.mark = mark;
     }
 
     public String getJson() {

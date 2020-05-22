@@ -29,9 +29,13 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
+        <activity android:name=".projectmanager.page.NF"></activity>
+        <activity
+            android:name=".projectmanager.page.XZQYPage"
+            android:parentActivityName=".MainActivity" />
         <activity
             android:name=".projectmanager.page.LowMapManager"
-            android:parentActivityName=".MainActivity"></activity>
+            android:parentActivityName=".MainActivity" />
         <activity
             android:name=".usermanager.page.UserInfo"
             android:parentActivityName=".MainActivity" />

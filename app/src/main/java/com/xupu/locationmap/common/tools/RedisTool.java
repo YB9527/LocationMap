@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 
+import com.google.gson.Gson;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -76,9 +77,8 @@ public class RedisTool {
         if(obj == null){
             updateRedis(mark, "");
         }else{
-            updateRedis(mark, Tool.getGson().toJson(obj));
+            updateRedis(mark, new Gson().toJson(obj));
         }
-
     }
     /**
      * 插入数据
@@ -120,7 +120,7 @@ public class RedisTool {
     public static void  saveRedis(String mark,Object obj) {
         String jsonInDatabase = findRedis(mark);
         if (Tool.isEmpty(jsonInDatabase)) {
-            String json = Tool.objectToJson(obj);
+            String json =new Gson().toJson(obj);
             insertData(mark, json);
 
         }else{
@@ -147,7 +147,9 @@ public class RedisTool {
 
     private static List<String> findListRedis(String mark) {
         SQLiteDatabase db = getSQLiteDatabase();
-        String sql = "select json from  redis where  mark like  "+mark;
+        String sql = "select json from  redis where  mark like  '"+mark+"'";
+
+        //sql = "select json from  redis";
         List<String> jsons = new ArrayList<>();
         Cursor cursor = db.rawQuery(sql, null);
         while (cursor.moveToNext()) {

@@ -27,17 +27,17 @@ public class Tool {
      * @return
      */
     public static boolean isEmpty(List list) {
-        return list == null ? true: list.isEmpty();
+        return list == null ? true : list.isEmpty();
     }
 
     /**
-     *
      * @param flag null 返回false
      * @return
      */
     public static boolean isEmpty(Boolean flag) {
-        return flag == null ? false:flag;
+        return flag == null ? false : flag;
     }
+
     /**
      * 检查 字符串 是否为空
      *
@@ -49,8 +49,6 @@ public class Tool {
     }
 
 
-
-
     /**
      * 获取本机ip地址
      *
@@ -58,14 +56,11 @@ public class Tool {
      */
     public static String getHostAddress() {
         //String hostAddress = "http://192.168.2.176:3333/";
-       // String hostAddress = "http://192.168.3.3:3333/springboot/";
+        // String hostAddress = "http://192.168.3.3:3333/springboot/";
         //String hostAddress = "http://192.168.3.3:3333/";
         String hostAddress = "http://prsmartoa.com:10529/springboot/";
         return hostAddress;
     }
-
-
-
 
 
     /**
@@ -185,26 +180,29 @@ public class Tool {
         return bool == null ? false : bool;
     }
 
-    /** json 转为 对象
+    /**
+     * json 转为 对象
+     *
      * @param json
      * @param type
      * @return
      */
     public static <T> T JsonToObject(String json, Type type) {
-        if(isEmpty(json)){
-            return  null;
+        if (isEmpty(json)) {
+            return null;
         }
-        T t = getGson().fromJson(json,type);
+        T t = new Gson().fromJson(json, type);
         return t;
     }
 
     /**
-     *  对象转换为json
+     * 对象转换为json
+     *
      * @param obj
      * @return
      */
-    public static  String objectToJson(Object obj){
-        return getGson().toJson(obj);
+    public static String objectToJson(Object obj) {
+        return new Gson().toJson(obj);
     }
 
 

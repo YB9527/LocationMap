@@ -1,37 +1,48 @@
 package com.xupu.locationmap.projectmanager.page;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentPagerAdapter;
-import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
+import android.view.ViewGroup;
 
+import com.alibaba.fastjson.JSONObject;
+import com.google.gson.Gson;
 import com.ogaclejapan.smarttablayout.SmartTabLayout;
 import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItemAdapter;
 import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItems;
 import com.xupu.locationmap.R;
 import com.xupu.locationmap.common.tools.AndroidTool;
-import com.xupu.locationmap.common.tools.Tool;
-import com.xupu.locationmap.projectmanager.page.dummy.DummyContent;
+
+import com.xupu.locationmap.projectmanager.po.FiledCustom;
+import com.xupu.locationmap.projectmanager.po.TableDataCustom;
 import com.xupu.locationmap.projectmanager.po.TableViewCustom;
 import com.xupu.locationmap.projectmanager.po.XZDM;
 
-import org.json.JSONObject;
-
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 普通表格数据装载
  */
-public class TableListPage extends AppCompatActivity  {
+public class TableListPage extends AppCompatActivity {
+
+
+    public TableListPage(){
+
+
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,18 +51,25 @@ public class TableListPage extends AppCompatActivity  {
         setTitle("数据");
         setContentView(R.layout.activity_table_list);
 
+
         List<TableViewCustom> tableViewCustomList = new ArrayList<>();
+        List<XZDM> xzdms = new ArrayList<>();
+        xzdms.add(new XZDM("aa","123"));
+        xzdms.add(new XZDM("bb","345"));
+        xzdms.add(new XZDM("bb","345"));
+        xzdms.add(new XZDM("bb","345"));
+        xzdms.add(new XZDM("bb","345"));
+        Map<Integer, FiledCustom> map = new HashMap<>();
+        map.put(R.id.item_number, new FiledCustom("code"));
+        map.put(R.id.content, new FiledCustom("caption"));
 
-        Bundle bundle = new Bundle();
-        XZDM xzdm = new XZDM();
-        xzdm.setCode("510183");
-        bundle.putString("list","cc");
-
-        TableViewCustom tableViewCustom = new TableViewCustom("bb",ItemFragment.class,null,bundle);
+        TableDataCustom tableDataCustom = new TableDataCustom(R.layout.fragment_item, map, xzdms);
+        TableViewCustom tableViewCustom = new TableViewCustom("aa", ItemFragment.class, TableDataCustom.class, tableDataCustom);
         tableViewCustomList.add(tableViewCustom);
-        tableViewCustom = new TableViewCustom("bb",ItemFragment.class,null,bundle);
+        tableViewCustom = new TableViewCustom("bb", ItemFragment.class, TableDataCustom.class, tableDataCustom);
         tableViewCustomList.add(tableViewCustom);
 
+        //init2();
         init(tableViewCustomList);
     }
 
@@ -62,7 +80,10 @@ public class TableListPage extends AppCompatActivity  {
         for (TableViewCustom tableViewCustom : tableViewCustomList) {
             String tableName = tableViewCustom.getTableName();
             Class clazz = tableViewCustom.getItemFragMentClass();
-            Creator.add(tableName, clazz,tableViewCustom.getBundle());
+            Bundle bundle = new Bundle();
+            bundle.putString("TableDataCustom",new Gson().toJson(tableViewCustom.getTableDataCustom()));
+            //bundle.pu
+            Creator.add(tableName, clazz,bundle);
         }
 
         //1、表格名称，2、fragment，3、要显示的字段，4、信息按钮
@@ -96,4 +117,8 @@ public class TableListPage extends AppCompatActivity  {
     public void onPointerCaptureChanged(boolean hasCapture) {
 
     }
+
+
+
+
 }
