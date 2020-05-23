@@ -17,10 +17,10 @@ public class MediaService {
      *
      * @param nf
      * @param mediaType
-     * @param fileName 不要带格式，会自动根据类型添加
+     * @param fileType 不要带格式，会自动根据类型添加
      * @return
      */
-    public static Media getMedia(NF nf, MediaType mediaType,  String fileName) {
+    public static Media getMedia(NF nf, MediaType mediaType,  String fileType) {
         SugProject project =ProjectService.getCurrentSugProject();
         if(project == null){
             AndroidTool.showAnsyTost("请先选择项目",1);
@@ -32,8 +32,8 @@ public class MediaService {
             return  null;
         }
         String uuid = UUID.randomUUID().toString();
-        String path = AndroidTool.getMainActivity().getFilesDir()+"/" + project.getName()+"/"+xzdm.getCode()+"_"+xzdm.getCaption()+"/"
-                +nf.getName()+nf.getId()+fileName+"/"+uuid;
+        String path = AndroidTool.getMainActivity().getFilesDir().getAbsolutePath()+"/" + project.getName()+"/"+xzdm.getCode()+"_"+xzdm.getCaption()+"/"
+                +nf.getName()+"_"+fileType+"_"+nf.getId()+"/"+uuid;
 
         switch (mediaType){
             case Photo:

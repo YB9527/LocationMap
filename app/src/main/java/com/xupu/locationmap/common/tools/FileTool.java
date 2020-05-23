@@ -119,7 +119,8 @@ public class FileTool {
      * @return
      */
     public static boolean exitFile(String filePath) {
-        boolean bl = (filePath == null || filePath.trim() == "") ? false : new File(filePath).exists();
+        boolean bl = new File(filePath).exists();
+        //boolean bl = (filePath == null || filePath.trim() == "") ? false : new File(filePath).exists();
         return bl;
 
     }

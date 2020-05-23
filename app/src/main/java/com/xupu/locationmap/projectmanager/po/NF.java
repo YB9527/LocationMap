@@ -1,15 +1,31 @@
 package com.xupu.locationmap.projectmanager.po;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class NF {
     private String id;
     private String name;
     private String bz;
+    private List<Media> medias;
     public NF(){
 
     }
     public NF(String name, String bz) {
         this.name = name;
         this.bz = bz;
+    }
+
+    public List<Media> getMedias() {
+        if(medias == null){
+            medias = new ArrayList<>();
+        }
+        return medias;
+    }
+
+    public void setMedias(List<Media> medias) {
+
+        this.medias = medias;
     }
 
     public String getId() {
@@ -35,4 +51,6 @@ public class NF {
     public void setBz(String bz) {
         this.bz = bz;
     }
+
+
 }

@@ -11,7 +11,7 @@ import java.util.UUID;
 
 public class XZQYService {
 
-    private static String CURRENT_XZDM_MARK = "CURRENT_PROJECT_MARK";
+    private static String CURRENT_XZDM_MARK = "CURRENT_XZDM_MARK";
     private static String XZDM_MARK = "XZDM_MARK";
 
     /**

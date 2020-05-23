@@ -5,8 +5,11 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -25,9 +28,12 @@ import com.xupu.locationmap.common.tools.Tool;
 import com.xupu.locationmap.projectmanager.po.BtuFiledCustom;
 import com.xupu.locationmap.projectmanager.po.EditFiledCusom;
 import com.xupu.locationmap.projectmanager.po.FiledCustom;
+import com.xupu.locationmap.projectmanager.po.ImgFiledCusom;
 import com.xupu.locationmap.projectmanager.po.ItemDataCustom;
+import com.xupu.locationmap.projectmanager.po.TableDataCustom;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -37,7 +43,8 @@ public class LookInfoFragment extends Fragment {
 
     private View view;
     private ItemDataCustom itemDataCustom;
-
+    private String photoTag = "photos";
+    private  MyItemRecyclerViewAdapter myItemRecyclerViewAdapter;
     /**
      * 检查数据是否满足要求
      *
@@ -72,8 +79,40 @@ public class LookInfoFragment extends Fragment {
         init();
         return view;
     }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        Map<Integer, FiledCustom> map = new HashMap<>();
+        map.put(R.id.img, new ImgFiledCusom("path"));
+        map.put(R.id.bz, new EditFiledCusom("bz",false));
+        map.put(R.id.btu_delete, new BtuFiledCustom<JSONObject>("删除") {
+            @Override
+            public void OnClick(ResultData<JSONObject> resultData) {
+
+            }
+        });
+
+        TableDataCustom tableDataCustom = new TableDataCustom(R.layout.photo, map, itemDataCustom.getJsonObject().getJSONArray("medias"));
+        View recy = view.findViewById(R.id.fl);
+        RecyclerView recyclerView = (RecyclerView) recy;
+         myItemRecyclerViewAdapter =new MyItemRecyclerViewAdapter(tableDataCustom);
+        recyclerView.setAdapter(myItemRecyclerViewAdapter);
+        myItemRecyclerViewAdapter.notifyDataSetChanged();
+    }
+
     private void init() {
         AndroidTool.setView(view, itemDataCustom);
+        //查看所有的照片
+
+            /*Context context = recy.getContext();
+            RecyclerView recyclerView = (RecyclerView) recy;
+            recyclerView.setLayoutManager(new LinearLayoutManager(context));
+            MyItemRecyclerViewAdapter myItemRecyclerViewAdapter =new MyItemRecyclerViewAdapter(tableDataCustom);
+            recyclerView.setAdapter(myItemRecyclerViewAdapter);
+*/
+
 
     }
 
@@ -84,8 +123,12 @@ public class LookInfoFragment extends Fragment {
      */
     public void setJSONbject(JSONObject jsonObject) {
         itemDataCustom.setJsonObject(jsonObject);
-        if(view != null){
+
+        if (view != null) {
             AndroidTool.setView(view, itemDataCustom);
+            myItemRecyclerViewAdapter.setDatas(itemDataCustom.getJsonObject().getJSONArray("medias"));
+            myItemRecyclerViewAdapter.notifyDataSetChanged();
         }
+
     }
 }

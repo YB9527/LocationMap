@@ -2,19 +2,27 @@ package com.xupu.locationmap.projectmanager.page;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.xupu.locationmap.R;
 import com.xupu.locationmap.common.po.ResultData;
+import com.xupu.locationmap.common.tools.AndroidTool;
 import com.xupu.locationmap.projectmanager.po.BtuFiledCustom;
 import com.xupu.locationmap.projectmanager.po.FiledCustom;
+import com.xupu.locationmap.projectmanager.po.ItemDataCustom;
+import com.xupu.locationmap.projectmanager.po.Media;
 import com.xupu.locationmap.projectmanager.po.TableDataCustom;
 import com.xupu.locationmap.projectmanager.po.XZDM;
 
@@ -55,8 +63,12 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
         JSONObject json = mValues.get(position);
         holder.itemView.setBackgroundColor(Color.WHITE);
 
-        holder.mItem = json;
+       ItemDataCustom itemDataCustom  = new ItemDataCustom(null,json,tableDataCustom.getMap());
+        AndroidTool.setView(holder.mView,itemDataCustom);
+
+      /*  holder.mItem = json;
         for (View view : holder.vieMap.keySet()) {
+
             if (view instanceof Button) {
                 Button btu = (Button) view;
                 btu.setOnClickListener(new View.OnClickListener() {
@@ -69,6 +81,11 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
             } else if (view instanceof TextView) {
                 TextView tv = (TextView) view;
                 tv.setText(json.getString(holder.vieMap.get(tv).getAttribute()));
+            } else if (view instanceof ImageView) {
+                //ImageView img = (ImageView) view;
+                //Bitmap bm = BitmapFactory.decodeFile(json.getString("path"));
+                //img.setImageBitmap(bm);//不会变形
+                //img.setImageResource(R.drawable.good_morning_img);//不会变形
             }
         }
         holder.mView.setOnClickListener(new View.OnClickListener() {
@@ -84,7 +101,7 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
 
 
             }
-        });
+        });*/
 
     }
 
@@ -93,7 +110,20 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
         return mValues.size();
     }
 
+    public void setDatas(List<JSONObject> medias) {
+        this.mValues.clear();
+        this.mValues.addAll(medias);
+        this.notifyDataSetChanged();
+    }
 
+    public void setDatas(JSONArray medias) {
+        this.mValues.clear();
+        for (int i = 0; i < medias.size(); i++) {
+            JSONObject jsonObject = (JSONObject)(medias.get(i));
+            this.mValues.add(jsonObject);
+        }
+
+    }
 
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -115,7 +145,7 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
     }
 
     public void addItem(int index, JSONObject jsonObject) {
-        this.mValues.add(index,jsonObject);
+        this.mValues.add(index, jsonObject);
         this.notifyItemInserted(index);
     }
 
@@ -128,8 +158,15 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
         this.mValues.remove(index);
         this.notifyDataSetChanged();
     }
+
     public void update(JSONObject jsonObject) {
-        this.notifyDataSetChanged();
+        for (int i = 0; i < this.mValues.size(); i++) {
+            if(jsonObject.get("id").equals(this.mValues.get(i).get("id"))){
+                this.mValues.set(i,jsonObject);
+                this.notifyItemChanged(i);
+            }
+        }
+
     }
 
 }

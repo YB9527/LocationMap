@@ -4,6 +4,9 @@ import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Build;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -12,6 +15,7 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,6 +37,7 @@ import com.xupu.locationmap.projectmanager.po.EditFiledCusom;
 import com.xupu.locationmap.projectmanager.po.FiledCustom;
 import com.xupu.locationmap.projectmanager.po.ItemDataCustom;
 
+import java.io.File;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -180,7 +185,7 @@ public class AndroidTool {
         JSONObject jsonObject = (JSONObject) oldJsonObject.clone();
         for (Integer rid : map.keySet()) {
             View temView = view.findViewById(rid);
-            FiledCustom filedCustom = map.get(rid);
+           final FiledCustom filedCustom = map.get(rid);
             if (temView instanceof TextView) {
                 TextView tv = (TextView) temView;
                 String attribute = filedCustom.getAttribute();
@@ -215,7 +220,6 @@ public class AndroidTool {
 
             } else if (temView instanceof EditText) {
                 EditText et = (EditText) temView;
-
                 et.addTextChangedListener(new TextWatcher() {
                     @Override
                     public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -236,7 +240,12 @@ public class AndroidTool {
                         jsonObject.replace(filedCustom.getAttribute(), text);
                     }
                 });
-
+            }else if(temView instanceof ImageView){
+                ImageView img = (ImageView)temView;
+                String path = jsonObject.getString("path");
+                if(FileTool.exitFile(path)){
+                    img.setImageBitmap(BitmapFactory.decodeFile(jsonObject.getString("path")));
+                }
             }
         }
     }

@@ -6,6 +6,7 @@ import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
@@ -17,6 +18,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.alibaba.fastjson.JSONObject;
+import com.google.gson.Gson;
 import com.xupu.locationmap.R;
 import com.xupu.locationmap.common.po.MyCallback;
 import com.xupu.locationmap.common.po.ResultData;
@@ -30,6 +32,7 @@ import com.xupu.locationmap.projectmanager.po.ItemDataCustom;
 import com.xupu.locationmap.projectmanager.po.Media;
 import com.xupu.locationmap.projectmanager.po.MediaType;
 import com.xupu.locationmap.projectmanager.po.NF;
+import com.xupu.locationmap.projectmanager.po.RecyclerViewFiledCustom;
 import com.xupu.locationmap.projectmanager.po.TableDataCustom;
 import com.xupu.locationmap.projectmanager.po.XZDM;
 import com.xupu.locationmap.projectmanager.service.ItemListService;
@@ -41,6 +44,7 @@ import java.lang.reflect.Array;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 
 public class NFActivity extends AppCompatActivity {
     private static String lookinfoTagName = "LookInfoFragment";
@@ -94,8 +98,8 @@ public class NFActivity extends AppCompatActivity {
             @Override
             public void OnClick(ResultData<JSONObject> resultData) {
                 JSONObject jsonObject = resultData.getT();
-                XZDM xzdm = jsonObject.toJavaObject(XZDM.class);
-                XZQYService.deleteItem(xzdm);
+
+              ItemListService.deleteItem(Table_Name+ "_"+jsonObject.get("id"));
                 itemFragment.remove(resultData.getT());
             }
         });
@@ -164,6 +168,8 @@ public class NFActivity extends AppCompatActivity {
                 showFragment(listTagName);
             }
         });
+        //RecyclerViewFiledCustom recyclerViewFiledCustom = new  RecyclerViewFiledCustom.Builder(R.id.fl_photos).addFiledCustom(R.id.img,new FiledCustom())
+
 
         //添加照片的按钮
         filedCustomMap.put(R.id.btu_add_sfz_photo, new BtuFiledCustom<JSONObject>("添加身份证照片") {
@@ -171,8 +177,10 @@ public class NFActivity extends AppCompatActivity {
             public void OnClick(ResultData<JSONObject> resultData) {
                 //添加照片
                 NF nf = resultData.getT().toJavaObject(NF.class);
-                Media media =  MediaService.getMedia(nf,MediaType.Photo,"身份证");
-                MediaTool.to(NFActivity.this,101,media);
+                Media media = MediaService.getMedia(nf, MediaType.Photo, "身份证");
+
+                MediaTool.to(NFActivity.this, 101, resultData.getT(), media);
+
                 //输入照片名字
                 //拍照
                 //保存到本地
@@ -196,14 +204,20 @@ public class NFActivity extends AppCompatActivity {
         return itemDataCustom;
     }
 
+    @SuppressLint("MissingSuperCall")
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
 
-        super.onActivityResult(requestCode, resultCode, data);
+
         switch (requestCode) {
             case 101:
                 if (resultCode == RESULT_OK) {
                     // 将拍摄的照片显示出来
+                    JSONObject json = (JSONObject)this.getIntent().getSerializableExtra("json");
+                    Media media = (Media)this.getIntent().getSerializableExtra("media");
+                    json.getJSONArray("medias").add(media);
+                    ItemListService.updateByMark(Table_Name + "_" + json.get("id"), json);
+                    itemFragment.update(json);
                 }
                 break;
             default:
@@ -225,7 +239,7 @@ public class NFActivity extends AppCompatActivity {
             public void OnClick(ResultData<JSONObject> resultData) {
                 JSONObject jsonObject = resultData.getT();
                 NF nf = jsonObject.toJavaObject(NF.class);
-                ItemListService.addItem(Table_Name , jsonObject);
+                ItemListService.addItem(Table_Name, jsonObject);
                 itemFragment.addItem(jsonObject);
                 showFragment(listTagName);
                 //init();

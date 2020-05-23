@@ -114,7 +114,6 @@ public class XZQYPage extends AppCompatActivity  {
         Map<Integer, FiledCustom> filedCustomMap = new HashMap<>();
         filedCustomMap.put(R.id.code, new EditFiledCusom("code", true));
         filedCustomMap.put(R.id.caption, new EditFiledCusom("caption", true));
-
         filedCustomMap.put(R.id.btu_submit, new BtuFiledCustom<JSONObject>("确定") {
             @Override
             public void OnClick(ResultData<JSONObject> resultData) {

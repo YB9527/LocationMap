@@ -2,7 +2,9 @@ package com.xupu.locationmap.projectmanager.po;
 
 import com.xupu.locationmap.common.tools.FileTool;
 
-public class Media {
+import java.io.Serializable;
+
+public class Media implements Serializable {
     private String id;
     private String name;
     private String path;

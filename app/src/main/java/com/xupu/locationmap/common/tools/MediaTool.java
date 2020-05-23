@@ -1,9 +1,11 @@
 package com.xupu.locationmap.common.tools;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Toast;
@@ -11,24 +13,27 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.core.content.FileProvider;
 
+import com.alibaba.fastjson.JSONObject;
 import com.esri.core.map.popup.PopupMediaInfo;
+import com.google.gson.Gson;
 import com.xupu.locationmap.projectmanager.po.Media;
 
 import java.io.File;
 
 public class MediaTool {
 
-    public static void to(Activity activity, int requestCode, Media media) {
+    public static void to(Activity activity, int requestCode,JSONObject extra, Media media) {
         switch (media.getMediaType()) {
             case Photo:
-                photo(activity,requestCode,media);
+                photo(activity,requestCode,extra,media);
                 break;
             case Video:
                 break;
         }
     }
 
-    private static void photo(Activity activity, int requestCode, Media media) {
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+    private static void photo(Activity activity, int requestCode, JSONObject extra, Media media) {
         Uri imageUri;
         // 创建File对象，用于存储拍照后的图片
         //存放在手机SD卡的应用关联缓存目录下
@@ -58,6 +63,10 @@ public class MediaTool {
         //启动相机程序
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);//
+
+        activity.getIntent().putExtra("json",extra);
+        activity.getIntent().putExtra("media",media);
+
         activity.startActivityForResult(intent, requestCode);
     }
 
