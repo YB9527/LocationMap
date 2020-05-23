@@ -122,6 +122,7 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
             JSONObject jsonObject = (JSONObject)(medias.get(i));
             this.mValues.add(jsonObject);
         }
+        notifyDataSetChanged();
 
     }
 

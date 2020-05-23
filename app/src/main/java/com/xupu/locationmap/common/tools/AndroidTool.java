@@ -190,7 +190,7 @@ public class AndroidTool {
                 TextView tv = (TextView) temView;
                 String attribute = filedCustom.getAttribute();
                 String str = jsonObject.getString(attribute);
-                if (str != null) {
+                if (str != null || temView instanceof  EditText) {
                     tv.setText(str);
                 }
             }

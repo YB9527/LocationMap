@@ -1,5 +1,6 @@
 package com.xupu.locationmap.projectmanager.page;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Build;
@@ -31,6 +32,7 @@ import com.xupu.locationmap.projectmanager.po.FiledCustom;
 import com.xupu.locationmap.projectmanager.po.ImgFiledCusom;
 import com.xupu.locationmap.projectmanager.po.ItemDataCustom;
 import com.xupu.locationmap.projectmanager.po.TableDataCustom;
+import com.xupu.locationmap.projectmanager.service.ItemListService;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -80,6 +82,7 @@ public class LookInfoFragment extends Fragment {
         return view;
     }
 
+    @TargetApi(Build.VERSION_CODES.N)
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -126,8 +129,8 @@ public class LookInfoFragment extends Fragment {
 
         if (view != null) {
             AndroidTool.setView(view, itemDataCustom);
+
             myItemRecyclerViewAdapter.setDatas(itemDataCustom.getJsonObject().getJSONArray("medias"));
-            myItemRecyclerViewAdapter.notifyDataSetChanged();
         }
 
     }

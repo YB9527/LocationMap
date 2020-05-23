@@ -7,7 +7,7 @@ public class NF {
     private String id;
     private String name;
     private String bz;
-    private List<Media> medias;
+
     public NF(){
 
     }
@@ -16,17 +16,9 @@ public class NF {
         this.bz = bz;
     }
 
-    public List<Media> getMedias() {
-        if(medias == null){
-            medias = new ArrayList<>();
-        }
-        return medias;
-    }
 
-    public void setMedias(List<Media> medias) {
 
-        this.medias = medias;
-    }
+
 
     public String getId() {
         return id;

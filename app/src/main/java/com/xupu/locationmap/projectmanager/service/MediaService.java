@@ -1,5 +1,6 @@
 package com.xupu.locationmap.projectmanager.service;
 
+import com.alibaba.fastjson.JSONObject;
 import com.tianditu.maps.Map.Project;
 import com.xupu.locationmap.common.tools.AndroidTool;
 import com.xupu.locationmap.exceptionmanager.MapException;
@@ -9,10 +10,16 @@ import com.xupu.locationmap.projectmanager.po.NF;
 import com.xupu.locationmap.projectmanager.po.SugProject;
 import com.xupu.locationmap.projectmanager.po.XZDM;
 
+
+import java.util.List;
 import java.util.UUID;
 
 public class MediaService {
 
+    private  static String MARK ="media";
+    public static List<Media> findByParentid(JSONObject jsonObject){
+        return  ItemListService.findAll(MARK+"_"+ jsonObject.getString("id"),Media.class);
+    }
     /**
      *
      * @param nf
