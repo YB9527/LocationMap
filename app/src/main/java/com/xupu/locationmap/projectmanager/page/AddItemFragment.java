@@ -26,6 +26,7 @@ import com.xupu.locationmap.projectmanager.po.BtuFiledCustom;
 import com.xupu.locationmap.projectmanager.po.EditFiledCusom;
 import com.xupu.locationmap.projectmanager.po.FiledCustom;
 import com.xupu.locationmap.projectmanager.po.ItemDataCustom;
+import com.xupu.locationmap.projectmanager.po.MyJSONObject;
 import com.xupu.locationmap.projectmanager.po.TableDataCustom;
 
 import java.util.Collection;
@@ -44,14 +45,18 @@ public class AddItemFragment extends Fragment {
         return view;
     }
 
-
-    private void init() {
-        AndroidTool.setView(view, itemDataCustom);
+    public void setMyJSONObject(MyJSONObject newNF) {
+        itemDataCustom.setMyJSONObject(newNF);
+        init();
+    }
+    public void init() {
+        AndroidTool.setView(view, itemDataCustom,false);
     }
 
 
     public AddItemFragment(ItemDataCustom itemDataCustom) {
         this.itemDataCustom = itemDataCustom;
     }
+
 
 }

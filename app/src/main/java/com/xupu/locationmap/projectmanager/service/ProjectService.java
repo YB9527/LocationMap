@@ -1,56 +1,62 @@
 package com.xupu.locationmap.projectmanager.service;
 
-import android.icu.lang.UScript;
-
-import com.google.gson.reflect.TypeToken;
-import com.tianditu.maps.Map.Project;
+import com.alibaba.fastjson.JSONObject;
 import com.xupu.locationmap.common.tools.AndroidTool;
 import com.xupu.locationmap.common.tools.RedisTool;
+import com.xupu.locationmap.common.tools.TableTool;
 import com.xupu.locationmap.common.tools.Tool;
-import com.xupu.locationmap.projectmanager.po.SugProject;
+import com.xupu.locationmap.projectmanager.po.Customizing;
+import com.xupu.locationmap.projectmanager.po.MyJSONObject;
+
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class ProjectService {
-    private static  String CURRENT_PROJECT_MARK="CURRENT_PROJECT_MARK";
-    private  static SugProject  currentSugProject;
+    private static String CURRENT_PROJECT_MARK = "CURRENT_PROJECT_MARK";
+    private static MyJSONObject currentSugProject;
 
     /**
      * 得到当前项目
+     *
      * @return
      */
-    public static SugProject getCurrentSugProject() {
-        if(currentSugProject == null){
+    public static MyJSONObject getCurrentSugProject() {
+        if (currentSugProject == null) {
             //在数据中查找
-            currentSugProject = RedisTool.findRedis(CURRENT_PROJECT_MARK,SugProject.class);
+            currentSugProject = RedisTool.findRedis(CURRENT_PROJECT_MARK, MyJSONObject.class);
         }
         return currentSugProject;
     }
+
     /**
      * 设置当前的项目
+     *
      * @param currentSugProject
      */
-    public static void setCurrentSugProject(SugProject currentSugProject) {
+    public static void setCurrentSugProject(MyJSONObject currentSugProject) {
         //保存到数据库中，下次重新启动有记录
-        RedisTool.updateRedis(CURRENT_PROJECT_MARK,currentSugProject);
+        RedisTool.updateRedis(CURRENT_PROJECT_MARK, currentSugProject);
         ProjectService.currentSugProject = currentSugProject;
     }
 
-
-    public static List<SugProject> findAll() {
-
-        List<SugProject> projects = RedisTool.findListRedis("project", SugProject.class);
-        if (Tool.isEmpty(projects)) {
-            projects = new ArrayList<>();
-            SugProject sugProject = new SugProject();
-            sugProject.setId("1");
-            sugProject.setName("测试");
-            projects.add(sugProject);
-            RedisTool.saveRedis("project",sugProject);
-        }
+    public static List<MyJSONObject> findAll() {
+        List<MyJSONObject> projects = TableTool.findByTableName(Customizing.PROJECT);
         return projects;
     }
 
+    public static String getName(MyJSONObject currentSugProject) {
+        return currentSugProject.getJsonobject().getString(Customizing.PROJECT_Field.get(Customizing.PROJECT_name).getName());
+    }
 
+    public static MyJSONObject newProject(){
+
+        String uid = UUID.randomUUID().toString();
+        JSONObject jsonObject =new JSONObject();
+        jsonObject.put("id",uid);
+        jsonObject.put(Customizing.PROJECT_Field.get(Customizing.PROJECT_name).getName(),"");
+
+        return  new MyJSONObject(uid, Customizing.PROJECT,null,jsonObject.toJSONString());
+    }
 }

@@ -7,14 +7,14 @@ import java.util.Map;
 
 public class ItemDataCustom {
 
-    public ItemDataCustom(Integer rid, JSONObject jsonObject, Map<Integer, FiledCustom> map) {
-        this.jsonObject = jsonObject;
+    public ItemDataCustom(Integer rid, MyJSONObject jsonObject, Map<Integer, FiledCustom> map) {
+        this.myJSONObject = jsonObject;
         this.map = map;
         this.rid = rid;
     }
 
     private Integer rid;
-    private JSONObject jsonObject;
+    private MyJSONObject myJSONObject;
     private Map<Integer, FiledCustom> map;
 
     public Integer getRid() {
@@ -25,14 +25,6 @@ public class ItemDataCustom {
         this.rid = rid;
     }
 
-    public JSONObject getJsonObject() {
-        return jsonObject;
-    }
-
-    public void setJsonObject(JSONObject jsonObject) {
-        this.jsonObject = jsonObject;
-    }
-
     public Map<Integer, FiledCustom> getMap() {
         return map;
     }
@@ -41,6 +33,11 @@ public class ItemDataCustom {
         this.map = map;
     }
 
+    public MyJSONObject getMyJSONObject() {
+        return myJSONObject;
+    }
 
-
+    public void setMyJSONObject(MyJSONObject myJSONObject) {
+        this.myJSONObject = myJSONObject;
+    }
 }

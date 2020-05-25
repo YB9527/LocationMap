@@ -1,11 +1,14 @@
 package com.xupu.locationmap.projectmanager.service;
 
+import com.alibaba.fastjson.JSONObject;
+import com.xupu.locationmap.common.tools.AndroidTool;
 import com.xupu.locationmap.common.tools.RedisTool;
-import com.xupu.locationmap.projectmanager.po.Redis;
-import com.xupu.locationmap.projectmanager.po.SugProject;
+import com.xupu.locationmap.common.tools.TableTool;
+import com.xupu.locationmap.projectmanager.page.XZQYPage;
+import com.xupu.locationmap.projectmanager.po.Customizing;
+import com.xupu.locationmap.projectmanager.po.MyJSONObject;
 import com.xupu.locationmap.projectmanager.po.XZDM;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -14,52 +17,18 @@ public class XZQYService {
     private static String CURRENT_XZDM_MARK = "CURRENT_XZDM_MARK";
     private static String XZDM_MARK = "XZDM_MARK";
 
-    /**
-     * 得到所有的行政区域
-     *
-     * @return
-     */
-    public static List<XZDM> findAll() {
-        List<XZDM> xzdms = RedisTool.findListRedis(XZDM_MARK + "%", XZDM.class);
-      /*  for (int i = 0; i < 2; i++) {
-            String own = UUID.randomUUID().toString();
-            XZDM xzdm = new XZDM(i+"", "1组");
-            xzdm.setId(own);
-            xzdms.add(xzdm);
 
-        }*/
-
-        return xzdms;
-    }
-
-    public static void addXZDM(XZDM xzdm) {
-        String own = UUID.randomUUID().toString();
-        xzdm.setId(own);
-        String mark = getXZDMMark(xzdm);
-        RedisTool.saveRedis(mark, xzdm);
-    }
-
-    private static String getXZDMMark(XZDM xzdm) {
-        return XZDM_MARK + "_" + xzdm.getId();
-    }
-
-    public static void deleteItem(XZDM xzdm) {
-        String mark = getXZDMMark(xzdm);
-        RedisTool.deleteRedisByMark(mark);
-    }
-
-
-    private static XZDM currentXZDM;
+    private static MyJSONObject currentXZDM;
 
     /**
      * 得到当前区域
      *
      * @return
      */
-    public static XZDM getCurrentXZDM() {
+    public static MyJSONObject getCurrentXZDM() {
         if (currentXZDM == null) {
             //在数据中查找
-            currentXZDM = RedisTool.findRedis(CURRENT_XZDM_MARK, XZDM.class);
+            currentXZDM = RedisTool.findRedis(CURRENT_XZDM_MARK, MyJSONObject.class);
         }
         return currentXZDM;
     }
@@ -69,10 +38,36 @@ public class XZQYService {
      *
      * @param currentXZDM
      */
-    public static void setCurrentXZDM(XZDM currentXZDM) {
+    public static void setCurrentXZDM(MyJSONObject currentXZDM) {
         //保存到数据库中，下次重新启动有记录
         RedisTool.updateRedis(CURRENT_XZDM_MARK, currentXZDM);
         XZQYService.currentXZDM = currentXZDM;
     }
 
+    public static MyJSONObject newXZDM() {
+        String uid = UUID.randomUUID().toString();
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("id", uid);
+        jsonObject.put(Customizing.XZQY_Field.get(Customizing.XZQY_code).getName(), "");
+        jsonObject.put(Customizing.XZQY_Field.get(Customizing.XZQY_caption).getName(), "");
+        MyJSONObject project = ProjectService.getCurrentSugProject();
+        if (project == null) {
+            AndroidTool.showAnsyTost("请先设置项目", 1);
+            return null;
+        }
+        return new MyJSONObject(uid, Customizing.XZQY, project.getId(), jsonObject.toJSONString());
+    }
+
+    public static String getCode(MyJSONObject xzdm) {
+        return xzdm.getJsonobject().getString(Customizing.XZQY_code);
+    }
+
+    public static String getCaption(MyJSONObject xzdm) {
+        return xzdm.getJsonobject().getString(Customizing.XZQY_caption);
+    }
+
+    public static List<MyJSONObject> findByProject() {
+        List<MyJSONObject> list = TableTool.findByTableNameAndParentId(Customizing.XZQY, ProjectService.getCurrentSugProject().getId());
+        return list;
+    }
 }

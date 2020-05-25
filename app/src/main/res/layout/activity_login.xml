@@ -121,6 +121,7 @@
             android:textColorHint="#96ffffff"
             android:theme="@style/EditScreenTextInputLayoutStyle">
 
+
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

@@ -15,17 +15,6 @@
             android:gravity="center_horizontal"
             android:orientation="vertical">
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="50dp"
-                android:layout_marginBottom="30dp"
-                android:gravity="center"
-                android:text="查看农户信息"
-                android:textSize="30sp"
-                android:textStyle="italic"
-                android:typeface="monospace" />
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -76,7 +65,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_marginTop="50dp"
                     android:orientation="horizontal">
 
                     <Button
@@ -121,25 +109,23 @@
                 android:text="添加房屋照片" />
         </LinearLayout>
     </LinearLayout>
-<!--    <FrameLayout
-        android:id="@+id/fl"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"/>-->
+    <!--    <FrameLayout
+            android:id="@+id/fl"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>-->
 
-    <androidx.recyclerview.widget.RecyclerView
-        xmlns:app="http://schemas.android.com/apk/res-auto"
+    <androidx.recyclerview.widget.RecyclerView xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/fl"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layoutManager="LinearLayoutManager"
-         />
-  <!--  <FrameLayout
-        android:id="@+id/fl"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1" />-->
+        app:layoutManager="LinearLayoutManager" />
+    <!--  <FrameLayout
+          android:id="@+id/fl"
+          android:layout_width="match_parent"
+          android:layout_height="0dp"
+          android:layout_weight="1" />-->
 
     <!--身份证照片-->
     <!--户口本照片-->

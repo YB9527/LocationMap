@@ -7,7 +7,9 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class PetDbHelper extends SQLiteOpenHelper {
     public static final String LOG_TAG = PetDbHelper.class.getSimpleName();
 
-    /** Name of the database file */
+    /**
+     * Name of the database file
+     */
     private static final String DATABASE_NAME = "shelter.db";
 
     /**
@@ -30,9 +32,12 @@ public class PetDbHelper extends SQLiteOpenHelper {
      */
     @Override
     public void onCreate(SQLiteDatabase db) {
+
         // Create a String that contains the SQL statement to create the pets table
-        String SQL_CREATE_PETS_TABLE =  "CREATE TABLE redis (id INTEGER PRIMARY KEY AUTOINCREMENT,mark  TEXT NOT NULL,json)";
+        String SQL_CREATE_PETS_TABLE = "CREATE TABLE "+TableTool.Table_Name+" (id TEXT  NOT NULL ,tablename TEXT  NOT NULL,parentid TEXT,json  NOT NULL)";
+        String SQL_CREATE_PETS_TABLE2 = "CREATE TABLE redis (id INTEGER PRIMARY KEY AUTOINCREMENT,mark  TEXT NOT NULL,json)";
         db.execSQL(SQL_CREATE_PETS_TABLE);
+        db.execSQL(SQL_CREATE_PETS_TABLE2);
     }
 
     /**

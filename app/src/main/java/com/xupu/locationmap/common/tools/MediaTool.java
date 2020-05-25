@@ -16,28 +16,30 @@ import androidx.core.content.FileProvider;
 import com.alibaba.fastjson.JSONObject;
 import com.esri.core.map.popup.PopupMediaInfo;
 import com.google.gson.Gson;
-import com.xupu.locationmap.projectmanager.po.Media;
+
+import com.xupu.locationmap.projectmanager.po.Customizing;
+import com.xupu.locationmap.projectmanager.po.MyJSONObject;
 
 import java.io.File;
 
 public class MediaTool {
 
-    public static void to(Activity activity, int requestCode,JSONObject extra, Media media) {
-        switch (media.getMediaType()) {
-            case Photo:
-                photo(activity,requestCode,extra,media);
+    public static void to(Activity activity, int requestCode, MyJSONObject media) {
+        switch (media.getJsonobject().getInteger(Customizing.MEDIA_type)) {
+            case 0:
+                photo(activity, requestCode, media);
                 break;
-            case Video:
+            case 1:
                 break;
         }
     }
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    private static void photo(Activity activity, int requestCode, JSONObject extra, Media media) {
+    private static void photo(Activity activity, int requestCode, MyJSONObject media) {
         Uri imageUri;
         // 创建File对象，用于存储拍照后的图片
         //存放在手机SD卡的应用关联缓存目录下
-        File outputImage = new File(media.getPath());
+        File outputImage = new File(media.getJsonobject().getString(Customizing.MEDIA_path));
 
         Tool.exitsDir(outputImage.getParent(), true);
         // 从Android 6.0系统开始，读写SD卡被列为了危险权限，如果将图片存放在SD卡的任何其他目录，
@@ -55,7 +57,7 @@ public class MediaTool {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             //大于等于版本24（7.0）的场合
-            imageUri = FileProvider.getUriForFile(activity, "com.xupu.locationmap.fileprovider", outputImage);
+            imageUri = FileProvider.getUriForFile(activity, AndroidTool.FILEPROVIDER, outputImage);
         } else {
             //小于android 版本7.0（24）的场合
             imageUri = Uri.fromFile(outputImage);
@@ -64,8 +66,7 @@ public class MediaTool {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);//
 
-        activity.getIntent().putExtra("json",extra);
-        activity.getIntent().putExtra("media",media);
+        activity.getIntent().putExtra("media", media);
 
         activity.startActivityForResult(intent, requestCode);
     }

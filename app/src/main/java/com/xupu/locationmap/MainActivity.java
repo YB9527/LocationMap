@@ -13,6 +13,7 @@ import android.view.MenuItem;
 
 import com.google.android.material.navigation.NavigationView;
 import com.ogaclejapan.smarttablayout.utils.v4.Bundler;
+import com.xupu.locationmap.common.page.AskUser;
 import com.xupu.locationmap.common.tools.AndroidTool;
 import com.xupu.locationmap.projectmanager.page.ItemFragment;
 import com.xupu.locationmap.projectmanager.page.LowMapManager;
@@ -45,11 +46,13 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
         AndroidTool.setFullWindow(this);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
+        //setSupportActionBar(toolbar);
+        setTitle("旭普软件");
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(

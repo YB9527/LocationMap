@@ -7,8 +7,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class TableDataCustom<T> {
+public class TableDataCustom {
 
+    private boolean isEdit;
     /**
      * 承载 控件的 item
      */
@@ -19,17 +20,25 @@ public class TableDataCustom<T> {
     private Map<Integer, FiledCustom> map;
 
 
-    private List<JSONObject> list;
+    private List<MyJSONObject> list;
 
 
-    public TableDataCustom(int fragmentItem,Map<Integer, FiledCustom> map, List<T> list) {
-        this.fragmentItem =fragmentItem;
+
+    public TableDataCustom(int fragmentItem, Map<Integer, FiledCustom> map, List<MyJSONObject> list) {
+        this.fragmentItem = fragmentItem;
         this.map = map;
         this.list = new ArrayList<>();
-        for (T t : list){
-            JSONObject json=(JSONObject) JSONObject.toJSON(t);
-            this.list.add(json);
-        }
+        this.list.addAll(list);
+
+    }
+
+    public boolean isEdit() {
+        return isEdit;
+    }
+
+    public TableDataCustom setEdit(boolean edit) {
+        isEdit = edit;
+        return  this;
     }
 
     public Map<Integer, FiledCustom> getMap() {
@@ -40,11 +49,11 @@ public class TableDataCustom<T> {
         this.map = map;
     }
 
-    public List<JSONObject> getList() {
+    public List<MyJSONObject> getList() {
         return list;
     }
 
-    public void setList(List<JSONObject> list) {
+    public void setList(List<MyJSONObject> list) {
         this.list = list;
     }
 

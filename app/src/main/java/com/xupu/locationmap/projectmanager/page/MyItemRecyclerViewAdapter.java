@@ -22,7 +22,8 @@ import com.xupu.locationmap.common.tools.AndroidTool;
 import com.xupu.locationmap.projectmanager.po.BtuFiledCustom;
 import com.xupu.locationmap.projectmanager.po.FiledCustom;
 import com.xupu.locationmap.projectmanager.po.ItemDataCustom;
-import com.xupu.locationmap.projectmanager.po.Media;
+
+import com.xupu.locationmap.projectmanager.po.MyJSONObject;
 import com.xupu.locationmap.projectmanager.po.TableDataCustom;
 import com.xupu.locationmap.projectmanager.po.XZDM;
 
@@ -40,10 +41,14 @@ import java.util.Map;
  */
 public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecyclerViewAdapter.ViewHolder> {
 
-    private final List<JSONObject> mValues;
+    private final List<MyJSONObject> mValues;
     private final TableDataCustom tableDataCustom;
     private ViewHolder oldHolder;
     private int oldPostion;
+
+    public List<MyJSONObject> getmValues() {
+        return mValues;
+    }
 
     public MyItemRecyclerViewAdapter(TableDataCustom tableDataCustom) {
         this.mValues = tableDataCustom.getList();
@@ -60,11 +65,11 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        JSONObject json = mValues.get(position);
+        MyJSONObject json = mValues.get(position);
         holder.itemView.setBackgroundColor(Color.WHITE);
 
-       ItemDataCustom itemDataCustom  = new ItemDataCustom(null,json,tableDataCustom.getMap());
-        AndroidTool.setView(holder.mView,itemDataCustom);
+        ItemDataCustom itemDataCustom = new ItemDataCustom(null, json, tableDataCustom.getMap());
+        AndroidTool.setView(holder.mView, itemDataCustom,tableDataCustom.isEdit());
 
       /*  holder.mItem = json;
         for (View view : holder.vieMap.keySet()) {
@@ -110,20 +115,10 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
         return mValues.size();
     }
 
-    public void setDatas(List<JSONObject> medias) {
+    public void setDatas(List<MyJSONObject> medias) {
         this.mValues.clear();
         this.mValues.addAll(medias);
         this.notifyDataSetChanged();
-    }
-
-    public void setDatas(JSONArray medias) {
-        this.mValues.clear();
-        for (int i = 0; i < medias.size(); i++) {
-            JSONObject jsonObject = (JSONObject)(medias.get(i));
-            this.mValues.add(jsonObject);
-        }
-        notifyDataSetChanged();
-
     }
 
 
@@ -145,25 +140,25 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
         }
     }
 
-    public void addItem(int index, JSONObject jsonObject) {
+    public void addItem(int index, MyJSONObject jsonObject) {
         this.mValues.add(index, jsonObject);
         this.notifyItemInserted(index);
     }
 
-    public void addItem(JSONObject jsonObject) {
-        addItem(this.mValues.size(), jsonObject);
+    public void addItem(MyJSONObject myJSONObject) {
+        addItem(this.mValues.size(), myJSONObject);
     }
 
-    public void remove(JSONObject jsonObject) {
+    public void remove(MyJSONObject jsonObject) {
         int index = this.mValues.indexOf(jsonObject);
         this.mValues.remove(index);
         this.notifyDataSetChanged();
     }
 
-    public void update(JSONObject jsonObject) {
+    public void update(MyJSONObject myJSONObject) {
         for (int i = 0; i < this.mValues.size(); i++) {
-            if(jsonObject.get("id").equals(this.mValues.get(i).get("id"))){
-                this.mValues.set(i,jsonObject);
+            if (myJSONObject.getId().equals(this.mValues.get(i).getId())) {
+                this.mValues.set(i, myJSONObject);
                 this.notifyItemChanged(i);
             }
         }

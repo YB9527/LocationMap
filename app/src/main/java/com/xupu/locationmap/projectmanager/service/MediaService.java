@@ -1,56 +1,90 @@
 package com.xupu.locationmap.projectmanager.service;
 
+import android.os.Environment;
+
 import com.alibaba.fastjson.JSONObject;
-import com.tianditu.maps.Map.Project;
 import com.xupu.locationmap.common.tools.AndroidTool;
-import com.xupu.locationmap.exceptionmanager.MapException;
-import com.xupu.locationmap.projectmanager.po.Media;
-import com.xupu.locationmap.projectmanager.po.MediaType;
+import com.xupu.locationmap.projectmanager.po.Customizing;
+
+import com.xupu.locationmap.projectmanager.po.MyJSONObject;
 import com.xupu.locationmap.projectmanager.po.NF;
-import com.xupu.locationmap.projectmanager.po.SugProject;
 import com.xupu.locationmap.projectmanager.po.XZDM;
 
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 
 public class MediaService {
 
-    private  static String MARK ="media";
-    public static List<Media> findByParentid(JSONObject jsonObject){
-        return  ItemListService.findAll(MARK+"_"+ jsonObject.getString("id"),Media.class);
-    }
+    private static String MARK = "media";
+
+
     /**
-     *
-     * @param nf
+     * @param parent
      * @param mediaType
-     * @param fileType 不要带格式，会自动根据类型添加
+     * @param task
      * @return
      */
-    public static Media getMedia(NF nf, MediaType mediaType,  String fileType) {
-        SugProject project =ProjectService.getCurrentSugProject();
-        if(project == null){
-            AndroidTool.showAnsyTost("请先选择项目",1);
-            return  null;
+    public static MyJSONObject getMedia(MyJSONObject parent, int mediaType, String task) {
+        MyJSONObject project = ProjectService.getCurrentSugProject();
+        if (project == null) {
+            AndroidTool.showAnsyTost("请先选择项目", 1);
+            return null;
         }
-        XZDM xzdm = XZQYService.getCurrentXZDM();
-        if(xzdm == null){
-            AndroidTool.showAnsyTost("请先选择项目",1);
-            return  null;
+        MyJSONObject xzdm = XZQYService.getCurrentXZDM();
+        if (xzdm == null) {
+            AndroidTool.showAnsyTost("请先选择项目", 1);
+            return null;
         }
         String uuid = UUID.randomUUID().toString();
-        String path = AndroidTool.getMainActivity().getFilesDir().getAbsolutePath()+"/" + project.getName()+"/"+xzdm.getCode()+"_"+xzdm.getCaption()+"/"
-                +nf.getName()+"_"+fileType+"_"+nf.getId()+"/"+uuid;
+        String state = Environment.getExternalStorageState();
+        String root;
+        if (state.equals("mounted")) {
+            root = Environment.getExternalStorageDirectory().getAbsolutePath() + "/旭普公司";
+            if(!new File(root).exists()){
+               boolean bl =   new File(root).mkdirs();
+               if(!bl){
+                   root = AndroidTool.getMainActivity().getFilesDir().getAbsolutePath();
+               }
+            }else{
+                if(!new File(root).canWrite()){
+                    root = AndroidTool.getMainActivity().getFilesDir().getAbsolutePath();
+                }
+            }
+        } else {
+            root = AndroidTool.getMainActivity().getFilesDir().getAbsolutePath();
+        }
 
-        switch (mediaType){
-            case Photo:
-                path = path +".jpg";
+
+        String path = root + "/" + ProjectService.getName(project) + "/" + XZQYService.getCode(xzdm) + "_" + XZQYService.getCaption(xzdm) + "/"
+                + NFService.getName(parent) + "_" + parent.getId() + "/" + task + "/" + uuid;
+
+
+        switch (mediaType) {
+            case 0:
+                path = path + ".jpg";
                 break;
-            case Video:
-                path = path +".mp4";
+            case 1:
+                path = path + ".mp4";
                 break;
         }
-        Media media = new Media(mediaType,path);
-        return  media;
+
+        MyJSONObject media = newMedia(parent, mediaType, path, task);
+
+        return media;
+    }
+
+    private static MyJSONObject newMedia(MyJSONObject parent, int mediatype, String path, String task) {
+
+        String uid = UUID.randomUUID().toString();
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("id", uid);
+        jsonObject.put(Customizing.MEDIA_Field.get(Customizing.MEDIA_type).getName(), mediatype);
+        jsonObject.put(Customizing.MEDIA_Field.get(Customizing.MEDIA_path).getName(), path);
+        jsonObject.put(Customizing.MEDIA_Field.get(Customizing.MEDIA_bz).getName(), "");
+        jsonObject.put(Customizing.MEDIA_Field.get(Customizing.MEDIA_task).getName(), task);
+        return new MyJSONObject(uid, Customizing.MEDIA, parent.getId(), jsonObject.toJSONString());
     }
 }

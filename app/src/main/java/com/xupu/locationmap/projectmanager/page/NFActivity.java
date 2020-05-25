@@ -2,45 +2,30 @@ package com.xupu.locationmap.projectmanager.page;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Intent;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
 
-import com.alibaba.fastjson.JSONObject;
-import com.google.gson.Gson;
 import com.xupu.locationmap.R;
-import com.xupu.locationmap.common.po.MyCallback;
-import com.xupu.locationmap.common.po.ResultData;
 import com.xupu.locationmap.common.tools.AndroidTool;
 import com.xupu.locationmap.common.tools.MediaTool;
-import com.xupu.locationmap.common.tools.Tool;
+import com.xupu.locationmap.common.tools.TableTool;
 import com.xupu.locationmap.projectmanager.po.BtuFiledCustom;
+import com.xupu.locationmap.projectmanager.po.Customizing;
 import com.xupu.locationmap.projectmanager.po.EditFiledCusom;
 import com.xupu.locationmap.projectmanager.po.FiledCustom;
 import com.xupu.locationmap.projectmanager.po.ItemDataCustom;
-import com.xupu.locationmap.projectmanager.po.Media;
-import com.xupu.locationmap.projectmanager.po.MediaType;
-import com.xupu.locationmap.projectmanager.po.NF;
-import com.xupu.locationmap.projectmanager.po.RecyclerViewFiledCustom;
+import com.xupu.locationmap.projectmanager.po.MyJSONObject;
 import com.xupu.locationmap.projectmanager.po.TableDataCustom;
-import com.xupu.locationmap.projectmanager.po.XZDM;
-import com.xupu.locationmap.projectmanager.service.ItemListService;
 import com.xupu.locationmap.projectmanager.service.MediaService;
+import com.xupu.locationmap.projectmanager.service.NFService;
 import com.xupu.locationmap.projectmanager.service.XZQYService;
 
-import java.io.File;
-import java.lang.reflect.Array;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -49,7 +34,7 @@ import java.util.Map;
 public class NFActivity extends AppCompatActivity {
     private static String lookinfoTagName = "LookInfoFragment";
     private static String listTagName = "list";
-    private static String itemTagName = "item";
+    private static String additemTagName = "item";
     private static String Table_Name = "NF";
     Button btuAdd;
     AddItemFragment addItemFragment;
@@ -71,9 +56,9 @@ public class NFActivity extends AppCompatActivity {
 
     private void setMyTitle() {
         String title;
-        XZDM currentXZDM = XZQYService.getCurrentXZDM();
+        MyJSONObject currentXZDM = XZQYService.getCurrentXZDM();
         if (currentXZDM != null) {
-            title = "当前任务：" + currentXZDM.getCaption();
+            title = "当前任务：" + currentXZDM.getJsonobject().getString(Customizing.XZQY_caption);
         } else {
             title = "还没有设置当前区域";
         }
@@ -86,29 +71,29 @@ public class NFActivity extends AppCompatActivity {
         btuAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showFragment(itemTagName);
+                addItemFragment.setMyJSONObject(NFService.newNF());
+                showFragment(additemTagName);
             }
         });
 
-        List<NF> nfs = ItemListService.findAll(Table_Name + "_", NF.class);
+        List<MyJSONObject> nfs = NFService.findByXZDM();
         Map<Integer, FiledCustom> map = new HashMap<>();
         map.put(R.id.name, new FiledCustom("name"));
         map.put(R.id.bz, new FiledCustom("bz"));
-        map.put(R.id.btu_delete, new BtuFiledCustom<JSONObject>("删除") {
+        map.put(R.id.btu_delete, new BtuFiledCustom<MyJSONObject>("删除") {
             @Override
-            public void OnClick(ResultData<JSONObject> resultData) {
-                JSONObject jsonObject = resultData.getT();
+            public void OnClick(MyJSONObject nf) {
+                if(TableTool.delete(nf)){
+                    itemFragment.remove(nf);
+                }
 
-              ItemListService.deleteItem(Table_Name+ "_"+jsonObject.get("id"));
-                itemFragment.remove(resultData.getT());
             }
-        });
-        map.put(R.id.btu_lookinfo, new BtuFiledCustom<JSONObject>("查看") {
+        }.setConfirm(true,"确定要删除农户吗？"));
+        map.put(R.id.btu_lookinfo, new BtuFiledCustom<MyJSONObject>("查看") {
             @Override
-            public void OnClick(ResultData<JSONObject> resultData) {
-                JSONObject jsonObject = resultData.getT();
+            public void OnClick(MyJSONObject nf) {
                 //跳到详细信息页面
-                toLookInfoFragment(jsonObject);
+                toLookInfoFragment(nf);
             }
         });
 
@@ -120,26 +105,31 @@ public class NFActivity extends AppCompatActivity {
                 .commit();
     }
 
+    LookInfoFragment lookInfoFragment;
+
     /**
      * 到详细信息页面
      *
-     * @param jsonObject
+     * @param myJSONObject
      */
-    private void toLookInfoFragment(JSONObject jsonObject) {
+    private void toLookInfoFragment(MyJSONObject myJSONObject) {
 
-        LookInfoFragment lookInfoFragment;
         Fragment fragment = getSupportFragmentManager().findFragmentByTag(lookinfoTagName);
         if (fragment == null) {
             ItemDataCustom itemDataCustom = getLookInfoFragmentItemDataCustom();
+
             lookInfoFragment = new LookInfoFragment(itemDataCustom);
+
             getSupportFragmentManager().beginTransaction().add(R.id.fl, lookInfoFragment, lookinfoTagName).commit();
 
         } else {
             lookInfoFragment = (LookInfoFragment) fragment;
         }
-        lookInfoFragment.setJSONbject(jsonObject);
 
-        showFragment("LookInfoFragment");
+        lookInfoFragment.setJSONbject(myJSONObject);
+        showFragment(lookinfoTagName);
+
+
     }
 
     /**
@@ -151,59 +141,68 @@ public class NFActivity extends AppCompatActivity {
         Map<Integer, FiledCustom> filedCustomMap = new HashMap<>();
         filedCustomMap.put(R.id.name, new EditFiledCusom("name", true));
         filedCustomMap.put(R.id.bz, new EditFiledCusom("bz", false));
-        filedCustomMap.put(R.id.btu_submit, new BtuFiledCustom<JSONObject>("修改") {
+        filedCustomMap.put(R.id.btu_submit, new BtuFiledCustom<MyJSONObject>("修改") {
             @Override
-            public void OnClick(ResultData<JSONObject> resultData) {
-                JSONObject jsonObject = resultData.getT();
+            public void OnClick(MyJSONObject myJSONObject) {
                 //更新listview
-                itemFragment.update(jsonObject);
-                NF nf = jsonObject.toJavaObject(NF.class);
-                ItemListService.updateByMark(Table_Name + "_" + nf.getId(), nf);
+
+                itemFragment.update(myJSONObject);
+                TableTool.updateById(myJSONObject);
+                TableTool.updateMany(lookInfoFragment.medias);
+                //修改多媒体文件
+                //找到多媒体文件
                 showFragment(listTagName);
+
+
             }
-        }.setCheck(true).setReturn(true));
+        }.setCheck(true).setReturn(true).setConfirm(true,"确认要修改吗？"));
         filedCustomMap.put(R.id.btu_cancel, new BtuFiledCustom("取消") {
             @Override
-            public void OnClick(ResultData resultData) {
+            public void OnClick(MyJSONObject myJSONObject) {
+
                 showFragment(listTagName);
+
             }
         });
         //RecyclerViewFiledCustom recyclerViewFiledCustom = new  RecyclerViewFiledCustom.Builder(R.id.fl_photos).addFiledCustom(R.id.img,new FiledCustom())
 
 
         //添加照片的按钮
-        filedCustomMap.put(R.id.btu_add_sfz_photo, new BtuFiledCustom<JSONObject>("添加身份证照片") {
+        filedCustomMap.put(R.id.btu_add_sfz_photo, new BtuFiledCustom<MyJSONObject>("添加身份证照片") {
             @Override
-            public void OnClick(ResultData<JSONObject> resultData) {
+            public void OnClick(MyJSONObject myJSONObject) {
                 //添加照片
-                NF nf = resultData.getT().toJavaObject(NF.class);
-                Media media = MediaService.getMedia(nf, MediaType.Photo, "身份证");
-
-                MediaTool.to(NFActivity.this, 101, resultData.getT(), media);
-
-                //输入照片名字
-                //拍照
-                //保存到本地
-                //更新到数据库
+                MyJSONObject media = MediaService.getMedia(myJSONObject, 0, "身份证");
+                MediaTool.to(NFActivity.this, 101, media);
             }
         });
         filedCustomMap.put(R.id.btu_add_hkb_photo, new BtuFiledCustom("添加户口本照片") {
             @Override
-            public void OnClick(ResultData resultData) {
-                showFragment(listTagName);
+            public void OnClick(MyJSONObject myJSONObject) {
+                MyJSONObject media = MediaService.getMedia(myJSONObject, 0, "户口本");
+                MediaTool.to(NFActivity.this, 101, media);
             }
         });
         filedCustomMap.put(R.id.btu_add_fw_photo, new BtuFiledCustom("添加房屋照片") {
             @Override
-            public void OnClick(ResultData resultData) {
-                showFragment(listTagName);
+            public void OnClick(MyJSONObject myJSONObject) {
+                MyJSONObject media = MediaService.getMedia(myJSONObject, 0, "房屋");
+                MediaTool.to(NFActivity.this, 101, media);
             }
         });
 
-        ItemDataCustom itemDataCustom = new ItemDataCustom(R.layout.fragment_nf_item_info, (JSONObject) JSONObject.toJSON(new NF()), filedCustomMap);
+        ItemDataCustom itemDataCustom = new ItemDataCustom(R.layout.fragment_nf_item_info, NFService.newNF(), filedCustomMap);
+
         return itemDataCustom;
     }
 
+    /**
+     * 拍照
+     *
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
     @SuppressLint("MissingSuperCall")
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -213,11 +212,9 @@ public class NFActivity extends AppCompatActivity {
             case 101:
                 if (resultCode == RESULT_OK) {
                     // 将拍摄的照片显示出来
-                    JSONObject json = (JSONObject)this.getIntent().getSerializableExtra("json");
-                    Media media = (Media)this.getIntent().getSerializableExtra("media");
-                    json.getJSONArray("medias").add(media);
-                    ItemListService.updateByMark(Table_Name + "_" + json.get("id"), json);
-                    itemFragment.update(json);
+                    MyJSONObject media = (MyJSONObject) this.getIntent().getSerializableExtra("media");
+                    TableTool.insert(media);
+                    lookInfoFragment.setJSONbject(TableTool.findById(media.getParentid()));
                 }
                 break;
             default:
@@ -234,26 +231,25 @@ public class NFActivity extends AppCompatActivity {
         filedCustomMap.put(R.id.name, new EditFiledCusom("name", true));
         filedCustomMap.put(R.id.bz, new EditFiledCusom("bz", false));
 
-        filedCustomMap.put(R.id.btu_submit, new BtuFiledCustom<JSONObject>("添加") {
+        filedCustomMap.put(R.id.btu_submit, new BtuFiledCustom<MyJSONObject>("添加") {
             @Override
-            public void OnClick(ResultData<JSONObject> resultData) {
-                JSONObject jsonObject = resultData.getT();
-                NF nf = jsonObject.toJavaObject(NF.class);
-                ItemListService.addItem(Table_Name, jsonObject);
-                itemFragment.addItem(jsonObject);
+            public void OnClick(MyJSONObject myJSONObject) {
+
+                TableTool.insert(myJSONObject);
+                itemFragment.addItem(myJSONObject);
                 showFragment(listTagName);
                 //init();
             }
-        }.setCheck(true));
+        }.setCheck(true).setReturn(true));
         filedCustomMap.put(R.id.btu_cancel, new BtuFiledCustom("取消") {
             @Override
-            public void OnClick(ResultData resultData) {
+            public void OnClick(MyJSONObject resultData) {
                 showFragment(listTagName);
             }
         });
-        ItemDataCustom itemDataCustom = new ItemDataCustom(R.layout.fragment_nf_item_add, (JSONObject) JSONObject.toJSON(new NF()), filedCustomMap);
+        ItemDataCustom itemDataCustom = new ItemDataCustom(R.layout.fragment_nf_item_add, NFService.newNF(), filedCustomMap);
         addItemFragment = new AddItemFragment(itemDataCustom);
-        getSupportFragmentManager().beginTransaction().add(R.id.fl, addItemFragment, itemTagName).hide(addItemFragment).commit();
+        getSupportFragmentManager().beginTransaction().add(R.id.fl, addItemFragment, additemTagName).hide(addItemFragment).commit();
 
     }
 

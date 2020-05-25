@@ -6,6 +6,7 @@ import androidx.appcompat.widget.Toolbar;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Environment;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
@@ -16,9 +17,13 @@ import android.widget.Toast;
 
 import com.xupu.locationmap.MainActivity;
 import com.xupu.locationmap.R;
+import com.xupu.locationmap.common.page.AskUser;
 import com.xupu.locationmap.common.tools.AndroidTool;
 import com.xupu.locationmap.usermanager.po.User;
 import com.xupu.locationmap.usermanager.service.UserService;
+
+import java.io.File;
+import java.io.IOException;
 
 public class Login extends AppCompatActivity implements View.OnClickListener {
 
@@ -36,7 +41,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
         imageView = findViewById(R.id.imageView);
         textView = findViewById(R.id.textView);
         init();
-
+        AskUser.ask(this);
 
     }
 
@@ -90,7 +95,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                 startActivity(intent);
                 break;
             case R.id.btu_sign_up:
-               toSignUp();
+                toSignUp();
                 break;
             default:
                 break;

@@ -1,8 +1,11 @@
 package com.xupu.locationmap.projectmanager.po;
 
 import com.alibaba.fastjson.JSONObject;
+import com.xupu.locationmap.common.tools.Tool;
 
-public class MyJSONObject {
+import java.io.Serializable;
+
+public class MyJSONObject implements Serializable {
     /**
      * 对象id
      */
@@ -23,6 +26,17 @@ public class MyJSONObject {
      * JSONOBJECT
      */
     private JSONObject jsonobject;
+
+    public MyJSONObject() {
+
+    }
+
+    public MyJSONObject(String id, String tablename, String parentid, String json) {
+        this.id = id;
+        this.tablename = tablename;
+        this.parentid = parentid;
+        this.setJson(json);
+    }
 
     public String getId() {
         return id;
@@ -53,7 +67,13 @@ public class MyJSONObject {
     }
 
     public void setJson(String json) {
+
         this.json = json;
+        if (Tool.isEmpty(json)) {
+            this.jsonobject = new JSONObject();
+        } else {
+            this.jsonobject = JSONObject.parseObject(json);
+        }
     }
 
     public JSONObject getJsonobject() {
@@ -61,7 +81,8 @@ public class MyJSONObject {
     }
 
     public void setJsonobject(JSONObject jsonobject) {
-        this.jsonobject = jsonobject;
+        this.jsonobject = JSONObject.parseObject(jsonobject.toJSONString());
+        toJson();
     }
 
     /**
@@ -82,5 +103,13 @@ public class MyJSONObject {
     public MyJSONObject toJson() {
         json = jsonobject.toJSONString();
         return this;
+    }
+
+    @Override
+    public String toString() {
+        return "MyJSONObject{" +
+                "json='" + json + '\'' +
+                ", jsonobject=" + jsonobject +
+                '}';
     }
 }

@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
@@ -36,6 +37,7 @@ import com.xupu.locationmap.projectmanager.po.BtuFiledCustom;
 import com.xupu.locationmap.projectmanager.po.EditFiledCusom;
 import com.xupu.locationmap.projectmanager.po.FiledCustom;
 import com.xupu.locationmap.projectmanager.po.ItemDataCustom;
+import com.xupu.locationmap.projectmanager.po.MyJSONObject;
 
 import java.io.File;
 import java.util.Collection;
@@ -57,6 +59,9 @@ public class AndroidTool {
     public static AppCompatActivity getMainActivity() {
         return activity;
     }
+
+
+    public static String FILEPROVIDER = "com.xupu.locationmap.fileprovider";
 
     /**
      * 弹出提示窗口
@@ -99,10 +104,11 @@ public class AndroidTool {
     /**
      * 两个按钮的 dialog
      */
-    public static void confirm(Activity activity, String tip, final MyCallback callback) {
+    public static void confirm(Context context, String tip, final MyCallback callback) {
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(activity).setIcon(R.mipmap.ic_launcher).setTitle("提示")
-                .setMessage(tip).setPositiveButton("取消", new DialogInterface.OnClickListener() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context).setIcon(R.mipmap.ic_launcher).setTitle("提示")
+                .setMessage(tip)
+                .setPositiveButton("取消", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         //ToDo: 你想做的事情
@@ -178,19 +184,30 @@ public class AndroidTool {
         return true;
     }
 
-    public static void setView(View view, ItemDataCustom itemDataCustom) {
+    /**
+     * @param view
+     * @param itemDataCustom
+     * @param isEdit         是否直接修改
+     */
+    public static void setView(View view, ItemDataCustom itemDataCustom, boolean isEdit) {
         Map<Integer, FiledCustom> map = itemDataCustom.getMap();
         //使用副本修改，
-        final JSONObject oldJsonObject = itemDataCustom.getJsonObject();
-        JSONObject jsonObject = (JSONObject) oldJsonObject.clone();
+        final MyJSONObject myJSONObject = itemDataCustom.getMyJSONObject();
+        JSONObject jsonObject;
+        if (isEdit) {
+            jsonObject = myJSONObject.getJsonobject();
+        } else {
+            jsonObject = (JSONObject) myJSONObject.getJsonobject().clone();
+        }
+
         for (Integer rid : map.keySet()) {
             View temView = view.findViewById(rid);
-           final FiledCustom filedCustom = map.get(rid);
+            final FiledCustom filedCustom = map.get(rid);
             if (temView instanceof TextView) {
                 TextView tv = (TextView) temView;
                 String attribute = filedCustom.getAttribute();
                 String str = jsonObject.getString(attribute);
-                if (str != null || temView instanceof  EditText) {
+                if (str != null || temView instanceof EditText) {
                     tv.setText(str);
                 }
             }
@@ -209,17 +226,34 @@ public class AndroidTool {
                                 return;
                             }
                         }
-                        if (btuFiledCustom.isReturn()) {
-                            JSONTool.copytAttribute(jsonObject, oldJsonObject);
-                            btuFiledCustom.OnClick(resultData);
+                        if (btuFiledCustom.isReturn() && !btuFiledCustom.isConfirm()) {
+                            myJSONObject.setJsonobject(jsonObject);
+                        }
+                        //是否 弹出确认窗口
+                        if (btuFiledCustom.isConfirm()) {
+                            confirm(temView.getContext(), btuFiledCustom.getConfirmmessage(), new MyCallback() {
+
+                                @Override
+                                public void call(ResultData resultData) {
+                                    if (resultData.getStatus() == 0) {
+                                        myJSONObject.setJsonobject(jsonObject);
+                                        // Log.v("yb",myJSONObject.toString());
+                                        btuFiledCustom.OnClick(myJSONObject);
+
+                                    }
+                                }
+                            });
                         } else {
-                            btuFiledCustom.OnClick(resultData);
+                            btuFiledCustom.OnClick(myJSONObject);
+
                         }
                     }
                 });
 
             } else if (temView instanceof EditText) {
                 EditText et = (EditText) temView;
+
+
                 et.addTextChangedListener(new TextWatcher() {
                     @Override
                     public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -240,13 +274,14 @@ public class AndroidTool {
                         jsonObject.replace(filedCustom.getAttribute(), text);
                     }
                 });
-            }else if(temView instanceof ImageView){
-                ImageView img = (ImageView)temView;
+            } else if (temView instanceof ImageView) {
+                ImageView img = (ImageView) temView;
                 String path = jsonObject.getString("path");
-                if(FileTool.exitFile(path)){
+                if (FileTool.exitFile(path)) {
                     img.setImageBitmap(BitmapFactory.decodeFile(jsonObject.getString("path")));
                 }
             }
         }
+
     }
 }

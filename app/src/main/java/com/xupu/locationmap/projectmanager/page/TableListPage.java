@@ -47,7 +47,7 @@ public class TableListPage extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        AndroidTool.setFullWindow(this);
+  /*      AndroidTool.setFullWindow(this);
         setTitle("数据");
         setContentView(R.layout.activity_table_list);
 
@@ -69,7 +69,7 @@ public class TableListPage extends AppCompatActivity {
         tableViewCustomList.add(tableViewCustom);
 
         //init2();
-        init(tableViewCustomList);
+        init(tableViewCustomList);*/
     }
 
     private void init(List<TableViewCustom> tableViewCustomList) {

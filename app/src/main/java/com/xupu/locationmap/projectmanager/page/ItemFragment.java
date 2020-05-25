@@ -17,6 +17,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.google.gson.Gson;
 import com.xupu.locationmap.R;
 
+import com.xupu.locationmap.projectmanager.po.MyJSONObject;
 import com.xupu.locationmap.projectmanager.po.TableDataCustom;
 import com.xupu.locationmap.projectmanager.po.TableViewCustom;
 import com.xupu.locationmap.projectmanager.po.XZDM;
@@ -36,6 +37,7 @@ public class ItemFragment extends Fragment {
     private int mColumnCount = 1;
     private TableDataCustom tableDataCustom;
     MyItemRecyclerViewAdapter myItemRecyclerViewAdapter;
+
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
@@ -85,7 +87,7 @@ public class ItemFragment extends Fragment {
             } else {
                 //recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            myItemRecyclerViewAdapter =new MyItemRecyclerViewAdapter(tableDataCustom);
+            myItemRecyclerViewAdapter = new MyItemRecyclerViewAdapter(tableDataCustom);
 
             recyclerView.setAdapter(myItemRecyclerViewAdapter);
         }
@@ -111,17 +113,17 @@ public class ItemFragment extends Fragment {
 
     }
 
-    public void addItem(JSONObject jsonObject) {
+    public void addItem(MyJSONObject jsonObject) {
 
         myItemRecyclerViewAdapter.addItem(jsonObject);
 
     }
 
-    public void remove(JSONObject jsonObject) {
+    public void remove(MyJSONObject jsonObject) {
         myItemRecyclerViewAdapter.remove(jsonObject);
     }
 
-    public void update(JSONObject jsonObject) {
+    public void update(MyJSONObject jsonObject) {
         myItemRecyclerViewAdapter.update(jsonObject);
     }
 

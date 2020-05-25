@@ -22,11 +22,32 @@ public abstract class BtuFiledCustom<T> extends FiledCustom {
      * 要检查数据吗
      */
     private boolean isCheck;
+    /**
+     * 是否弹出确认窗口
+     */
+    private boolean isConfirm;
+
+    private String confirmmessage;
+
+    public boolean isConfirm() {
+        return isConfirm;
+    }
+
+    public BtuFiledCustom setConfirm(boolean confirm, String confirmmessage) {
+        isConfirm = confirm;
+        this.confirmmessage = confirmmessage;
+        return this;
+    }
+
+    public String getConfirmmessage() {
+        return confirmmessage;
+    }
 
     public boolean isReturn() {
         return isReturn;
 
     }
+
 
     public BtuFiledCustom setReturn(boolean aReturn) {
         isReturn = aReturn;
@@ -41,5 +62,6 @@ public abstract class BtuFiledCustom<T> extends FiledCustom {
         isCheck = check;
         return this;
     }
-    public abstract void OnClick(ResultData<T> resultData);
+
+    public abstract void OnClick(MyJSONObject MyJSONObject);
 }

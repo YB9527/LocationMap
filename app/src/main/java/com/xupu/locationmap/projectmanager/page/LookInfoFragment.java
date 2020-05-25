@@ -1,41 +1,37 @@
 package com.xupu.locationmap.projectmanager.page;
 
 import android.annotation.TargetApi;
-import android.content.Context;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.text.Editable;
-import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
 import com.xupu.locationmap.R;
-import com.xupu.locationmap.common.po.ResultData;
 import com.xupu.locationmap.common.tools.AndroidTool;
+import com.xupu.locationmap.common.tools.FileTool;
+import com.xupu.locationmap.common.tools.TableTool;
 import com.xupu.locationmap.common.tools.Tool;
 import com.xupu.locationmap.projectmanager.po.BtuFiledCustom;
+import com.xupu.locationmap.projectmanager.po.Customizing;
 import com.xupu.locationmap.projectmanager.po.EditFiledCusom;
 import com.xupu.locationmap.projectmanager.po.FiledCustom;
 import com.xupu.locationmap.projectmanager.po.ImgFiledCusom;
 import com.xupu.locationmap.projectmanager.po.ItemDataCustom;
+import com.xupu.locationmap.projectmanager.po.MyJSONObject;
 import com.xupu.locationmap.projectmanager.po.TableDataCustom;
-import com.xupu.locationmap.projectmanager.service.ItemListService;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -46,7 +42,8 @@ public class LookInfoFragment extends Fragment {
     private View view;
     private ItemDataCustom itemDataCustom;
     private String photoTag = "photos";
-    private  MyItemRecyclerViewAdapter myItemRecyclerViewAdapter;
+    private MyItemRecyclerViewAdapter myItemRecyclerViewAdapter;
+
     /**
      * 检查数据是否满足要求
      *
@@ -82,6 +79,8 @@ public class LookInfoFragment extends Fragment {
         return view;
     }
 
+    public List<MyJSONObject> medias;
+
     @TargetApi(Build.VERSION_CODES.N)
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -89,24 +88,34 @@ public class LookInfoFragment extends Fragment {
 
         Map<Integer, FiledCustom> map = new HashMap<>();
         map.put(R.id.img, new ImgFiledCusom("path"));
-        map.put(R.id.bz, new EditFiledCusom("bz",false));
-        map.put(R.id.btu_delete, new BtuFiledCustom<JSONObject>("删除") {
+        map.put(R.id.bz, new EditFiledCusom("bz", false));
+        map.put(R.id.bz, new EditFiledCusom("bz", false));
+        map.put(R.id.task, new EditFiledCusom(Customizing.MEDIA_task, false));
+        map.put(R.id.btu_delete, new BtuFiledCustom<MyJSONObject>("删除") {
             @Override
-            public void OnClick(ResultData<JSONObject> resultData) {
-
+            public void OnClick(MyJSONObject media) {
+                TableTool.delete(media);
+                myItemRecyclerViewAdapter.remove(media);
+                FileTool.deleteFile(media.getJsonobject().getString(Customizing.MEDIA_path));
             }
-        });
+        }.setConfirm(true,"确认要删除文件吗"));
 
-        TableDataCustom tableDataCustom = new TableDataCustom(R.layout.photo, map, itemDataCustom.getJsonObject().getJSONArray("medias"));
+       /* TableDataCustom tableDataCustom = new TableDataCustom(R.layout.photo, map,
+                TableTool.findByTableNameAndParentId(Customizing.MEDIA, itemDataCustom.getMyJSONObject().getId()));*/
+        TableDataCustom tableDataCustom = new TableDataCustom(R.layout.photo, map,
+                new ArrayList<MyJSONObject>());
+        tableDataCustom.setEdit(true);
         View recy = view.findViewById(R.id.fl);
         RecyclerView recyclerView = (RecyclerView) recy;
-         myItemRecyclerViewAdapter =new MyItemRecyclerViewAdapter(tableDataCustom);
+        myItemRecyclerViewAdapter = new MyItemRecyclerViewAdapter(tableDataCustom);
         recyclerView.setAdapter(myItemRecyclerViewAdapter);
-        myItemRecyclerViewAdapter.notifyDataSetChanged();
+        //myItemRecyclerViewAdapter.notifyDataSetChanged();
+        setJSONbject(itemDataCustom.getMyJSONObject());
+
     }
 
     private void init() {
-        AndroidTool.setView(view, itemDataCustom);
+        AndroidTool.setView(view, itemDataCustom, false);
         //查看所有的照片
 
             /*Context context = recy.getContext();
@@ -122,16 +131,19 @@ public class LookInfoFragment extends Fragment {
     /**
      * 初始化里面的内容
      *
-     * @param jsonObject
+     * @param myJSONObject
      */
-    public void setJSONbject(JSONObject jsonObject) {
-        itemDataCustom.setJsonObject(jsonObject);
+    public void setJSONbject(MyJSONObject myJSONObject) {
+
+        itemDataCustom.setMyJSONObject(myJSONObject);
 
         if (view != null) {
-            AndroidTool.setView(view, itemDataCustom);
-
-            myItemRecyclerViewAdapter.setDatas(itemDataCustom.getJsonObject().getJSONArray("medias"));
+            AndroidTool.setView(view, itemDataCustom, false);
+            medias = TableTool.findByTableNameAndParentId(Customizing.MEDIA, myJSONObject.getId());
+            myItemRecyclerViewAdapter.setDatas(medias);
         }
 
     }
+
+
 }
