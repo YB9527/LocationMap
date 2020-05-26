@@ -2,6 +2,7 @@ package com.xupu.locationmap.common.tools;
 
 
 import android.annotation.TargetApi;
+import android.content.Context;
 import android.os.Build;
 
 import androidx.annotation.RequiresApi;
@@ -217,14 +218,15 @@ public class FileTool {
 
     /**
      * 获取文件的创建日期  "yyyy-MM-dd HH-mm-ss"
-     * @TargetApi(Build.VERSION_CODES.O)
+     *
      * @param path
      * @return
+     * @TargetApi(Build.VERSION_CODES.O)
      */
 
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private static  Date getCreateDate(String path) {
+    private static Date getCreateDate(String path) {
         try {
             FileTime t = Files.readAttributes(Paths.get(path), BasicFileAttributes.class).creationTime();
             long millis = t.toMillis();
@@ -232,9 +234,11 @@ public class FileTool {
 
 
         } catch (Exception e) {
-            AndroidTool.showAnsyTost(e.getMessage(),1);
+            AndroidTool.showAnsyTost(e.getMessage(), 1);
             //e.printStackTrace();
         }
         return null;
     }
+
+
 }

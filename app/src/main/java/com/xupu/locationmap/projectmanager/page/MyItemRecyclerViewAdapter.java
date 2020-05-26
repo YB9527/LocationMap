@@ -19,8 +19,11 @@ import com.alibaba.fastjson.JSONObject;
 import com.xupu.locationmap.R;
 import com.xupu.locationmap.common.po.ResultData;
 import com.xupu.locationmap.common.tools.AndroidTool;
+import com.xupu.locationmap.common.tools.TableTool;
+import com.xupu.locationmap.common.tools.Tool;
 import com.xupu.locationmap.projectmanager.po.BtuFiledCustom;
 import com.xupu.locationmap.projectmanager.po.FiledCustom;
+import com.xupu.locationmap.projectmanager.po.ItemDataChildCustom;
 import com.xupu.locationmap.projectmanager.po.ItemDataCustom;
 
 import com.xupu.locationmap.projectmanager.po.MyJSONObject;
@@ -45,6 +48,8 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
     private final TableDataCustom tableDataCustom;
     private ViewHolder oldHolder;
     private int oldPostion;
+    List<List<MyJSONObject>> childs;
+    List<Map<Integer, FiledCustom>> childRidMap;
 
     public List<MyJSONObject> getmValues() {
         return mValues;
@@ -53,7 +58,11 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
     public MyItemRecyclerViewAdapter(TableDataCustom tableDataCustom) {
         this.mValues = tableDataCustom.getList();
         this.tableDataCustom = tableDataCustom;
+        this.childRidMap = tableDataCustom.getChildRidMap();
+    }
 
+    public void setChilds(List<List<MyJSONObject>> childs) {
+        this.childs = childs;
     }
 
     @Override
@@ -67,9 +76,20 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
     public void onBindViewHolder(final ViewHolder holder, int position) {
         MyJSONObject json = mValues.get(position);
         holder.itemView.setBackgroundColor(Color.WHITE);
-
         ItemDataCustom itemDataCustom = new ItemDataCustom(null, json, tableDataCustom.getMap());
-        AndroidTool.setView(holder.mView, itemDataCustom,tableDataCustom.isEdit());
+        AndroidTool.setView(holder.mView, itemDataCustom, tableDataCustom.isEdit());
+        /**
+         * 写入子对象的属性
+         */
+        if (!Tool.isEmpty(childRidMap)) {
+            for (int i = 0; i < childRidMap.size(); i++) {
+                if (!Tool.isEmpty(childs.get(i))) {
+                    ItemDataCustom itemDataCustom2 = new ItemDataCustom(null, childs.get(i).get(0), childRidMap.get(i));
+                    AndroidTool.setView(holder.mView, itemDataCustom2, tableDataCustom.isEdit());
+                }
+            }
+        }
+
 
       /*  holder.mItem = json;
         for (View view : holder.vieMap.keySet()) {

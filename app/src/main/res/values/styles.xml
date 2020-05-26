@@ -24,7 +24,13 @@
         <item name="colorAccent">@color/textInputLayout</item>
         <item name="android:textColorHint">@color/textInputLayout</item>
     </style>
-
+    <style name="EditScreenTextInputLayoutStyle2" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorControlNormal">#8B8B83</item>
+        <item name="colorControlActivated">#8B8B83</item>
+        <item name="colorControlHighlight">#8B8B83</item>
+        <item name="colorAccent">#8B8B83</item>
+        <item name="android:textColorHint">#8B8B83</item>
+    </style>
     <style name="Tabtext">
         <item name="android:textColor">#fff</item>
         <item name="android:textSize">20dp</item>

@@ -1,6 +1,7 @@
 package com.xupu.locationmap.projectmanager.page;
 
 import android.annotation.TargetApi;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -8,13 +9,15 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
 import com.xupu.locationmap.R;
+import com.xupu.locationmap.common.page.PhotoSingleActivty;
+import com.xupu.locationmap.common.po.SFZBack;
 import com.xupu.locationmap.common.tools.AndroidTool;
 import com.xupu.locationmap.common.tools.FileTool;
 import com.xupu.locationmap.common.tools.TableTool;
@@ -24,6 +27,7 @@ import com.xupu.locationmap.projectmanager.po.Customizing;
 import com.xupu.locationmap.projectmanager.po.EditFiledCusom;
 import com.xupu.locationmap.projectmanager.po.FiledCustom;
 import com.xupu.locationmap.projectmanager.po.ImgFiledCusom;
+import com.xupu.locationmap.projectmanager.po.ItemDataChildCustom;
 import com.xupu.locationmap.projectmanager.po.ItemDataCustom;
 import com.xupu.locationmap.projectmanager.po.MyJSONObject;
 import com.xupu.locationmap.projectmanager.po.TableDataCustom;
@@ -43,6 +47,7 @@ public class LookInfoFragment extends Fragment {
     private ItemDataCustom itemDataCustom;
     private String photoTag = "photos";
     private MyItemRecyclerViewAdapter myItemRecyclerViewAdapter;
+
 
     /**
      * 检查数据是否满足要求
@@ -80,6 +85,8 @@ public class LookInfoFragment extends Fragment {
     }
 
     public List<MyJSONObject> medias;
+    public List<MyJSONObject> sfzFronts;
+    public List<MyJSONObject> sfzBacks;
 
     @TargetApi(Build.VERSION_CODES.N)
     @Override
@@ -87,8 +94,37 @@ public class LookInfoFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
 
         Map<Integer, FiledCustom> map = new HashMap<>();
-        map.put(R.id.img, new ImgFiledCusom("path"));
-        map.put(R.id.bz, new EditFiledCusom("bz", false));
+        map.put(R.id.img, new ImgFiledCusom("path") {
+            @Override
+            public void onClick(MyJSONObject mdeia) {
+
+                Intent intent = new Intent(getActivity(), PhotoSingleActivty.class);
+                intent.putExtra("media", mdeia);
+                startActivity(intent);
+            }
+        });
+        List<ItemDataChildCustom> itemDataChildCustomList = new ArrayList<>();
+        //身份证正面
+        Map<Integer, FiledCustom> frontMap = new HashMap<>();
+        frontMap.put(R.id.name, new EditFiledCusom("name", false));
+        frontMap.put(R.id.address, new EditFiledCusom("address", false));
+        frontMap.put(R.id.idNumber, new EditFiledCusom("idNumber", false));
+        frontMap.put(R.id.sex, new EditFiledCusom("sex", false));
+        frontMap.put(R.id.nation, new EditFiledCusom("nation", false));
+        frontMap.put(R.id.birthday, new EditFiledCusom("birthday", false));
+        ItemDataChildCustom sfzFrontItemDataChildCustom = new ItemDataChildCustom(null, frontMap);
+
+        //身份证背面
+        Map<Integer, FiledCustom> backMap = new HashMap<>();
+        backMap.put(R.id.signDate, new EditFiledCusom("signDate", false));
+        backMap.put(R.id.expiryDate, new EditFiledCusom("expiryDate", false));
+        backMap.put(R.id.issueAuthority, new EditFiledCusom("issueAuthority", false));
+
+        List<Map<Integer, FiledCustom>> childridMap = new ArrayList<>();
+        childridMap.add(frontMap);
+        childridMap.add(backMap);
+
+
         map.put(R.id.bz, new EditFiledCusom("bz", false));
         map.put(R.id.task, new EditFiledCusom(Customizing.MEDIA_task, false));
         map.put(R.id.btu_delete, new BtuFiledCustom<MyJSONObject>("删除") {
@@ -98,12 +134,16 @@ public class LookInfoFragment extends Fragment {
                 myItemRecyclerViewAdapter.remove(media);
                 FileTool.deleteFile(media.getJsonobject().getString(Customizing.MEDIA_path));
             }
-        }.setConfirm(true,"确认要删除文件吗"));
+        }.setConfirm(true, "确认要删除文件吗"));
+        //显示身份证信息
 
-       /* TableDataCustom tableDataCustom = new TableDataCustom(R.layout.photo, map,
+
+       /* TableDataCustom tableDataCustom = new TableDataCustom(R.layout.fragment_photo, map,
                 TableTool.findByTableNameAndParentId(Customizing.MEDIA, itemDataCustom.getMyJSONObject().getId()));*/
-        TableDataCustom tableDataCustom = new TableDataCustom(R.layout.photo, map,
-                new ArrayList<MyJSONObject>());
+        TableDataCustom tableDataCustom = new TableDataCustom(R.layout.fragment_photo, map,
+                new ArrayList<MyJSONObject>()).setChildRidMap(childridMap);
+
+
         tableDataCustom.setEdit(true);
         View recy = view.findViewById(R.id.fl);
         RecyclerView recyclerView = (RecyclerView) recy;
@@ -141,6 +181,18 @@ public class LookInfoFragment extends Fragment {
             AndroidTool.setView(view, itemDataCustom, false);
             medias = TableTool.findByTableNameAndParentId(Customizing.MEDIA, myJSONObject.getId());
             myItemRecyclerViewAdapter.setDatas(medias);
+
+             sfzFronts = new ArrayList<>();
+             sfzBacks = new ArrayList<>();
+            for (MyJSONObject my : medias){
+                sfzFronts.addAll(TableTool.findByTableNameAndParentId(Customizing.SFZ_Front,my.getId()));
+                sfzBacks.addAll(TableTool.findByTableNameAndParentId(Customizing.SFZ_back,my.getId()));
+            }
+            List<List<MyJSONObject>> childs = new ArrayList<>();
+            childs.add(sfzFronts);
+            childs.add(sfzBacks);
+            myItemRecyclerViewAdapter.setChilds(childs);
+
         }
 
     }

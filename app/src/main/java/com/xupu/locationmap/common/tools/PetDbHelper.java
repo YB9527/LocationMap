@@ -15,7 +15,7 @@ public class PetDbHelper extends SQLiteOpenHelper {
     /**
      * Database version. If you change the database schema, you must increment the database version.
      */
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 9;
 
     /**
      * Constructs a new instance of {@link PetDbHelper}.
@@ -33,11 +33,11 @@ public class PetDbHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
 
-        // Create a String that contains the SQL statement to create the pets table
-        String SQL_CREATE_PETS_TABLE = "CREATE TABLE "+TableTool.Table_Name+" (id TEXT  NOT NULL ,tablename TEXT  NOT NULL,parentid TEXT,json  NOT NULL)";
-        String SQL_CREATE_PETS_TABLE2 = "CREATE TABLE redis (id INTEGER PRIMARY KEY AUTOINCREMENT,mark  TEXT NOT NULL,json)";
+        String SQL_CREATE_PETS_TABLE = "CREATE TABLE " + TableTool.Table_Name + " (id TEXT  NOT NULL ,tablename TEXT  NOT NULL,parentid TEXT,json  NOT NULL,deletechild integer)";
+        String SQL_CREATE_PETS_TABLE2 = "CREATE TABLE redis (id INTEGER PRIMARY KEY AUTOINCREMENT,mark  TEXT NOT NULL,json TEXT)";
         db.execSQL(SQL_CREATE_PETS_TABLE);
         db.execSQL(SQL_CREATE_PETS_TABLE2);
+
     }
 
     /**
@@ -46,6 +46,8 @@ public class PetDbHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // The database is still at version 1, so there's nothing to do be done here.
+        String sql = "ALTER TABLE " + TableTool.Table_Name + " ADD COLUMN deletechild Integer";
+        db.execSQL(sql);
     }
 
 }

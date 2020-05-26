@@ -36,10 +36,13 @@ public class TableDataCustom {
         return isEdit;
     }
 
+
     public TableDataCustom setEdit(boolean edit) {
         isEdit = edit;
         return  this;
     }
+
+
 
     public Map<Integer, FiledCustom> getMap() {
         return map;
@@ -63,5 +66,17 @@ public class TableDataCustom {
 
     public void setFragmentItem(int fragmentItem) {
         this.fragmentItem = fragmentItem;
+    }
+
+    private List<Map<Integer, FiledCustom>> childRidMap;
+
+
+    public List<Map<Integer, FiledCustom>> getChildRidMap() {
+        return childRidMap;
+    }
+
+    public TableDataCustom setChildRidMap(List<Map<Integer, FiledCustom>> childRidMap) {
+        this.childRidMap = childRidMap;
+        return this;
     }
 }

@@ -89,24 +89,26 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
-
             <Button
-                android:id="@+id/btu_add_sfz_photo"
+                android:id="@+id/btu_add_sfz_photo_front"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="添加身份证照片" />
-
+                android:text="身份证正面" />
+            <Button
+                android:id="@+id/btu_add_sfz_photo_back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="身份证反面" />
             <Button
                 android:id="@+id/btu_add_hkb_photo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="添加户口本照片" />
-
+                android:text="户口本" />
             <Button
                 android:id="@+id/btu_add_fw_photo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="添加房屋照片" />
+                android:text="房屋" />
         </LinearLayout>
     </LinearLayout>
     <!--    <FrameLayout

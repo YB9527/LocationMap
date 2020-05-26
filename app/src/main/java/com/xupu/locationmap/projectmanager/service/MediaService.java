@@ -4,6 +4,7 @@ import android.os.Environment;
 
 import com.alibaba.fastjson.JSONObject;
 import com.xupu.locationmap.common.tools.AndroidTool;
+import com.xupu.locationmap.common.tools.FileTool;
 import com.xupu.locationmap.projectmanager.po.Customizing;
 
 import com.xupu.locationmap.projectmanager.po.MyJSONObject;
@@ -43,13 +44,13 @@ public class MediaService {
         String root;
         if (state.equals("mounted")) {
             root = Environment.getExternalStorageDirectory().getAbsolutePath() + "/旭普公司";
-            if(!new File(root).exists()){
-               boolean bl =   new File(root).mkdirs();
-               if(!bl){
-                   root = AndroidTool.getMainActivity().getFilesDir().getAbsolutePath();
-               }
-            }else{
-                if(!new File(root).canWrite()){
+            if (!new File(root).exists()) {
+                boolean bl = new File(root).mkdirs();
+                if (!bl) {
+                    root = AndroidTool.getMainActivity().getFilesDir().getAbsolutePath();
+                }
+            } else {
+                if (!new File(root).canWrite()) {
                     root = AndroidTool.getMainActivity().getFilesDir().getAbsolutePath();
                 }
             }
@@ -59,8 +60,8 @@ public class MediaService {
 
 
         String path = root + "/" + ProjectService.getName(project) + "/" + XZQYService.getCode(xzdm) + "_" + XZQYService.getCaption(xzdm) + "/"
-                + NFService.getName(parent) + "_" + parent.getId() + "/" + task + "/" + uuid;
-
+                + NFService.getName(parent) + "_" + parent.getId() + "/" + task.replace("正面","").replace("反面","") + "/" + uuid;
+        FileTool.exitsDir(FileTool.getDir(path), true);
 
         switch (mediaType) {
             case 0:
@@ -86,5 +87,9 @@ public class MediaService {
         jsonObject.put(Customizing.MEDIA_Field.get(Customizing.MEDIA_bz).getName(), "");
         jsonObject.put(Customizing.MEDIA_Field.get(Customizing.MEDIA_task).getName(), task);
         return new MyJSONObject(uid, Customizing.MEDIA, parent.getId(), jsonObject.toJSONString());
+    }
+
+    public static String getPath(MyJSONObject media) {
+        return media.getJsonobject().getString(Customizing.MEDIA_path);
     }
 }

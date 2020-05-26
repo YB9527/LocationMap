@@ -53,27 +53,21 @@ dependencies {
     implementation files('libs/httpmime-4.2.5.jar')
     implementation files('libs/tiandituapi3.0.jar')
     implementation files('libs/universalimageloader.jar')
-
     implementation 'com.google.code.gson:gson:2.7'
     implementation 'com.squareup.okhttp3:okhttp:4.3.1'
     implementation 'com.esri.arcgis.android:arcgis-android:10.2.9'
     //implementation 'com.android.support:multidex:1.0.3'
-
     // 基础依赖包，必须要依赖
     implementation 'com.gyf.immersionbar:immersionbar:3.0.0'
-// fragment快速实现（可选）
+    // fragment快速实现（可选）
     implementation 'com.gyf.immersionbar:immersionbar-components:3.0.0'
-// kotlin扩展（可选）
+    // kotlin扩展（可选）
     implementation 'com.gyf.immersionbar:immersionbar-ktx:3.0.0'
-
     implementation 'com.android.support:design:28.0.0-rc02'
-
     implementation 'com.ogaclejapan.smarttablayout:library:1.7.0@aar'
-
     //Optional: see how to use the utility.
     implementation 'com.ogaclejapan.smarttablayout:utils-v4:1.7.0@aar'
-
     implementation 'com.alibaba:fastjson:1.1.54.android'
-
-
+    implementation files('libs/ocr-sdk.jar')
+    implementation project(path: ':ocr_ui')
 }

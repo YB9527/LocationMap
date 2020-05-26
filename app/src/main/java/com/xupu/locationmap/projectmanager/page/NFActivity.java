@@ -7,13 +7,20 @@ import androidx.fragment.app.Fragment;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 
+import com.baidu.ocr.sdk.model.IDCardParams;
+import com.baidu.ocr.ui.camera.CameraActivity;
 import com.xupu.locationmap.R;
+import com.xupu.locationmap.common.po.MyCallback;
+import com.xupu.locationmap.common.po.ResultData;
+import com.xupu.locationmap.common.po.SFZBack;
+import com.xupu.locationmap.common.po.SFZFront;
 import com.xupu.locationmap.common.tools.AndroidTool;
 import com.xupu.locationmap.common.tools.MediaTool;
+import com.xupu.locationmap.common.tools.SFZPhotoTool;
 import com.xupu.locationmap.common.tools.TableTool;
 import com.xupu.locationmap.projectmanager.po.BtuFiledCustom;
 import com.xupu.locationmap.projectmanager.po.Customizing;
@@ -24,11 +31,13 @@ import com.xupu.locationmap.projectmanager.po.MyJSONObject;
 import com.xupu.locationmap.projectmanager.po.TableDataCustom;
 import com.xupu.locationmap.projectmanager.service.MediaService;
 import com.xupu.locationmap.projectmanager.service.NFService;
+import com.xupu.locationmap.projectmanager.service.SFZService;
 import com.xupu.locationmap.projectmanager.service.XZQYService;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 
 public class NFActivity extends AppCompatActivity {
@@ -83,12 +92,12 @@ public class NFActivity extends AppCompatActivity {
         map.put(R.id.btu_delete, new BtuFiledCustom<MyJSONObject>("删除") {
             @Override
             public void OnClick(MyJSONObject nf) {
-                if(TableTool.delete(nf)){
+                if (TableTool.delete(nf)) {
                     itemFragment.remove(nf);
                 }
 
             }
-        }.setConfirm(true,"确定要删除农户吗？"));
+        }.setConfirm(true, "确定要删除农户吗？"));
         map.put(R.id.btu_lookinfo, new BtuFiledCustom<MyJSONObject>("查看") {
             @Override
             public void OnClick(MyJSONObject nf) {
@@ -149,33 +158,42 @@ public class NFActivity extends AppCompatActivity {
                 itemFragment.update(myJSONObject);
                 TableTool.updateById(myJSONObject);
                 TableTool.updateMany(lookInfoFragment.medias);
+                TableTool.updateMany(lookInfoFragment.sfzFronts);
+                TableTool.updateMany(lookInfoFragment.sfzBacks);
                 //修改多媒体文件
                 //找到多媒体文件
                 showFragment(listTagName);
 
 
             }
-        }.setCheck(true).setReturn(true).setConfirm(true,"确认要修改吗？"));
+        }.setCheck(true).setReturn(true).setConfirm(true, "确认要修改吗？"));
         filedCustomMap.put(R.id.btu_cancel, new BtuFiledCustom("取消") {
             @Override
             public void OnClick(MyJSONObject myJSONObject) {
-
                 showFragment(listTagName);
-
             }
         });
         //RecyclerViewFiledCustom recyclerViewFiledCustom = new  RecyclerViewFiledCustom.Builder(R.id.fl_photos).addFiledCustom(R.id.img,new FiledCustom())
 
 
         //添加照片的按钮
-        filedCustomMap.put(R.id.btu_add_sfz_photo, new BtuFiledCustom<MyJSONObject>("添加身份证照片") {
+        filedCustomMap.put(R.id.btu_add_sfz_photo_front, new BtuFiledCustom<MyJSONObject>("添加身份证正面照片") {
             @Override
             public void OnClick(MyJSONObject myJSONObject) {
                 //添加照片
-                MyJSONObject media = MediaService.getMedia(myJSONObject, 0, "身份证");
-                MediaTool.to(NFActivity.this, 101, media);
+                MyJSONObject media = MediaService.getMedia(myJSONObject, 0, Customizing.SFZ_Front);
+                SFZPhotoTool.getSFZPhotoTool(NFActivity.this).front(media);
             }
         });
+        filedCustomMap.put(R.id.btu_add_sfz_photo_back, new BtuFiledCustom<MyJSONObject>("添加身份证反面照片") {
+            @Override
+            public void OnClick(MyJSONObject myJSONObject) {
+                //添加照片
+                MyJSONObject media = MediaService.getMedia(myJSONObject, 0, Customizing.SFZ_back);
+                SFZPhotoTool.getSFZPhotoTool(NFActivity.this).back(media);
+            }
+        });
+
         filedCustomMap.put(R.id.btu_add_hkb_photo, new BtuFiledCustom("添加户口本照片") {
             @Override
             public void OnClick(MyJSONObject myJSONObject) {
@@ -215,6 +233,44 @@ public class NFActivity extends AppCompatActivity {
                     MyJSONObject media = (MyJSONObject) this.getIntent().getSerializableExtra("media");
                     TableTool.insert(media);
                     lookInfoFragment.setJSONbject(TableTool.findById(media.getParentid()));
+                }
+                break;
+            case SFZPhotoTool.REQUEST_CODE_CAMERA:
+                if (resultCode == RESULT_OK) {
+                    // 将拍摄的照片显示出来
+                    if (data != null) {
+                        String contentType = data.getStringExtra(CameraActivity.KEY_CONTENT_TYPE);
+                        MyJSONObject media = (MyJSONObject) this.getIntent().getSerializableExtra("media");
+                        if (!TextUtils.isEmpty(contentType)) {
+                            if (CameraActivity.CONTENT_TYPE_ID_CARD_FRONT.equals(contentType)) {
+                                //身份证正面
+                                //1、检查是否通过了
+                                //2、保存多媒体照片
+                                SFZPhotoTool.getSFZPhotoTool(NFActivity.this).recIDCard(IDCardParams.ID_CARD_SIDE_FRONT, MediaService.getPath(media), new MyCallback<SFZFront>() {
+                                    @Override
+                                    public void call(ResultData<SFZFront> resultData) {
+                                        SFZFront sfz = resultData.getT();
+                                        //保存多媒体
+                                        TableTool.insert(media);
+                                        //保存身份证
+                                        TableTool.insert(SFZService.frontToMyJSONObject(media, sfz));
+                                        lookInfoFragment.setJSONbject(TableTool.findById(media.getParentid()));
+                                    }
+                                });
+                            } else if (CameraActivity.CONTENT_TYPE_ID_CARD_BACK.equals(contentType)) {
+                                //身份证背面
+                                SFZPhotoTool.getSFZPhotoTool(NFActivity.this).recIDCard(IDCardParams.ID_CARD_SIDE_BACK, MediaService.getPath(media), new MyCallback<SFZBack>() {
+                                    @Override
+                                    public void call(ResultData<SFZBack> resultData) {
+                                        SFZBack sfz = resultData.getT();
+                                        TableTool.insert(media);
+                                        TableTool.insert(SFZService.backToMyJSONObject(media, sfz));
+                                        lookInfoFragment.setJSONbject(TableTool.findById(media.getParentid()));
+                                    }
+                                });
+                            }
+                        }
+                    }
                 }
                 break;
             default:

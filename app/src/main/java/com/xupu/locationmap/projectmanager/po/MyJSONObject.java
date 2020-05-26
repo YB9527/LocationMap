@@ -27,6 +27,12 @@ public class MyJSONObject implements Serializable {
      */
     private JSONObject jsonobject;
 
+    /**
+     * 是否级联删除子对象，默认是0 不删除对象
+     */
+    private int deletechild;
+
+
     public MyJSONObject() {
 
     }
@@ -36,6 +42,16 @@ public class MyJSONObject implements Serializable {
         this.tablename = tablename;
         this.parentid = parentid;
         this.setJson(json);
+        this.deletechild = 0;
+    }
+
+    public int getDeletechild() {
+        return deletechild;
+    }
+
+    public MyJSONObject setDeletechild(int deletechild) {
+        this.deletechild = deletechild;
+        return this;
     }
 
     public String getId() {

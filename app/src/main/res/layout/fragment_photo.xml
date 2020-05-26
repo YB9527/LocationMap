@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="10dp"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:textColorHint="#8B8B83"
+            android:theme="@style/EditScreenTextInputLayoutStyle2">
+            <EditText
+                android:id="@+id/bz"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:drawablePadding="16dp"
+                android:fontFamily="@font/calibri"
+                android:hint="备注"
+                android:inputType="textEmailAddress"
+                android:maxLines="1"
+                android:textColor="#8B8B83"
+                android:textSize="10sp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:textColorHint="#8B8B83"
+            android:theme="@style/EditScreenTextInputLayoutStyle2">
+            <EditText
+                android:id="@+id/task"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:drawablePadding="16dp"
+                android:fontFamily="@font/calibri"
+                android:hint="类别"
+                android:inputType="textEmailAddress"
+                android:maxLines="1"
+                android:textColor="#8B8B83"
+                android:textSize="10sp" />
+        </com.google.android.material.textfield.TextInputLayout>
+        <Button
+            android:id="@+id/btu_delete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="删除" />
+    </LinearLayout>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:id="@+id/img"
+            android:layout_width="220dp"
+            android:layout_height="270dp"
+            android:src="@drawable/good_night_img" />
+
+        <LinearLayout
+            android:id="@+id/SFZ_Front"
+            android:visibility="gone"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+
+            android:layout_weight="1"
+            android:orientation="vertical">
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColorHint="#8B8B83"
+                android:theme="@style/EditScreenTextInputLayoutStyle2">
+
+                <EditText
+                    android:id="@+id/name"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:drawablePadding="16dp"
+                    android:fontFamily="@font/calibri"
+                    android:hint="姓名"
+                    android:inputType="textEmailAddress"
+                    android:maxLines="1"
+                    android:textColor="#8B8B83"
+                    android:textSize="10sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColorHint="#8B8B83"
+                android:theme="@style/EditScreenTextInputLayoutStyle2">
+
+                <EditText
+                    android:id="@+id/idNumber"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:drawablePadding="16dp"
+                    android:fontFamily="@font/calibri"
+                    android:hint="身份证号码"
+                    android:inputType="textEmailAddress"
+                    android:maxLines="1"
+                    android:textColor="#8B8B83"
+                    android:textSize="10sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColorHint="#8B8B83"
+                android:theme="@style/EditScreenTextInputLayoutStyle2">
+
+                <EditText
+                    android:id="@+id/address"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:drawablePadding="16dp"
+                    android:fontFamily="@font/calibri"
+                    android:hint="地址"
+                    android:inputType="textEmailAddress"
+                    android:maxLines="1"
+                    android:textColor="#8B8B83"
+                    android:textSize="10sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColorHint="#8B8B83"
+                android:theme="@style/EditScreenTextInputLayoutStyle2">
+
+                <EditText
+                    android:id="@+id/sex"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:drawablePadding="16dp"
+                    android:fontFamily="@font/calibri"
+                    android:hint="性别"
+                    android:inputType="textEmailAddress"
+                    android:maxLines="1"
+                    android:textColor="#8B8B83"
+                    android:textSize="10sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColorHint="#8B8B83"
+                android:theme="@style/EditScreenTextInputLayoutStyle2">
+                <EditText
+                    android:id="@+id/nation"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:drawableRight="@drawable/ic_email_white_24dp"
+                    android:drawablePadding="16dp"
+                    android:fontFamily="@font/calibri"
+                    android:hint="民族"
+                    android:inputType="textEmailAddress"
+                    android:maxLines="1"
+                    android:textColor="#8B8B83"
+                    android:textSize="10sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColorHint="#8B8B83"
+                android:theme="@style/EditScreenTextInputLayoutStyle2">
+
+                <EditText
+                    android:id="@+id/birthday"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:drawablePadding="16dp"
+                    android:fontFamily="@font/calibri"
+                    android:hint="生日"
+                    android:inputType="textEmailAddress"
+                    android:maxLines="1"
+                    android:textColor="#8B8B83"
+                    android:textSize="10sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/SFZ_back"
+            android:visibility="gone"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColorHint="#8B8B83"
+                android:theme="@style/EditScreenTextInputLayoutStyle2">
+
+                <EditText
+                    android:id="@+id/signDate"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:drawablePadding="16dp"
+                    android:fontFamily="@font/calibri"
+                    android:hint="身份证起始日期"
+                    android:inputType="textEmailAddress"
+                    android:maxLines="1"
+                    android:textColor="#8B8B83"
+                    android:textSize="10sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColorHint="#8B8B83"
+                android:theme="@style/EditScreenTextInputLayoutStyle2">
+
+                <EditText
+                    android:id="@+id/expiryDate"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+
+                    android:drawablePadding="16dp"
+                    android:fontFamily="@font/calibri"
+                    android:hint="身份证终止日期"
+                    android:inputType="textEmailAddress"
+                    android:maxLines="1"
+                    android:textColor="#8B8B83"
+                    android:textSize="10sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColorHint="#8B8B83"
+                android:theme="@style/EditScreenTextInputLayoutStyle2">
+                <EditText
+                    android:id="@+id/issueAuthority"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:drawableRight="@drawable/ic_email_white_24dp"
+                    android:drawablePadding="16dp"
+                    android:fontFamily="@font/calibri"
+                    android:hint="发证地址"
+                    android:inputType="textEmailAddress"
+                    android:maxLines="1"
+                    android:textColor="#8B8B83"
+                    android:textSize="10sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#009688"/>
+</LinearLayout>

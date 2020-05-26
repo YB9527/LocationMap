@@ -33,7 +33,7 @@ public class TableTool {
      * @return
      */
     public static MyJSONObject findById(String id) {
-        String sql = "select id,tablename,parentid,json from  " + Table_Name + " where  id =  '" + id + "'";
+        String sql = "select id,tablename,parentid,json,deletechild from  " + Table_Name + " where  id =  '" + id + "'";
         Cursor cursor = db.rawQuery(sql, null);
         while (cursor.moveToNext()) {
             MyJSONObject jsonObject = cursorToMyJSONObject(cursor);
@@ -51,7 +51,7 @@ public class TableTool {
      */
     public static List<MyJSONObject> findByTableName(String tablename) {
 
-        String sql = "select id,tablename,parentid,json from " + Table_Name + " where  tablename =  '" + tablename + "'";
+        String sql = "select id,tablename,parentid,json,deletechild from " + Table_Name + " where  tablename =  '" + tablename + "'";
         List<MyJSONObject> jsons = new ArrayList<>();
         Cursor cursor = db.rawQuery(sql, null);
         while (cursor.moveToNext()) {
@@ -64,7 +64,7 @@ public class TableTool {
 
     public static List<MyJSONObject> findByTableNameAndParentId(String tablename, String parentid) {
 
-        String sql = "select id,tablename,parentid,json from " + Table_Name + " where  tablename =  '" + tablename + "' AND parentid =  '" + parentid + "'";
+        String sql = "select id,tablename,parentid,json,deletechild from " + Table_Name + " where  tablename =  '" + tablename + "' AND parentid =  '" + parentid + "'";
         List<MyJSONObject> jsons = new ArrayList<>();
         Cursor cursor = db.rawQuery(sql, null);
         while (cursor.moveToNext()) {
@@ -83,6 +83,8 @@ public class TableTool {
                 cursor.getString(2),
                 cursor.getString(3)
         );
+
+        jsonObject.setDeletechild(cursor.getInt(4));
         return jsonObject;
     }
 
@@ -93,7 +95,7 @@ public class TableTool {
      * @return
      */
     public static List<MyJSONObject> findByParentId(String parentid) {
-        String sql = "select id,tablename,parentid,json from  " + Table_Name + " where  parentid =  '" + parentid + "'";
+        String sql = "select id,tablename,parentid,json,deletechild from  " + Table_Name + " where  parentid =  '" + parentid + "'";
         List<MyJSONObject> jsons = new ArrayList<>();
         Cursor cursor = db.rawQuery(sql, null);
         while (cursor.moveToNext()) {
@@ -115,6 +117,8 @@ public class TableTool {
         values.put("tablename", myJSONObject.getTablename());
         values.put("parentid", myJSONObject.getParentid());
         values.put("json", myJSONObject.getJson());
+        values.put("deletechild", myJSONObject.getDeletechild());
+
         return db
                 .update(Table_Name, values, "id" + " = ?", new String[]{myJSONObject.getId()});
     }
@@ -133,6 +137,7 @@ public class TableTool {
             values.put("tablename", myJSONObject.getTablename());
             values.put("parentid", myJSONObject.getParentid());
             values.put("json", myJSONObject.getJson());
+            values.put("deletechild", myJSONObject.getDeletechild());
             long count = db.insert(Table_Name, null, values);
             if (count == 0) {
                 return false;
@@ -165,13 +170,26 @@ public class TableTool {
      */
     public static boolean delete(MyJSONObject myJSONObject) {
         List<MyJSONObject> childs = findByParentId(myJSONObject.getId());
+        boolean flag = true;
         if (Tool.isEmpty(childs)) {
+            flag =true;
             deleteById(myJSONObject.getId());
         }else{
+            for (MyJSONObject js : childs){
+                if(js.getDeletechild() == 0){
+                    deleteByParentId(myJSONObject.getId());
+                    deleteById(myJSONObject.getId());
+                    return  true;
+                }
+            }
             AndroidTool.showAnsyTost("有子对象无法删除",1);
             return  false;
         }
         return true;
+    }
+    private static int deleteByParentId(String id) {
+        int count = db.delete(Table_Name, "parentid = ?", new String[]{id});
+        return count;
     }
 
     /**

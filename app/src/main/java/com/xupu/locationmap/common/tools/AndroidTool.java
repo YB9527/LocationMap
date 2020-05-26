@@ -34,8 +34,10 @@ import com.xupu.locationmap.common.po.ResultData;
 import com.xupu.locationmap.projectmanager.page.AddItemFragment;
 import com.xupu.locationmap.projectmanager.page.NFActivity;
 import com.xupu.locationmap.projectmanager.po.BtuFiledCustom;
+import com.xupu.locationmap.projectmanager.po.Customizing;
 import com.xupu.locationmap.projectmanager.po.EditFiledCusom;
 import com.xupu.locationmap.projectmanager.po.FiledCustom;
+import com.xupu.locationmap.projectmanager.po.ImgFiledCusom;
 import com.xupu.locationmap.projectmanager.po.ItemDataCustom;
 import com.xupu.locationmap.projectmanager.po.MyJSONObject;
 
@@ -245,7 +247,6 @@ public class AndroidTool {
                             });
                         } else {
                             btuFiledCustom.OnClick(myJSONObject);
-
                         }
                     }
                 });
@@ -276,10 +277,29 @@ public class AndroidTool {
                 });
             } else if (temView instanceof ImageView) {
                 ImageView img = (ImageView) temView;
+                view.findViewById(R.id.SFZ_Front).setVisibility(View.GONE);
+                view.findViewById(R.id.SFZ_back).setVisibility(View.GONE);
+
+                String task =jsonObject.getString("task");
+                if(task.equals(Customizing.SFZ_Front)){
+                    //显示身份证正面
+                    view.findViewById(R.id.SFZ_Front).setVisibility(View.VISIBLE);
+                }
+                if(task.equals(Customizing.SFZ_back)){
+                    //显示身份证背面
+                    view.findViewById(R.id.SFZ_back).setVisibility(View.VISIBLE);
+                }
                 String path = jsonObject.getString("path");
                 if (FileTool.exitFile(path)) {
                     img.setImageBitmap(BitmapFactory.decodeFile(jsonObject.getString("path")));
                 }
+                img.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        ImgFiledCusom imgFiledCustom = (ImgFiledCusom) filedCustom;
+                        imgFiledCustom.onClick(myJSONObject);
+                    }
+                });
             }
         }
 

@@ -1,70 +1,64 @@
 package com.xupu.locationmap.common.page;
 
-import android.annotation.SuppressLint;
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.graphics.PointF;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ImageView;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.core.content.FileProvider;
-import androidx.fragment.app.Fragment;
-
-
 import com.xupu.locationmap.R;
-import com.xupu.locationmap.common.tools.AndroidTool;
+import com.xupu.locationmap.projectmanager.po.MyJSONObject;
+import com.xupu.locationmap.projectmanager.service.MediaService;
 
-import java.io.File;
-
-public class ImageViewTouch extends Fragment {
+/**
+ * 当个照片的显示
+ */
+public class PhotoSingleActivty extends AppCompatActivity {
 
     private static String path;
-    public static  ImageViewTouch getImageViewTouch( String path){
-        ImageViewTouch imageViewTouch = new ImageViewTouch();
+    public static PhotoSingleActivty getImageViewTouch(String path) {
+        PhotoSingleActivty imageViewTouch = new PhotoSingleActivty();
 
-        ImageViewTouch.path =path;
-        return  imageViewTouch;
+        PhotoSingleActivty.path = path;
+        return imageViewTouch;
     }
-
-
-
-    @SuppressLint("ClickableViewAccessibility")
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-
-        View view = inflater.inflate(R.layout.activity_photo_single, container, false);
-        return view;
-    }
+    ImageView imageView;
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        Uri imageUri = FileProvider.getUriForFile(getActivity(), AndroidTool.FILEPROVIDER, new File(path));
-        imageView = getActivity().findViewById(R.id.imageView);
-        imageView.setImageURI(imageUri);
-        imageView.setOnTouchListener(new  ImageTouchListener(imageView) );
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+        setContentView(R.layout.activity_project);
+
+        MyJSONObject media = (MyJSONObject) getIntent().getSerializableExtra("media");
+        ImageViewTouch imageViewTouch =ImageViewTouch.getImageViewTouch(MediaService.getPath(media));
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fl, imageViewTouch)   // 此处的R.id.fragment_container是要盛放fragment的父容器'
+                .commit();
+     /*    imageView = findViewById(R.id.img);
+        imageView.setImageBitmap(BitmapFactory.decodeFile(MediaService.getPath(media)));
+        imageView.setOnTouchListener(new PhotoSingleActivty.ImageTouchListener(imageView));*/
     }
-
-    private ImageView imageView;
-
     /**
      * 图片 手势操作监听
      */
-    public  class ImageTouchListener implements View.OnTouchListener {
+    public class ImageTouchListener implements View.OnTouchListener {
 
         private ImageView imageView;
 
-        public    ImageTouchListener(ImageView imageView) {
+        public ImageTouchListener(ImageView imageView) {
             this.imageView = imageView;
         }
+
         //声明一个坐标点
         private PointF startPoint;
         //声明并实例化一个Matrix来控制图片
@@ -173,5 +167,4 @@ public class ImageViewTouch extends Fragment {
         }
 
     }
-
 }

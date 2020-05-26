@@ -7,6 +7,7 @@ public class Customizing {
     public static String PROJECT = "旭普公司测试软件";
     public static String PROJECT_name = "name";
 
+
     public static String NF = "农户";
     public static String NF_name = "name";
     public static String NF_bz = "bz";
@@ -20,6 +21,10 @@ public class Customizing {
     public static String MEDIA_type = "mediatype";
     public static String MEDIA_bz = "bz";
     public static String MEDIA_task = "task";
+
+    public static String SFZ_Front = "身份证正面";
+    public static String SFZ_back = "身份证背面";
+
 
     /**
      * 对象字段 自定义

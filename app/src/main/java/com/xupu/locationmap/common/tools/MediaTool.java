@@ -27,6 +27,7 @@ public class MediaTool {
     public static void to(Activity activity, int requestCode, MyJSONObject media) {
         switch (media.getJsonobject().getInteger(Customizing.MEDIA_type)) {
             case 0:
+                //SFZPhotoTool.getSFZPhotoTool(activity).front(media);
                 photo(activity, requestCode, media);
                 break;
             case 1:
