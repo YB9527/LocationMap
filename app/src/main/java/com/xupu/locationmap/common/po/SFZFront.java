@@ -30,12 +30,31 @@ public class SFZFront {
         this.address = address;
     }
     public void setFont(IDCardResult result){
-        this.name =result.getName().toString();
-        this.sex = result.getGender().toString();
-        this.nation = result.getEthnic().toString();
-        this.address = result.getAddress().toString();
-        this.idNumber = result.getIdNumber().toString();
-        this.birthday =result.getBirthday().toString();
+        Object obj = result.getName();
+        if(obj != null){
+            this.name =obj.toString();
+        }
+        obj = result.getGender();
+        if(obj != null){
+            this.sex =obj.toString();
+        }
+        obj = result.getEthnic();
+        if(obj != null){
+            this.nation =obj.toString();
+        }
+        obj = result.getAddress();
+        if(obj != null){
+            this.address =obj.toString();
+        }
+        obj = result.getIdNumber();
+        if(obj != null){
+            this.idNumber =obj.toString();
+        }
+        obj = result.getBirthday();
+        if(obj != null){
+            this.birthday =obj.toString();
+        }
+
     }
 
     public String getName() {

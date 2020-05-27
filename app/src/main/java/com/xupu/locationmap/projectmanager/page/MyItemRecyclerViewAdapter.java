@@ -63,6 +63,7 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
 
     public void setChilds(List<List<MyJSONObject>> childs) {
         this.childs = childs;
+        notifyDataSetChanged();
     }
 
     @Override
@@ -83,13 +84,12 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
          */
         if (!Tool.isEmpty(childRidMap)) {
             for (int i = 0; i < childRidMap.size(); i++) {
-                if (!Tool.isEmpty(childs.get(i))) {
-                    ItemDataCustom itemDataCustom2 = new ItemDataCustom(null, childs.get(i).get(0), childRidMap.get(i));
+                if (childs.size() > i && childs.get(i).size() > position) {
+                    ItemDataCustom itemDataCustom2 = new ItemDataCustom(null, childs.get(i).get(position), childRidMap.get(i));
                     AndroidTool.setView(holder.mView, itemDataCustom2, tableDataCustom.isEdit());
                 }
             }
         }
-
 
       /*  holder.mItem = json;
         for (View view : holder.vieMap.keySet()) {

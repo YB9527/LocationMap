@@ -240,36 +240,41 @@ public class NFActivity extends AppCompatActivity {
                     // 将拍摄的照片显示出来
                     if (data != null) {
                         String contentType = data.getStringExtra(CameraActivity.KEY_CONTENT_TYPE);
-                        MyJSONObject media = (MyJSONObject) this.getIntent().getSerializableExtra("media");
-                        if (!TextUtils.isEmpty(contentType)) {
-                            if (CameraActivity.CONTENT_TYPE_ID_CARD_FRONT.equals(contentType)) {
-                                //身份证正面
-                                //1、检查是否通过了
-                                //2、保存多媒体照片
-                                SFZPhotoTool.getSFZPhotoTool(NFActivity.this).recIDCard(IDCardParams.ID_CARD_SIDE_FRONT, MediaService.getPath(media), new MyCallback<SFZFront>() {
-                                    @Override
-                                    public void call(ResultData<SFZFront> resultData) {
-                                        SFZFront sfz = resultData.getT();
-                                        //保存多媒体
-                                        TableTool.insert(media);
-                                        //保存身份证
-                                        TableTool.insert(SFZService.frontToMyJSONObject(media, sfz));
-                                        lookInfoFragment.setJSONbject(TableTool.findById(media.getParentid()));
-                                    }
-                                });
-                            } else if (CameraActivity.CONTENT_TYPE_ID_CARD_BACK.equals(contentType)) {
-                                //身份证背面
-                                SFZPhotoTool.getSFZPhotoTool(NFActivity.this).recIDCard(IDCardParams.ID_CARD_SIDE_BACK, MediaService.getPath(media), new MyCallback<SFZBack>() {
-                                    @Override
-                                    public void call(ResultData<SFZBack> resultData) {
-                                        SFZBack sfz = resultData.getT();
-                                        TableTool.insert(media);
-                                        TableTool.insert(SFZService.backToMyJSONObject(media, sfz));
-                                        lookInfoFragment.setJSONbject(TableTool.findById(media.getParentid()));
-                                    }
-                                });
+                       final MyJSONObject media = (MyJSONObject) this.getIntent().getSerializableExtra("media");
+                        //保存多媒体
+                        TableTool.insert(media);
+                        //保存身份证
+                        lookInfoFragment.setJSONbject(TableTool.findById(media.getParentid()));
+                        //检查是否联网
+                        if(SFZPhotoTool.INTERNET){
+                            if (!TextUtils.isEmpty(contentType)) {
+                                if (CameraActivity.CONTENT_TYPE_ID_CARD_FRONT.equals(contentType)) {
+                                    //身份证正面
+                                    //1、检查是否通过了
+                                    //2、保存多媒体照片
+                                    SFZPhotoTool.getSFZPhotoTool(NFActivity.this).recIDCard(IDCardParams.ID_CARD_SIDE_FRONT, MediaService.getPath(media), new MyCallback<SFZFront>() {
+                                        @Override
+                                        public void call(ResultData<SFZFront> resultData) {
+                                            SFZFront sfz = resultData.getT();
+                                            //保存身份证
+                                            TableTool.insert(SFZService.frontToMyJSONObject(media, sfz));
+                                            lookInfoFragment.setJSONbject(TableTool.findById(media.getParentid()));
+                                        }
+                                    });
+                                } else if (CameraActivity.CONTENT_TYPE_ID_CARD_BACK.equals(contentType)) {
+                                    //身份证背面
+                                    SFZPhotoTool.getSFZPhotoTool(NFActivity.this).recIDCard(IDCardParams.ID_CARD_SIDE_BACK, MediaService.getPath(media), new MyCallback<SFZBack>() {
+                                        @Override
+                                        public void call(ResultData<SFZBack> resultData) {
+                                            SFZBack sfz = resultData.getT();
+                                            TableTool.insert(SFZService.backToMyJSONObject(media, sfz));
+                                            lookInfoFragment.setJSONbject(TableTool.findById(media.getParentid()));
+                                        }
+                                    });
+                                }
                             }
                         }
+
                     }
                 }
                 break;

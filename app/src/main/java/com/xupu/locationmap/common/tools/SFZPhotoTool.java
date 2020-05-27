@@ -28,6 +28,7 @@ public class SFZPhotoTool {
     public static final int REQUEST_CODE_CAMERA = 102;
     private static SFZPhotoTool sfzPhotoTool;
     private static Activity activity;
+    public static  boolean INTERNET;//是否联网状态
 
     public static SFZPhotoTool getSFZPhotoTool(Activity activity) {
 
@@ -60,6 +61,7 @@ public class SFZPhotoTool {
                             // 本地自动识别需要初始化
                             sfzPhotoTool.initLicense();
                             Log.d("MainActivity", "onResult: " + result.toString());
+                            INTERNET =true;
                         }
 
                         @Override

@@ -6,10 +6,20 @@ import com.baidu.ocr.sdk.model.IDCardResult;
  * 身份证背面
  */
 public class SFZBack {
-    public void setBack(IDCardResult result){
-        this.signDate =result.getSignDate().toString();
-        this.expiryDate = result.getExpiryDate().toString();
-        this.issueAuthority = result.getIssueAuthority().toString();
+
+    public void setBack(IDCardResult result) {
+        Object obj = result.getSignDate();
+        if (obj != null) {
+            this.signDate = obj.toString();
+        }
+        obj = result.getExpiryDate();
+        if (obj != null) {
+            this.expiryDate = obj.toString();
+        }
+        obj = result.getIssueAuthority();
+        if (obj != null) {
+            this.issueAuthority = obj.toString();
+        }
     }
 
     /**
