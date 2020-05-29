@@ -30,7 +30,12 @@ public class TableViewCustom   {
 
     private Type itemClass;
 
+    public TableViewCustom(String tableName, Class<? extends Fragment> itemFragMentClass,Type itemClass) {
+        this.itemFragMentClass = itemFragMentClass;
+        this.tableName = tableName;
+        this.itemClass = itemClass;
 
+    }
 
     public TableViewCustom(String tableName, Class<? extends Fragment> itemFragMentClass,Type itemClass, TableDataCustom tableDataCustom) {
         this.itemFragMentClass = itemFragMentClass;

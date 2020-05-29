@@ -39,27 +39,10 @@ public class MediaService {
             AndroidTool.showAnsyTost("请先选择项目", 1);
             return null;
         }
+
+        String root = AndroidTool.getRootDir();
         String uuid = UUID.randomUUID().toString();
-        String state = Environment.getExternalStorageState();
-        String root;
-        if (state.equals("mounted")) {
-            root = Environment.getExternalStorageDirectory().getAbsolutePath() + "/旭普公司";
-            if (!new File(root).exists()) {
-                boolean bl = new File(root).mkdirs();
-                if (!bl) {
-                    root = AndroidTool.getMainActivity().getFilesDir().getAbsolutePath();
-                }
-            } else {
-                if (!new File(root).canWrite()) {
-                    root = AndroidTool.getMainActivity().getFilesDir().getAbsolutePath();
-                }
-            }
-        } else {
-            root = AndroidTool.getMainActivity().getFilesDir().getAbsolutePath();
-        }
-
-
-        String path = root + "/" + ProjectService.getName(project) + "/" + XZQYService.getCode(xzdm) + "_" + XZQYService.getCaption(xzdm) + "/"
+        String path = root  + ProjectService.getName(project) + "/" + XZQYService.getCode(xzdm) + "_" + XZQYService.getCaption(xzdm) + "/"
                 + NFService.getName(parent) + "_" + parent.getId() + "/" + task.replace("正面","").replace("反面","") + "/" + uuid;
         FileTool.exitsDir(FileTool.getDir(path), true);
 

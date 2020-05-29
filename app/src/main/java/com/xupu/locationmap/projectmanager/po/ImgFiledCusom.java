@@ -4,8 +4,11 @@ import android.content.Intent;
 import android.os.Bundle;
 
 public class ImgFiledCusom extends FiledCustom {
-    public ImgFiledCusom(String attribute) {
-        super(attribute);
+    public ImgFiledCusom(String idText, String attribute) {
+        super(idText,attribute);
+    }
+    public ImgFiledCusom(Integer id, String attribute) {
+        super(id,attribute);
     }
 
 

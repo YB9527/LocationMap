@@ -17,11 +17,13 @@ import com.xupu.locationmap.projectmanager.po.EditFiledCusom;
 import com.xupu.locationmap.projectmanager.po.FiledCustom;
 import com.xupu.locationmap.projectmanager.po.ItemDataCustom;
 import com.xupu.locationmap.projectmanager.po.MyJSONObject;
+import com.xupu.locationmap.projectmanager.po.PositionField;
 import com.xupu.locationmap.projectmanager.po.TableDataCustom;
 import com.xupu.locationmap.projectmanager.po.XZDM;
 import com.xupu.locationmap.projectmanager.service.ProjectService;
 import com.xupu.locationmap.projectmanager.service.XZQYService;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -70,18 +72,21 @@ public class XZQYPage extends AppCompatActivity {
 
 
         List<MyJSONObject> xzdms =XZQYService.findByProject();
-
-        Map<Integer, FiledCustom> map = new HashMap<>();
-        map.put(R.id.code, new FiledCustom("code"));
-        map.put(R.id.caption, new FiledCustom("caption"));
-        map.put(R.id.btu_delete, new BtuFiledCustom<MyJSONObject>("删除") {
+        List<FiledCustom> fs = new ArrayList<>();
+        FiledCustom filedCustom ;
+        filedCustom = new FiledCustom(R.id.code,"code");
+        fs.add(filedCustom);
+        filedCustom = new FiledCustom(R.id.caption,"caption");
+        fs.add(filedCustom);
+        filedCustom = new BtuFiledCustom(R.id.btu_delete, "删除") {
             @Override
             public void OnClick(MyJSONObject myJSONObject) {
                 TableTool.delete(myJSONObject);
                 itemFragment.remove(myJSONObject);
             }
-        }.setConfirm(true,"确认要删除行政区域吗？"));
-        map.put(R.id.btu_select, new BtuFiledCustom<MyJSONObject>("选择") {
+        }.setConfirm(true,"确认要删除行政区域吗？");
+        fs.add(filedCustom);
+        filedCustom = new BtuFiledCustom(R.id.btu_select, "选择") {
             @Override
             public void OnClick(MyJSONObject myJSONObject) {
                 AndroidTool.confirm(XZQYPage.this, "确定要选择这个区域吗？", new MyCallback() {
@@ -95,9 +100,11 @@ public class XZQYPage extends AppCompatActivity {
                     }
                 });
             }
-        });
+        };
+        fs.add(filedCustom);
 
-        TableDataCustom tableDataCustom = new TableDataCustom(R.layout.fragment_xzqy_item, map, xzdms);
+
+        TableDataCustom tableDataCustom = new TableDataCustom(R.layout.fragment_xzqy_item, fs, xzdms);
         itemFragment = new ItemFragment(tableDataCustom);
 
         getSupportFragmentManager().beginTransaction()
@@ -109,11 +116,14 @@ public class XZQYPage extends AppCompatActivity {
      * 初始化 新增item窗口
      */
     private void initAddItemFragment() {
-
-        Map<Integer, FiledCustom> filedCustomMap = new HashMap<>();
-        filedCustomMap.put(R.id.code, new EditFiledCusom("code", true));
-        filedCustomMap.put(R.id.caption, new EditFiledCusom("caption", true));
-        filedCustomMap.put(R.id.btu_submit, new BtuFiledCustom<MyJSONObject>("添加") {
+        List<MyJSONObject> xzdms =XZQYService.findByProject();
+        List<FiledCustom> fs = new ArrayList<>();
+        FiledCustom filedCustom ;
+        filedCustom = new EditFiledCusom(R.id.code,"code", true);
+        fs.add(filedCustom);
+        filedCustom = new EditFiledCusom(R.id.caption,"caption", true);
+        fs.add(filedCustom);
+        filedCustom = new BtuFiledCustom(R.id.btu_submit, "添加") {
             @Override
             public void OnClick(MyJSONObject myJSONObject) {
                 itemFragment.addItem(myJSONObject);
@@ -121,14 +131,20 @@ public class XZQYPage extends AppCompatActivity {
                 showMain(true);
                 //init();
             }
-        }.setCheck(true).setReturn(true));
-        filedCustomMap.put(R.id.btu_cancel, new BtuFiledCustom("取消") {
+        }.setCheck(true).setReturn(true);
+        fs.add(filedCustom);
+
+
+        filedCustom = new BtuFiledCustom(R.id.btu_cancel, "取消") {
             @Override
             public void OnClick(MyJSONObject myJSONObject) {
                 showMain(true);
             }
-        });
-        ItemDataCustom itemDataCustom = new ItemDataCustom(R.layout.fragment_add_item, XZQYService.newXZDM(), filedCustomMap);
+        };
+        fs.add(filedCustom);
+
+
+        ItemDataCustom itemDataCustom = new ItemDataCustom(R.layout.fragment_add_item, XZQYService.newXZDM(), fs);
         addItemFragment = new AddItemFragment(itemDataCustom);
         getSupportFragmentManager().beginTransaction().add(R.id.fl, addItemFragment, "item").hide(addItemFragment).commit();
 

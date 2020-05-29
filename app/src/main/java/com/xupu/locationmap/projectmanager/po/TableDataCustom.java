@@ -17,16 +17,17 @@ public class TableDataCustom {
     /**
      * 当个item 显示的内容
      */
-    private Map<Integer, FiledCustom> map;
-
+    List<FiledCustom> filedCustoms;
+    private List<List<FiledCustom>> childRidList;
 
     private List<MyJSONObject> list;
 
+    public TableDataCustom(){
 
-
-    public TableDataCustom(int fragmentItem, Map<Integer, FiledCustom> map, List<MyJSONObject> list) {
+    }
+    public TableDataCustom(int fragmentItem, List<FiledCustom> filedCustoms, List<MyJSONObject> list) {
         this.fragmentItem = fragmentItem;
-        this.map = map;
+        this.filedCustoms = filedCustoms;
         this.list = new ArrayList<>();
         this.list.addAll(list);
 
@@ -39,18 +40,9 @@ public class TableDataCustom {
 
     public TableDataCustom setEdit(boolean edit) {
         isEdit = edit;
-        return  this;
+        return this;
     }
 
-
-
-    public Map<Integer, FiledCustom> getMap() {
-        return map;
-    }
-
-    public void setMap(Map<Integer, FiledCustom> map) {
-        this.map = map;
-    }
 
     public List<MyJSONObject> getList() {
         return list;
@@ -68,15 +60,23 @@ public class TableDataCustom {
         this.fragmentItem = fragmentItem;
     }
 
-    private List<Map<Integer, FiledCustom>> childRidMap;
 
-
-    public List<Map<Integer, FiledCustom>> getChildRidMap() {
-        return childRidMap;
+    public List<FiledCustom> getFiledCustoms() {
+        return filedCustoms;
     }
 
-    public TableDataCustom setChildRidMap(List<Map<Integer, FiledCustom>> childRidMap) {
-        this.childRidMap = childRidMap;
+    public List<List<FiledCustom>> getChildRidList() {
+        return childRidList;
+    }
+
+    public TableDataCustom setChildRidList(List<List<FiledCustom>> childRidList) {
+        this.childRidList = childRidList;
         return this;
+    }
+
+
+
+    public void setFiledCustoms(List<FiledCustom> fs) {
+        this.filedCustoms = fs;
     }
 }

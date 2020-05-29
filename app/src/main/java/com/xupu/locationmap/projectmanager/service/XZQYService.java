@@ -70,4 +70,9 @@ public class XZQYService {
         List<MyJSONObject> list = TableTool.findByTableNameAndParentId(ZTService.XZQ_LIST, ProjectService.getCurrentSugProject().getId());
         return list;
     }
+
+    public static String getCurrentCode() {
+        return "411627102205";
+       // return  getCode(getCurrentXZDM());
+    }
 }

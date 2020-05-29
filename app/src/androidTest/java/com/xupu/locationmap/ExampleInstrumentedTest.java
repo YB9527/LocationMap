@@ -12,6 +12,8 @@ import com.xupu.locationmap.projectmanager.service.ZTService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.lang.reflect.Field;
+
 import static org.junit.Assert.*;
 
 /**
@@ -28,11 +30,13 @@ public class ExampleInstrumentedTest {
 
         //assertEquals("com.xupu.locationmap", appContext.getPackageName());
 
-        ZTService.getProjectTableId(new MyCallback() {
+       /* ZTService.getProjectTableId(new MyCallback() {
             @Override
             public void call(ResultData resultData) {
 
             }
-        });
+        });*/
+
     }
+
 }

@@ -50,7 +50,7 @@ public class AddItemFragment extends Fragment {
         init();
     }
     public void init() {
-        AndroidTool.setView(view, itemDataCustom,false);
+        AndroidTool.setView(view, itemDataCustom,false,0);
     }
 
 

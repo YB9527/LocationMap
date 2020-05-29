@@ -7,10 +7,15 @@ public class EditFiledCusom extends FiledCustom {
 
     }
 
-    public EditFiledCusom(String attribute, boolean isMust) {
-        super(attribute);
+    public EditFiledCusom(String idText, String attribute, boolean isMust) {
+        super(idText,attribute);
         this.isMust = isMust;
     }
+    public EditFiledCusom(Integer id, String attribute, boolean isMust) {
+        super(id,attribute);
+        this.isMust = isMust;
+    }
+
 
     /**
      * 是必须的吗

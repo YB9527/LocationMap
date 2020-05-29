@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Environment;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -40,11 +41,14 @@ import com.xupu.locationmap.projectmanager.po.FiledCustom;
 import com.xupu.locationmap.projectmanager.po.ImgFiledCusom;
 import com.xupu.locationmap.projectmanager.po.ItemDataCustom;
 import com.xupu.locationmap.projectmanager.po.MyJSONObject;
+import com.xupu.locationmap.projectmanager.po.PositionField;
 
 import java.io.File;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 
 /**
@@ -191,8 +195,8 @@ public class AndroidTool {
      * @param itemDataCustom
      * @param isEdit         是否直接修改
      */
-    public static void setView(View view, ItemDataCustom itemDataCustom, boolean isEdit) {
-        Map<Integer, FiledCustom> map = itemDataCustom.getMap();
+    public static void setView(View view, ItemDataCustom itemDataCustom, boolean isEdit, int postion) {
+        List<FiledCustom> fs = itemDataCustom.getFiledCustoms();
         //使用副本修改，
         final MyJSONObject myJSONObject = itemDataCustom.getMyJSONObject();
         JSONObject jsonObject;
@@ -202,15 +206,22 @@ public class AndroidTool {
             jsonObject = (JSONObject) myJSONObject.getJsonobject().clone();
         }
 
-        for (Integer rid : map.keySet()) {
-            View temView = view.findViewById(rid);
-            final FiledCustom filedCustom = map.get(rid);
+        for (FiledCustom filedCustom : fs) {
+            View temView = view.findViewById(filedCustom.getId());
             if (temView instanceof TextView) {
                 TextView tv = (TextView) temView;
-                String attribute = filedCustom.getAttribute();
-                String str = jsonObject.getString(attribute);
-                if (str != null || temView instanceof EditText) {
-                    tv.setText(str);
+                if (filedCustom instanceof PositionField) {
+                    tv.setText(postion + 1 + "");
+                } else {
+                    String attribute = filedCustom.getAttribute();
+                    if(attribute == null){
+                        tv.setText("");
+                    }else{
+                        String str = jsonObject.getString(attribute);
+                        if (str != null || temView instanceof EditText) {
+                            tv.setText(str);
+                        }
+                    }
                 }
             }
             if (temView instanceof Button) {
@@ -223,7 +234,7 @@ public class AndroidTool {
                         ResultData<JSONObject> resultData = new ResultData<JSONObject>(0, jsonObject);
                         if (btuFiledCustom.isCheck()) {
                             //检查数据
-                            boolean checkresult = checkData(jsonObject, map.values());
+                            boolean checkresult = checkData(jsonObject, fs);
                             if (!checkresult) {
                                 return;
                             }
@@ -260,11 +271,13 @@ public class AndroidTool {
                     public void onTextChanged(CharSequence s, int start, int before, int count) {
                         // TODO Auto-generated method stub
                     }
+
                     @Override
                     public void beforeTextChanged(CharSequence s, int start, int count,
                                                   int after) {
                         // TODO Auto-generated method stub
                     }
+
                     @RequiresApi(api = Build.VERSION_CODES.N)
                     @Override
                     public void afterTextChanged(Editable s) {
@@ -277,12 +290,12 @@ public class AndroidTool {
                 view.findViewById(R.id.SFZ_Front).setVisibility(View.GONE);
                 view.findViewById(R.id.SFZ_back).setVisibility(View.GONE);
 
-                String task =jsonObject.getString("task");
-                if(task.equals(Customizing.SFZ_Front)){
+                String task = jsonObject.getString("task");
+                if (task.equals(Customizing.SFZ_Front)) {
                     //显示身份证正面
                     view.findViewById(R.id.SFZ_Front).setVisibility(View.VISIBLE);
                 }
-                if(task.equals(Customizing.SFZ_back)){
+                if (task.equals(Customizing.SFZ_back)) {
                     //显示身份证背面
                     view.findViewById(R.id.SFZ_back).setVisibility(View.VISIBLE);
                 }
@@ -300,5 +313,51 @@ public class AndroidTool {
             }
         }
 
+    }
+
+    private static Map<String, Class<?>> clsMap = new HashMap<>();
+
+
+    /**
+     * @param className 包名 layout,string,drawable,style,id,color,array
+     * @param idName    唯一文件名
+     * @return
+     */
+    public static int getCompentID(String className, String idName) {
+        int id = 0;
+        try {
+            Class<?> cls = clsMap.get(className);
+            if (cls == null) {
+                cls = Class.forName("com.xupu.locationmap" + ".R$" + className);
+                clsMap.put(className, cls);
+            }
+
+            id = cls.getField(idName).getInt(cls);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return id;
+    }
+
+    public static String getRootDir() {
+        String root;
+
+        String state = Environment.getExternalStorageState();
+        if (state.equals("mounted")) {
+            root = Environment.getExternalStorageDirectory().getAbsolutePath() + "/旭普公司";
+            if (!new File(root).exists()) {
+                boolean bl = new File(root).mkdirs();
+                if (!bl) {
+                    root = AndroidTool.getMainActivity().getFilesDir().getAbsolutePath();
+                }
+            } else {
+                if (!new File(root).canWrite()) {
+                    root = AndroidTool.getMainActivity().getFilesDir().getAbsolutePath();
+                }
+            }
+        } else {
+            root = AndroidTool.getMainActivity().getFilesDir().getAbsolutePath();
+        }
+        return root + "/";
     }
 }

@@ -115,15 +115,16 @@ public class ProjectDowload extends AppCompatActivity {
                     newProjects.add(new MyJSONObject(project.getString(ZTService.ID), ZTService.PROJECT_TABLE_NAME, project.getString(ZTService.APP_ID), project));
                 }
             }
-            Map<Integer, FiledCustom> map = new HashMap<>();
-            map.put(R.id.name, new FiledCustom("name"));
-            map.put(R.id.btu_dowload, new BtuFiledCustom<MyJSONObject>("下载") {
+            List<FiledCustom> fs = new ArrayList<>();
+            fs.add(new FiledCustom(R.id.name,"name"));
+            fs.add(new BtuFiledCustom(R.id.name, "name") {
                 @Override
                 public void OnClick(MyJSONObject newproject) {
                     downLoadTask(newproject);
                 }
             }.setConfirm(true, "确定要下载吗？"));
-            TableDataCustom tableDataCustom = new TableDataCustom(R.layout.activty_project_dowload_item, map, newProjects);
+
+            TableDataCustom tableDataCustom = new TableDataCustom(R.layout.activty_project_dowload_item, fs, newProjects);
             ItemFragment itemFragment = new ItemFragment(tableDataCustom);
             //主页面显示
             getSupportFragmentManager().beginTransaction()

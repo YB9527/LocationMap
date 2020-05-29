@@ -63,7 +63,7 @@ public class ProjectPage extends AppCompatActivity {
      *
      * @return
      */
-    private FiledCustom getBtuSelect() {
+    /*private FiledCustom getBtuSelect() {
         return new BtuFiledCustom() {
             @Override
             public void OnClick(MyJSONObject myJSONObject) {
@@ -81,7 +81,7 @@ public class ProjectPage extends AppCompatActivity {
                 });
             }
         };
-    }
+    }*/
 
     private void init() {
         /*btuAdd = findViewById(R.id.btu_add);
@@ -95,10 +95,19 @@ public class ProjectPage extends AppCompatActivity {
         });*/
 
         ArrayList<MyJSONObject> projects = ProjectService.findAll();
-        Map<Integer, FiledCustom> map = new HashMap<>();
-        map.put(R.id.name, new FiledCustom("name"));
-        map.put(R.id.btu_select, getBtuSelect());
-        TableDataCustom tableDataCustom = new TableDataCustom(R.layout.fragment_project_item, map, projects);
+        List<FiledCustom> fs = new ArrayList<>();
+        fs.add(new FiledCustom(R.id.name, "name"));
+        fs.add(new BtuFiledCustom(R.id.btu_select,"选择") {
+            @Override
+            public void OnClick(MyJSONObject myJSONObject) {
+                ProjectService.setCurrentSugProject(myJSONObject);
+                setMyTitle();
+                AndroidTool.showAnsyTost("当前项目是：" + ProjectService.getName(myJSONObject), 0);
+            }
+        }.setConfirm(true,"确定要选择这个项目吗？"));
+
+
+        TableDataCustom tableDataCustom = new TableDataCustom(R.layout.fragment_project_item, fs, projects);
 
         itemFragment = new ItemFragment(tableDataCustom);
 
@@ -107,11 +116,11 @@ public class ProjectPage extends AppCompatActivity {
                 .commit();
         initAddItemFragment();
 
-      findViewById(R.id.btu_project_download).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.btu_project_download).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(ProjectPage.this,ProjectDowload.class);
-                intent.putExtra("projects",projects);
+                Intent intent = new Intent(ProjectPage.this, ProjectDowload.class);
+                intent.putExtra("projects", projects);
                 startActivity(intent);
             }
         });
@@ -122,24 +131,24 @@ public class ProjectPage extends AppCompatActivity {
      */
     private void initAddItemFragment() {
 
-        Map<Integer, FiledCustom> filedCustomMap = new HashMap<>();
-        filedCustomMap.put(R.id.name, new EditFiledCusom("name", true));
-        filedCustomMap.put(R.id.btu_submit, new BtuFiledCustom<MyJSONObject>("添加") {
+        List<FiledCustom> fs = new ArrayList<>();
+        fs.add(new EditFiledCusom(R.id.name, "name", true));
+        fs.add(new BtuFiledCustom(R.id.btu_submit, "添加") {
             @Override
             public void OnClick(MyJSONObject myJSONObject) {
                 itemFragment.addItem(myJSONObject);
                 TableTool.insert(myJSONObject);
                 showMain(true);
-                //init();
             }
         }.setCheck(true).setReturn(true));
-        filedCustomMap.put(R.id.btu_cancel, new BtuFiledCustom("取消") {
+        fs.add(new BtuFiledCustom(R.id.btu_cancel, "取消") {
             @Override
             public void OnClick(MyJSONObject myJSONObject) {
                 showMain(true);
             }
         });
-        ItemDataCustom itemDataCustom = new ItemDataCustom(R.layout.fragment_project_item_add, ProjectService.newProject(), filedCustomMap);
+
+        ItemDataCustom itemDataCustom = new ItemDataCustom(R.layout.fragment_project_item_add, ProjectService.newProject(), fs);
         addItemFragment = new AddItemFragment(itemDataCustom);
         getSupportFragmentManager().beginTransaction().add(R.id.fl, addItemFragment, "item").hide(addItemFragment).commit();
 

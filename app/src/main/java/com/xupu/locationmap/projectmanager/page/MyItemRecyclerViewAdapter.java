@@ -49,7 +49,7 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
     private ViewHolder oldHolder;
     private int oldPostion;
     List<List<MyJSONObject>> childs;
-    List<Map<Integer, FiledCustom>> childRidMap;
+    List<List<FiledCustom>> childRidMap;
 
     public List<MyJSONObject> getmValues() {
         return mValues;
@@ -58,7 +58,7 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
     public MyItemRecyclerViewAdapter(TableDataCustom tableDataCustom) {
         this.mValues = tableDataCustom.getList();
         this.tableDataCustom = tableDataCustom;
-        this.childRidMap = tableDataCustom.getChildRidMap();
+        this.childRidMap = tableDataCustom.getChildRidList();
     }
 
     public void setChilds(List<List<MyJSONObject>> childs) {
@@ -77,8 +77,9 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
     public void onBindViewHolder(final ViewHolder holder, int position) {
         MyJSONObject json = mValues.get(position);
         holder.itemView.setBackgroundColor(Color.WHITE);
-        ItemDataCustom itemDataCustom = new ItemDataCustom(null, json, tableDataCustom.getMap());
-        AndroidTool.setView(holder.mView, itemDataCustom, tableDataCustom.isEdit());
+        ItemDataCustom itemDataCustom = new ItemDataCustom(null, json, tableDataCustom.getFiledCustoms());
+        AndroidTool.setView(holder.mView, itemDataCustom, tableDataCustom.isEdit(), position);
+
         /**
          * 写入子对象的属性
          */
@@ -86,7 +87,7 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
             for (int i = 0; i < childRidMap.size(); i++) {
                 if (childs.size() > i && childs.get(i).size() > position) {
                     ItemDataCustom itemDataCustom2 = new ItemDataCustom(null, childs.get(i).get(position), childRidMap.get(i));
-                    AndroidTool.setView(holder.mView, itemDataCustom2, tableDataCustom.isEdit());
+                    AndroidTool.setView(holder.mView, itemDataCustom2, tableDataCustom.isEdit(), position);
                 }
             }
         }
@@ -147,13 +148,14 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
         public ViewHolder(View view) {
             super(view);
             mView = view;
-            Map<Integer, FiledCustom> filedMap = tableDataCustom.getMap();
-            for (Integer rid : filedMap.keySet()) {
-                View temView = view.findViewById(rid);
+            List<FiledCustom> filedMap = tableDataCustom.getFiledCustoms();
+            for (FiledCustom filedCustom : filedMap) {
+                View temView = view.findViewById(filedCustom.getId());
                 if (view != null) {
-                    vieMap.put(temView, filedMap.get(rid));
+                    vieMap.put(temView, filedCustom);
                 }
             }
+
         }
     }
 

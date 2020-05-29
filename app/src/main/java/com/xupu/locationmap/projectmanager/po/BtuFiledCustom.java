@@ -10,10 +10,12 @@ public abstract class BtuFiledCustom<T> extends FiledCustom {
 
     }
 
-    public BtuFiledCustom(String attribute) {
-        super(attribute);
+    public BtuFiledCustom(String idText, String attribute) {
+        super(idText,attribute);
     }
-
+    public BtuFiledCustom(Integer id, String attribute) {
+        super(id,attribute);
+    }
     /**
      * 比如需要返回 对象吗， 比如取消键的话，不要返回对象
      */

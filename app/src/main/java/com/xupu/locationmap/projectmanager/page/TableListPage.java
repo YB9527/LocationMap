@@ -23,9 +23,12 @@ import com.xupu.locationmap.R;
 import com.xupu.locationmap.common.tools.AndroidTool;
 
 import com.xupu.locationmap.common.tools.TableTool;
+import com.xupu.locationmap.projectmanager.po.BtuFiledCustom;
 import com.xupu.locationmap.projectmanager.po.FiledCustom;
 import com.xupu.locationmap.projectmanager.po.MyJSONObject;
+import com.xupu.locationmap.projectmanager.po.PositionField;
 import com.xupu.locationmap.projectmanager.po.TableDataCustom;
+import com.xupu.locationmap.projectmanager.po.TableDataCustom_TableName;
 import com.xupu.locationmap.projectmanager.po.TableViewCustom;
 import com.xupu.locationmap.projectmanager.po.XZDM;
 import com.xupu.locationmap.projectmanager.service.ZTService;
@@ -57,37 +60,15 @@ public class TableListPage extends AppCompatActivity {
         setContentView(R.layout.activity_table_list);
 
         List<TableViewCustom> tableViewCustomList = new ArrayList<>();
-        List<XZDM> xzdms = new ArrayList<>();
-        xzdms.add(new XZDM("aa","123"));
-        xzdms.add(new XZDM("bb","345"));
-        xzdms.add(new XZDM("bb","345"));
-        xzdms.add(new XZDM("bb","345"));
-        xzdms.add(new XZDM("bb","345"));
-
-        List<MyJSONObject> myJSONObjects = new ArrayList<>();
-        for (XZDM xzdm : xzdms){
-            myJSONObjects.add(new MyJSONObject(null,null,null,JSONObject.toJSONString(xzdm)));
-        }
-        Map<Integer, FiledCustom> map = new HashMap<>();
-        map.put(R.id.item_number, new FiledCustom("code"));
-        map.put(R.id.content, new FiledCustom("caption"));
-
-        TableDataCustom tableDataCustom = new TableDataCustom(R.layout.fragment_item, map, myJSONObjects);
-       /* TableViewCustom tableViewCustom = new TableViewCustom("aa", TableItemListPage.class, TableDataCustom.class, tableDataCustom);
-        tableViewCustomList.add(tableViewCustom);
-        tableViewCustom = new TableViewCustom("bb", TableItemListPage.class, TableDataCustom.class, tableDataCustom);
-        tableViewCustomList.add(tableViewCustom);
-        tableViewCustom = new TableViewCustom("cc", TableItemListPage.class, TableDataCustom.class, tableDataCustom);
-        tableViewCustomList.add(tableViewCustom);
-        tableViewCustom = new TableViewCustom("dd", TableItemListPage.class, TableDataCustom.class, tableDataCustom);
-        tableViewCustomList.add(tableViewCustom);*/
 
         //得到要详细的表格
         //找到所有表
         //找到表的 对应的表id
         List<MyJSONObject> tables = TableTool.findByTableName(ZTService.PROJECT_TABLE_LIST);
         for (MyJSONObject table : tables){
-            TableViewCustom  tc = new TableViewCustom(table.getJsonobject().getString("aliasname"), TableItemListPage.class, TableDataCustom.class, tableDataCustom);
+            //TableDataCustom tableDataCustom2 = new TableDataCustom_TableName(R.layout.fragment_item, null, table);
+            TableViewCustom  tc = new TableViewCustom(table.getJsonobject().getString("aliasname"), TableItemListPage.class, TableDataCustom.class);
+            //tc.setTableDataCustom(tableDataCustom2);
             tableViewCustomList.add(tc);
         }
         //init2();
@@ -102,8 +83,7 @@ public class TableListPage extends AppCompatActivity {
             String tableName = tableViewCustom.getTableName();
             Class clazz = tableViewCustom.getItemFragMentClass();
             Bundle bundle = new Bundle();
-            bundle.putString("TableDataCustom",new Gson().toJson(tableViewCustom.getTableDataCustom()));
-            bundle.putString("TableName","aa");
+            bundle.putString("tablename",tableName);
             //bundle.pu
             Creator.add(tableName, clazz,bundle);
         }

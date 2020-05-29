@@ -93,8 +93,9 @@ public class LookInfoFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        List<FiledCustom> fs = new ArrayList<>();
         Map<Integer, FiledCustom> map = new HashMap<>();
-        map.put(R.id.img, new ImgFiledCusom("path") {
+        fs.add(new ImgFiledCusom(R.id.img, "path") {
             @Override
             public void onClick(MyJSONObject mdeia) {
 
@@ -103,31 +104,34 @@ public class LookInfoFragment extends Fragment {
                 startActivity(intent);
             }
         });
+
         List<ItemDataChildCustom> itemDataChildCustomList = new ArrayList<>();
         //身份证正面
-        Map<Integer, FiledCustom> frontMap = new HashMap<>();
-        frontMap.put(R.id.name, new EditFiledCusom("name", false));
-        frontMap.put(R.id.address, new EditFiledCusom("address", false));
-        frontMap.put(R.id.idNumber, new EditFiledCusom("idNumber", false));
-        frontMap.put(R.id.sex, new EditFiledCusom("sex", false));
-        frontMap.put(R.id.nation, new EditFiledCusom("nation", false));
-        frontMap.put(R.id.birthday, new EditFiledCusom("birthday", false));
-        ItemDataChildCustom sfzFrontItemDataChildCustom = new ItemDataChildCustom(null, frontMap);
+        List<FiledCustom> frontFs = new ArrayList<>();
+        frontFs.add(new EditFiledCusom(R.id.name, "name", false));
+        frontFs.add(new EditFiledCusom(R.id.address, "address", false));
+        frontFs.add(new EditFiledCusom(R.id.idNumber, "idNumber", false));
+        frontFs.add(new EditFiledCusom(R.id.sex, "sex", false));
+        frontFs.add(new EditFiledCusom(R.id.nation, "nation", false));
+        frontFs.add(new EditFiledCusom(R.id.birthday, "birthday", false));
+
+
+        ItemDataChildCustom sfzFrontItemDataChildCustom = new ItemDataChildCustom(null, frontFs);
 
         //身份证背面
-        Map<Integer, FiledCustom> backMap = new HashMap<>();
-        backMap.put(R.id.signDate, new EditFiledCusom("signDate", false));
-        backMap.put(R.id.expiryDate, new EditFiledCusom("expiryDate", false));
-        backMap.put(R.id.issueAuthority, new EditFiledCusom("issueAuthority", false));
-
-        List<Map<Integer, FiledCustom>> childridMap = new ArrayList<>();
-        childridMap.add(frontMap);
-        childridMap.add(backMap);
+        List<FiledCustom> backFs = new ArrayList<>();
+        backFs.add(new EditFiledCusom(R.id.signDate, "signDate", false));
+        backFs.add(new EditFiledCusom(R.id.expiryDate, "expiryDate", false));
+        backFs.add(new EditFiledCusom(R.id.issueAuthority, "issueAuthority", false));
 
 
-        map.put(R.id.bz, new EditFiledCusom("bz", false));
-        map.put(R.id.task, new EditFiledCusom(Customizing.MEDIA_task, false));
-        map.put(R.id.btu_delete, new BtuFiledCustom<MyJSONObject>("删除") {
+        List<List<FiledCustom>> childridMap = new ArrayList<>();
+        childridMap.add(fs);
+        childridMap.add(backFs);
+
+        fs.add( new EditFiledCusom(R.id.bz,"bz", false));
+        fs.add( new EditFiledCusom(R.id.task,Customizing.MEDIA_task, false));
+        fs.add(new BtuFiledCustom(R.id.btu_delete, "删除") {
             @Override
             public void OnClick(MyJSONObject media) {
                 TableTool.delete(media);
@@ -135,13 +139,13 @@ public class LookInfoFragment extends Fragment {
                 FileTool.deleteFile(media.getJsonobject().getString(Customizing.MEDIA_path));
             }
         }.setConfirm(true, "确认要删除文件吗"));
-        //显示身份证信息
 
+        //显示身份证信息
 
        /* TableDataCustom tableDataCustom = new TableDataCustom(R.layout.fragment_photo, map,
                 TableTool.findByTableNameAndParentId(Customizing.MEDIA, itemDataCustom.getMyJSONObject().getId()));*/
-        TableDataCustom tableDataCustom = new TableDataCustom(R.layout.fragment_photo, map,
-                new ArrayList<MyJSONObject>()).setChildRidMap(childridMap);
+        TableDataCustom tableDataCustom = new TableDataCustom(R.layout.fragment_photo, fs,
+                new ArrayList<MyJSONObject>()).setChildRidList(childridMap);
 
 
         tableDataCustom.setEdit(true);
@@ -155,7 +159,7 @@ public class LookInfoFragment extends Fragment {
     }
 
     private void init() {
-        AndroidTool.setView(view, itemDataCustom, false);
+        AndroidTool.setView(view, itemDataCustom, false, 0);
         //查看所有的照片
 
             /*Context context = recy.getContext();
@@ -178,15 +182,15 @@ public class LookInfoFragment extends Fragment {
         itemDataCustom.setMyJSONObject(myJSONObject);
 
         if (view != null) {
-            AndroidTool.setView(view, itemDataCustom, false);
+            AndroidTool.setView(view, itemDataCustom, false, 0);
             medias = TableTool.findByTableNameAndParentId(Customizing.MEDIA, myJSONObject.getId());
             myItemRecyclerViewAdapter.setDatas(medias);
 
-             sfzFronts = new ArrayList<>();
-             sfzBacks = new ArrayList<>();
-            for (MyJSONObject my : medias){
-                sfzFronts.addAll(TableTool.findByTableNameAndParentId(Customizing.SFZ_Front,my.getId()));
-                sfzBacks.addAll(TableTool.findByTableNameAndParentId(Customizing.SFZ_back,my.getId()));
+            sfzFronts = new ArrayList<>();
+            sfzBacks = new ArrayList<>();
+            for (MyJSONObject my : medias) {
+                sfzFronts.addAll(TableTool.findByTableNameAndParentId(Customizing.SFZ_Front, my.getId()));
+                sfzBacks.addAll(TableTool.findByTableNameAndParentId(Customizing.SFZ_back, my.getId()));
             }
             List<List<MyJSONObject>> childs = new ArrayList<>();
             childs.add(sfzFronts);

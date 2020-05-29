@@ -34,6 +34,7 @@ import com.xupu.locationmap.projectmanager.service.NFService;
 import com.xupu.locationmap.projectmanager.service.SFZService;
 import com.xupu.locationmap.projectmanager.service.XZQYService;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -86,19 +87,20 @@ public class NFActivity extends AppCompatActivity {
         });
 
         List<MyJSONObject> nfs = NFService.findByXZDM();
-        Map<Integer, FiledCustom> map = new HashMap<>();
-        map.put(R.id.name, new FiledCustom("name"));
-        map.put(R.id.bz, new FiledCustom("bz"));
-        map.put(R.id.btu_delete, new BtuFiledCustom<MyJSONObject>("删除") {
+
+        List<FiledCustom> fs = new ArrayList<>();
+        fs.add(new FiledCustom(R.id.name, "name"));
+        fs.add(new FiledCustom(R.id.name, "bz"));
+        fs.add(new BtuFiledCustom(R.id.btu_delete, "删除") {
             @Override
             public void OnClick(MyJSONObject nf) {
                 if (TableTool.delete(nf)) {
                     itemFragment.remove(nf);
                 }
-
             }
         }.setConfirm(true, "确定要删除农户吗？"));
-        map.put(R.id.btu_lookinfo, new BtuFiledCustom<MyJSONObject>("查看") {
+
+        fs.add(new BtuFiledCustom(R.id.btu_lookinfo, "查看") {
             @Override
             public void OnClick(MyJSONObject nf) {
                 //跳到详细信息页面
@@ -106,7 +108,8 @@ public class NFActivity extends AppCompatActivity {
             }
         });
 
-        TableDataCustom tableDataCustom = new TableDataCustom(R.layout.fragment_nf_item, map, nfs);
+
+        TableDataCustom tableDataCustom = new TableDataCustom(R.layout.fragment_nf_item, fs, nfs);
         itemFragment = new ItemFragment(tableDataCustom);
         //主页面显示
         getSupportFragmentManager().beginTransaction()
@@ -134,11 +137,8 @@ public class NFActivity extends AppCompatActivity {
         } else {
             lookInfoFragment = (LookInfoFragment) fragment;
         }
-
         lookInfoFragment.setJSONbject(myJSONObject);
         showFragment(lookinfoTagName);
-
-
     }
 
     /**
@@ -147,10 +147,10 @@ public class NFActivity extends AppCompatActivity {
      * @return
      */
     private ItemDataCustom getLookInfoFragmentItemDataCustom() {
-        Map<Integer, FiledCustom> filedCustomMap = new HashMap<>();
-        filedCustomMap.put(R.id.name, new EditFiledCusom("name", true));
-        filedCustomMap.put(R.id.bz, new EditFiledCusom("bz", false));
-        filedCustomMap.put(R.id.btu_submit, new BtuFiledCustom<MyJSONObject>("修改") {
+        List<FiledCustom> fs = new ArrayList<>();
+        fs.add(new EditFiledCusom(R.id.name, "name", true));
+        fs.add(new EditFiledCusom(R.id.bz, "bz", false));
+        fs.add(new BtuFiledCustom(R.id.btu_submit, "修改") {
             @Override
             public void OnClick(MyJSONObject myJSONObject) {
                 //更新listview
@@ -163,21 +163,19 @@ public class NFActivity extends AppCompatActivity {
                 //修改多媒体文件
                 //找到多媒体文件
                 showFragment(listTagName);
-
-
             }
         }.setCheck(true).setReturn(true).setConfirm(true, "确认要修改吗？"));
-        filedCustomMap.put(R.id.btu_cancel, new BtuFiledCustom("取消") {
+        fs.add(new BtuFiledCustom(R.id.btu_cancel, "取消") {
             @Override
             public void OnClick(MyJSONObject myJSONObject) {
                 showFragment(listTagName);
             }
         });
+
+
         //RecyclerViewFiledCustom recyclerViewFiledCustom = new  RecyclerViewFiledCustom.Builder(R.id.fl_photos).addFiledCustom(R.id.img,new FiledCustom())
-
-
         //添加照片的按钮
-        filedCustomMap.put(R.id.btu_add_sfz_photo_front, new BtuFiledCustom<MyJSONObject>("添加身份证正面照片") {
+        fs.add(new BtuFiledCustom(R.id.btu_add_sfz_photo_front, "添加身份证正面照片") {
             @Override
             public void OnClick(MyJSONObject myJSONObject) {
                 //添加照片
@@ -185,7 +183,7 @@ public class NFActivity extends AppCompatActivity {
                 SFZPhotoTool.getSFZPhotoTool(NFActivity.this).front(media);
             }
         });
-        filedCustomMap.put(R.id.btu_add_sfz_photo_back, new BtuFiledCustom<MyJSONObject>("添加身份证反面照片") {
+        fs.add(new BtuFiledCustom(R.id.btu_add_sfz_photo_back, "添加身份证反面照片") {
             @Override
             public void OnClick(MyJSONObject myJSONObject) {
                 //添加照片
@@ -193,15 +191,14 @@ public class NFActivity extends AppCompatActivity {
                 SFZPhotoTool.getSFZPhotoTool(NFActivity.this).back(media);
             }
         });
-
-        filedCustomMap.put(R.id.btu_add_hkb_photo, new BtuFiledCustom("添加户口本照片") {
+        fs.add(new BtuFiledCustom(R.id.btu_add_hkb_photo, "添加户口本照片") {
             @Override
             public void OnClick(MyJSONObject myJSONObject) {
                 MyJSONObject media = MediaService.getMedia(myJSONObject, 0, "户口本");
                 MediaTool.to(NFActivity.this, 101, media);
             }
         });
-        filedCustomMap.put(R.id.btu_add_fw_photo, new BtuFiledCustom("添加房屋照片") {
+        fs.add(new BtuFiledCustom(R.id.btu_add_fw_photo, "添加房屋照片") {
             @Override
             public void OnClick(MyJSONObject myJSONObject) {
                 MyJSONObject media = MediaService.getMedia(myJSONObject, 0, "房屋");
@@ -209,7 +206,8 @@ public class NFActivity extends AppCompatActivity {
             }
         });
 
-        ItemDataCustom itemDataCustom = new ItemDataCustom(R.layout.fragment_nf_item_info, NFService.newNF(), filedCustomMap);
+
+        ItemDataCustom itemDataCustom = new ItemDataCustom(R.layout.fragment_nf_item_info, NFService.newNF(), fs);
 
         return itemDataCustom;
     }
@@ -240,13 +238,13 @@ public class NFActivity extends AppCompatActivity {
                     // 将拍摄的照片显示出来
                     if (data != null) {
                         String contentType = data.getStringExtra(CameraActivity.KEY_CONTENT_TYPE);
-                       final MyJSONObject media = (MyJSONObject) this.getIntent().getSerializableExtra("media");
+                        final MyJSONObject media = (MyJSONObject) this.getIntent().getSerializableExtra("media");
                         //保存多媒体
                         TableTool.insert(media);
                         //保存身份证
                         lookInfoFragment.setJSONbject(TableTool.findById(media.getParentid()));
                         //检查是否联网
-                        if(SFZPhotoTool.INTERNET){
+                        if (SFZPhotoTool.INTERNET) {
                             if (!TextUtils.isEmpty(contentType)) {
                                 if (CameraActivity.CONTENT_TYPE_ID_CARD_FRONT.equals(contentType)) {
                                     //身份证正面
@@ -288,27 +286,27 @@ public class NFActivity extends AppCompatActivity {
      */
     private void initAddItemFragment() {
 
-        Map<Integer, FiledCustom> filedCustomMap = new HashMap<>();
-        filedCustomMap.put(R.id.name, new EditFiledCusom("name", true));
-        filedCustomMap.put(R.id.bz, new EditFiledCusom("bz", false));
-
-        filedCustomMap.put(R.id.btu_submit, new BtuFiledCustom<MyJSONObject>("添加") {
+        List<FiledCustom> fs = new ArrayList<>();
+        fs.add(new EditFiledCusom(R.id.name, "name", true));
+        fs.add(new EditFiledCusom(R.id.bz, "bz", false));
+        fs.add(new BtuFiledCustom(R.id.btu_submit, "添加") {
             @Override
             public void OnClick(MyJSONObject myJSONObject) {
-
                 TableTool.insert(myJSONObject);
                 itemFragment.addItem(myJSONObject);
                 showFragment(listTagName);
                 //init();
             }
         }.setCheck(true).setReturn(true));
-        filedCustomMap.put(R.id.btu_cancel, new BtuFiledCustom("取消") {
+
+        fs.add(new BtuFiledCustom(R.id.btu_cancel, "取消") {
             @Override
-            public void OnClick(MyJSONObject resultData) {
+            public void OnClick(MyJSONObject myJSONObject) {
                 showFragment(listTagName);
             }
         });
-        ItemDataCustom itemDataCustom = new ItemDataCustom(R.layout.fragment_nf_item_add, NFService.newNF(), filedCustomMap);
+
+        ItemDataCustom itemDataCustom = new ItemDataCustom(R.layout.fragment_nf_item_add, NFService.newNF(), fs);
         addItemFragment = new AddItemFragment(itemDataCustom);
         getSupportFragmentManager().beginTransaction().add(R.id.fl, addItemFragment, additemTagName).hide(addItemFragment).commit();
 

@@ -3,19 +3,30 @@ package com.xupu.locationmap.projectmanager.po;
 import com.alibaba.fastjson.JSONObject;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ItemDataCustom {
 
-    public ItemDataCustom(Integer rid, MyJSONObject jsonObject, Map<Integer, FiledCustom> map) {
+    private List<FiledCustom> filedCustoms;
+
+
+    public ItemDataCustom(Integer rid, MyJSONObject jsonObject, List<FiledCustom> filedCustoms) {
         this.myJSONObject = jsonObject;
-        this.map = map;
+        this.filedCustoms =filedCustoms;
         this.rid = rid;
     }
 
     private Integer rid;
     private MyJSONObject myJSONObject;
-    private Map<Integer, FiledCustom> map;
+
+    public List<FiledCustom> getFiledCustoms() {
+        return filedCustoms;
+    }
+
+    public void setFiledCustoms(List<FiledCustom> filedCustoms) {
+        this.filedCustoms = filedCustoms;
+    }
 
     public Integer getRid() {
         return rid;
@@ -25,13 +36,6 @@ public class ItemDataCustom {
         this.rid = rid;
     }
 
-    public Map<Integer, FiledCustom> getMap() {
-        return map;
-    }
-
-    public void setMap(Map<Integer, FiledCustom> map) {
-        this.map = map;
-    }
 
     public MyJSONObject getMyJSONObject() {
         return myJSONObject;

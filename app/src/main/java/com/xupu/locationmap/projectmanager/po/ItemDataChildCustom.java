@@ -7,20 +7,20 @@ public class ItemDataChildCustom {
 
 
     private List<MyJSONObject>  childs;
-    private Map<Integer, FiledCustom> map;
+    private List<FiledCustom> filedCustoms;
 
 
-    public ItemDataChildCustom(List<MyJSONObject> childs, Map<Integer, FiledCustom> map) {
+    public ItemDataChildCustom(List<MyJSONObject> childs, List<FiledCustom> filedCustoms) {
         this.childs = childs;
-        this.map = map;
+        this.filedCustoms = filedCustoms;
     }
 
-    public Map<Integer, FiledCustom> getMap() {
-        return map;
+    public List<FiledCustom> getFiledCustoms() {
+        return filedCustoms;
     }
 
-    public void setMap(Map<Integer, FiledCustom> map) {
-        this.map = map;
+    public void setFiledCustoms(List<FiledCustom> filedCustoms) {
+        this.filedCustoms = filedCustoms;
     }
 
     public List<MyJSONObject> getChilds() {
