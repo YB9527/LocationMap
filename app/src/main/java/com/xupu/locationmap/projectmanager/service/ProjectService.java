@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.UUID;
 
 public class ProjectService {
-    private static String CURRENT_PROJECT_MARK = "CURRENT_PROJECT_MARK";
+    public static String CURRENT_PROJECT_MARK = "CURRENT_PROJECT_MARK";
     private static MyJSONObject currentSugProject;
 
     /**
@@ -27,6 +27,7 @@ public class ProjectService {
             //在数据中查找
             currentSugProject = RedisTool.findRedis(CURRENT_PROJECT_MARK, MyJSONObject.class);
         }
+
         return currentSugProject;
     }
 
@@ -39,10 +40,13 @@ public class ProjectService {
         //保存到数据库中，下次重新启动有记录
         RedisTool.updateRedis(CURRENT_PROJECT_MARK, currentSugProject);
         ProjectService.currentSugProject = currentSugProject;
+        TableTool.createDB(getName(currentSugProject));
     }
 
-    public static List<MyJSONObject> findAll() {
-        List<MyJSONObject> projects = TableTool.findByTableName(Customizing.PROJECT);
+    public static ArrayList<MyJSONObject> findAll() {
+       ArrayList<MyJSONObject> projects = RedisTool.findListRedis(ZTService.PROJECT_TABLE_NAME,MyJSONObject.class);
+       // ArrayList<MyJSONObject> projects = TableTool.findByTableName(ZTService.PROJECT_TABLE_NAME);
+        //String json = JSONObject.toJSONString(projects.get(0)) ;
         return projects;
     }
 

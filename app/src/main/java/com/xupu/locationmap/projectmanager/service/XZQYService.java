@@ -67,7 +67,7 @@ public class XZQYService {
     }
 
     public static List<MyJSONObject> findByProject() {
-        List<MyJSONObject> list = TableTool.findByTableNameAndParentId(Customizing.XZQY, ProjectService.getCurrentSugProject().getId());
+        List<MyJSONObject> list = TableTool.findByTableNameAndParentId(ZTService.XZQ_LIST, ProjectService.getCurrentSugProject().getId());
         return list;
     }
 }

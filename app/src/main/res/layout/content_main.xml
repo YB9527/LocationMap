@@ -14,23 +14,29 @@
         android:layout_height="0dp"
         android:layout_weight="5"
         android:orientation="vertical">
-        <TextView
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
-            android:text="欢迎使用旭普软件"
-            android:textSize="30sp"
-            android:textStyle="italic"
-            android:typeface="monospace" />
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
-            android:gravity="right"
-            android:text="仅限本公司使用"
-            android:textSize="20sp"
-            android:textStyle="italic"
-            android:typeface="monospace" />
+            android:layout_height="80dp">
+            <TextView
+
+                android:layout_alignParentLeft="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="欢迎使用旭普软件"
+                android:textSize="30sp"
+                android:textStyle="italic"
+                android:typeface="monospace" />
+            <TextView
+                android:layout_alignParentRight="true"
+                android:layout_alignParentBottom="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="仅限本公司使用"
+                android:textSize="20sp"
+                android:textStyle="italic"
+                android:typeface="monospace" />
+        </RelativeLayout>
+
         <TextView
             android:layout_marginTop="50dp"
             android:textSize="20sp"
@@ -66,16 +72,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </LinearLayout>
-
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="100dp">
+        android:layout_height="wrap_content">
         <TextView
-            android:gravity="right"
-            android:layout_gravity="bottom"
+            android:layout_alignParentRight="true"
             android:textSize="15sp"
             android:text="如有问题，联系：YanBo， QQ：525730167"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
-    </LinearLayout>
+    </RelativeLayout>
+
 </LinearLayout>

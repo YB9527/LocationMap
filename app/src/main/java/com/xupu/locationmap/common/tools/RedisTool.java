@@ -14,8 +14,9 @@ import java.util.List;
 public class RedisTool {
 
 
-    private static SQLiteDatabase db;
 
+    private static SQLiteDatabase db;
+    public final static String REDIS="redis.db";
     /**
      * 得到本地 sqlite 数据库
      *
@@ -23,7 +24,7 @@ public class RedisTool {
      */
     private static SQLiteDatabase getSQLiteDatabase() {
         if (db == null) {
-            PetDbHelper mDbHelper = new PetDbHelper(AndroidTool.getMainActivity());
+            PetDbHelper mDbHelper = new PetDbHelper(AndroidTool.getMainActivity(),REDIS);
             db = mDbHelper.getReadableDatabase();
         }
         return db;
@@ -134,8 +135,8 @@ public class RedisTool {
      * @param type
      * @return
      */
-    public static <T> List<T> findListRedis(String beginMark, Type type) {
-        List<T> list = new ArrayList<>();
+    public static <T> ArrayList<T> findListRedis(String beginMark, Type type) {
+        ArrayList<T> list = new ArrayList<>();
         List<String> jsons = findListRedis(beginMark);
         for (String json : jsons
              ) {
@@ -145,7 +146,7 @@ public class RedisTool {
         return  list;
     }
 
-    private static List<String> findListRedis(String mark) {
+    public static List<String> findListRedis(String mark) {
         SQLiteDatabase db = getSQLiteDatabase();
         String sql = "select json from  redis where  mark like  '"+mark+"'";
 

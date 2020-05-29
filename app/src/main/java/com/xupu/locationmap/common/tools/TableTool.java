@@ -1,12 +1,16 @@
 package com.xupu.locationmap.common.tools;
 
 import android.content.ContentValues;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.alibaba.fastjson.JSONObject;
+import com.xupu.locationmap.projectmanager.page.ProjectPage;
 import com.xupu.locationmap.projectmanager.po.MyJSONObject;
-
-import org.json.JSONObject;
+import com.xupu.locationmap.projectmanager.po.Redis;
+import com.xupu.locationmap.projectmanager.service.ProjectService;
+import com.xupu.locationmap.projectmanager.service.ZTService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,13 +20,26 @@ import java.util.List;
  */
 public class TableTool {
 
-    private static SQLiteDatabase db;
+    public static SQLiteDatabase db;
     public final static String Table_Name = "xupu";
+    private final  static  String FIELD="id,tablename,parentid,json,deletechild,tableid";
 
     static {
+        //PetDbHelper mDbHelper = new PetDbHelper(AndroidTool.getMainActivity(),"shelter.db");
+        //db = mDbHelper.getReadableDatabase();
         if (db == null) {
-            PetDbHelper mDbHelper = new PetDbHelper(AndroidTool.getMainActivity());
-            db = mDbHelper.getReadableDatabase();
+            //1、拿到当前的项目
+            String projectJson = RedisTool.findRedis(ProjectService.CURRENT_PROJECT_MARK);
+            if(Tool.isEmpty(projectJson)){
+                //跳到项目选择页面
+                Intent intent = new Intent(AndroidTool.getMainActivity(), ProjectPage.class);
+                AndroidTool.getMainActivity().startActivity(intent);
+            }else{
+                MyJSONObject project = JSONObject.parseObject(projectJson,MyJSONObject.class);
+                ProjectService.setCurrentSugProject(project);
+                createDB(ProjectService.getName(project));
+
+            }
         }
     }
 
@@ -33,7 +50,7 @@ public class TableTool {
      * @return
      */
     public static MyJSONObject findById(String id) {
-        String sql = "select id,tablename,parentid,json,deletechild from  " + Table_Name + " where  id =  '" + id + "'";
+        String sql = "select" +FIELD+" from  " + Table_Name + " where  id =  '" + id + "'";
         Cursor cursor = db.rawQuery(sql, null);
         while (cursor.moveToNext()) {
             MyJSONObject jsonObject = cursorToMyJSONObject(cursor);
@@ -49,10 +66,10 @@ public class TableTool {
      * @param tablename
      * @return
      */
-    public static List<MyJSONObject> findByTableName(String tablename) {
+    public static ArrayList<MyJSONObject> findByTableName(String tablename) {
 
-        String sql = "select id,tablename,parentid,json,deletechild from " + Table_Name + " where  tablename =  '" + tablename + "'";
-        List<MyJSONObject> jsons = new ArrayList<>();
+        String sql = "select " +FIELD+"  from " + Table_Name + " where  tablename =  '" + tablename + "'";
+        ArrayList<MyJSONObject> jsons = new ArrayList<>();
         Cursor cursor = db.rawQuery(sql, null);
         while (cursor.moveToNext()) {
             MyJSONObject jsonObject = cursorToMyJSONObject(cursor);
@@ -64,7 +81,7 @@ public class TableTool {
 
     public static List<MyJSONObject> findByTableNameAndParentId(String tablename, String parentid) {
 
-        String sql = "select id,tablename,parentid,json,deletechild from " + Table_Name + " where  tablename =  '" + tablename + "' AND parentid =  '" + parentid + "'";
+        String sql = "select " +FIELD+"  from " + Table_Name + " where  tablename =  '" + tablename + "' AND parentid =  '" + parentid + "'";
         List<MyJSONObject> jsons = new ArrayList<>();
         Cursor cursor = db.rawQuery(sql, null);
         while (cursor.moveToNext()) {
@@ -72,7 +89,6 @@ public class TableTool {
             jsons.add(jsonObject);
         }
         return jsons;
-
     }
 
 
@@ -85,6 +101,7 @@ public class TableTool {
         );
 
         jsonObject.setDeletechild(cursor.getInt(4));
+        jsonObject.setTableid(cursor.getString(5));
         return jsonObject;
     }
 
@@ -95,7 +112,7 @@ public class TableTool {
      * @return
      */
     public static List<MyJSONObject> findByParentId(String parentid) {
-        String sql = "select id,tablename,parentid,json,deletechild from  " + Table_Name + " where  parentid =  '" + parentid + "'";
+        String sql = "select " +FIELD+" from  " + Table_Name + " where  parentid =  '" + parentid + "'";
         List<MyJSONObject> jsons = new ArrayList<>();
         Cursor cursor = db.rawQuery(sql, null);
         while (cursor.moveToNext()) {
@@ -118,7 +135,7 @@ public class TableTool {
         values.put("parentid", myJSONObject.getParentid());
         values.put("json", myJSONObject.getJson());
         values.put("deletechild", myJSONObject.getDeletechild());
-
+        values.put("tableid", myJSONObject.getTableid());
         return db
                 .update(Table_Name, values, "id" + " = ?", new String[]{myJSONObject.getId()});
     }
@@ -138,6 +155,7 @@ public class TableTool {
             values.put("parentid", myJSONObject.getParentid());
             values.put("json", myJSONObject.getJson());
             values.put("deletechild", myJSONObject.getDeletechild());
+            values.put("tableid", myJSONObject.getTableid());
             long count = db.insert(Table_Name, null, values);
             if (count == 0) {
                 return false;
@@ -211,5 +229,11 @@ public class TableTool {
         for (MyJSONObject myJSONObject : myJSONObjects) {
             updateById(myJSONObject);
         }
+    }
+
+
+    public static void createDB(String projectTableName) {
+        PetDbHelper mDbHelper = new PetDbHelper(AndroidTool.getMainActivity(),projectTableName+".db");
+        db = mDbHelper.getReadableDatabase();
     }
 }

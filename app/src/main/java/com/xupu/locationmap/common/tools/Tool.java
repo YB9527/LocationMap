@@ -58,11 +58,14 @@ public class Tool {
         //String hostAddress = "http://192.168.2.176:3333/";
         // String hostAddress = "http://192.168.3.3:3333/springboot/";
         //String hostAddress = "http://192.168.3.3:3333/";
-        String hostAddress = "http://prsmartoa.com:10529/springboot/";
+        //String hostAddress = "http://prsmartoa.com:10529/springboot/";
+        String hostAddress = "http://192.168.30.105:9999/api/apidata/";
         return hostAddress;
     }
 
-
+    public static String getZTHostAddress() {
+        return getHostAddress()+"data/";
+    }
     /**
      * 检查文件夹是否存在
      *
@@ -204,6 +207,7 @@ public class Tool {
     public static String objectToJson(Object obj) {
         return new Gson().toJson(obj);
     }
+
 
 
 }

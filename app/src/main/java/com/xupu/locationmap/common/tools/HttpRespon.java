@@ -4,11 +4,7 @@ import android.text.TextUtils;
 
 import com.google.gson.Gson;
 
-/**
- * @author 小码哥Android学院(520it.com)
- * @time 2016/10/14  17:08
- * @desc ${TODD}
- */
+
 public abstract class HttpRespon<T> {
     //http返回的类型的泛型
     Class<T> t;
@@ -17,9 +13,14 @@ public abstract class HttpRespon<T> {
         this.t = t;
         this.gson = gson;
     }
-
+    public HttpRespon(Class<T> t){
+        this.t = t;
+        this.gson = new Gson();
+    }
     //失败->调用者->失败的原因
-    public abstract void  onError(String msg);
+    public  void  onError(String msg){
+        AndroidTool.showAnsyTost(msg,1);
+    }
     //成功->返回我需要的类型
     public abstract void  onSuccess(T t);
 

@@ -63,7 +63,7 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
 
     public void setChilds(List<List<MyJSONObject>> childs) {
         this.childs = childs;
-        notifyDataSetChanged();
+        //notifyDataSetChanged();
     }
 
     @Override
@@ -91,6 +91,16 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
             }
         }
 
+        holder.mView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (oldHolder != null) {
+                    oldHolder.itemView.setBackgroundColor(Color.WHITE);
+                }
+                holder.itemView.setBackgroundColor(Color.GRAY);
+                oldHolder = holder;
+            }
+        });
       /*  holder.mItem = json;
         for (View view : holder.vieMap.keySet()) {
 
@@ -113,20 +123,7 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
                 //img.setImageResource(R.drawable.good_morning_img);//不会变形
             }
         }
-        holder.mView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.v("yb", holder.mItem.toString());
-
-                if (oldHolder != null) {
-                    oldHolder.itemView.setBackgroundColor(Color.WHITE);
-                }
-                holder.itemView.setBackgroundColor(Color.GRAY);
-                oldHolder = holder;
-
-
-            }
-        });*/
+        */
 
     }
 

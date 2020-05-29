@@ -133,7 +133,6 @@ public class SFZPhotoTool {
      */
      public void recIDCard(String idCardSide, String filePath, MyCallback myCallback) {
         IDCardParams param = new IDCardParams();
-
         param.setImageFile(new File(filePath));
         // 设置身份证正反面
         param.setIdCardSide(idCardSide);

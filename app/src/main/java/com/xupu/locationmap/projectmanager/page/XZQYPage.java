@@ -44,7 +44,6 @@ public class XZQYPage extends AppCompatActivity {
         //itemFragment2 = new ItemFragment2();
         //getSupportFragmentManager().beginTransaction().replace(R.id.page,itemFragment2).commit();
         setMyTitle();
-
     }
 
     private void setMyTitle() {

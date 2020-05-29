@@ -7,6 +7,10 @@ import java.io.Serializable;
 
 public class MyJSONObject implements Serializable {
     /**
+     * 数据库中tableid的字段
+     */
+    private String tableid;
+    /**
      * 对象id
      */
     private String id;
@@ -42,6 +46,15 @@ public class MyJSONObject implements Serializable {
         this.tablename = tablename;
         this.parentid = parentid;
         this.setJson(json);
+        this.deletechild = 0;
+    }
+    public MyJSONObject(String id, String tablename, String parentid, JSONObject jsonObject) {
+        this.id = id;
+        this.tablename = tablename;
+        this.parentid = parentid;
+        this.setJson(json);
+        this.jsonobject = jsonObject;
+        this.toJson();
         this.deletechild = 0;
     }
 
@@ -127,5 +140,13 @@ public class MyJSONObject implements Serializable {
                 "json='" + json + '\'' +
                 ", jsonobject=" + jsonobject +
                 '}';
+    }
+
+    public String getTableid() {
+        return tableid;
+    }
+
+    public void setTableid(String tableid) {
+        this.tableid = tableid;
     }
 }

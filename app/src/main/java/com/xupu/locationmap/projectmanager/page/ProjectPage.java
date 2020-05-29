@@ -2,11 +2,13 @@ package com.xupu.locationmap.projectmanager.page;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
 import com.alibaba.fastjson.JSONObject;
+import com.tianditu.maps.Map.Project;
 import com.xupu.locationmap.R;
 import com.xupu.locationmap.common.po.MyCallback;
 import com.xupu.locationmap.common.po.ResultData;
@@ -23,6 +25,7 @@ import com.xupu.locationmap.projectmanager.po.XZDM;
 import com.xupu.locationmap.projectmanager.service.ProjectService;
 import com.xupu.locationmap.projectmanager.service.XZQYService;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,7 +41,7 @@ public class ProjectPage extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         AndroidTool.setFullWindow(this);
         setMyTitle();
-        setContentView(R.layout.activity_table_one);
+        setContentView(R.layout.activity_project);
         init();
 
     }
@@ -81,7 +84,7 @@ public class ProjectPage extends AppCompatActivity {
     }
 
     private void init() {
-        btuAdd = findViewById(R.id.btu_add);
+        /*btuAdd = findViewById(R.id.btu_add);
         btuAdd.setVisibility(View.VISIBLE);
         btuAdd.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -89,9 +92,9 @@ public class ProjectPage extends AppCompatActivity {
 
                 ProjectPage.this.showMain(false);
             }
-        });
+        });*/
 
-        List<MyJSONObject> projects = ProjectService.findAll();
+        ArrayList<MyJSONObject> projects = ProjectService.findAll();
         Map<Integer, FiledCustom> map = new HashMap<>();
         map.put(R.id.name, new FiledCustom("name"));
         map.put(R.id.btu_select, getBtuSelect());
@@ -103,6 +106,15 @@ public class ProjectPage extends AppCompatActivity {
                 .add(R.id.fl, itemFragment, "list")   // 此处的R.id.fragment_container是要盛放fragment的父容器'
                 .commit();
         initAddItemFragment();
+
+      findViewById(R.id.btu_project_download).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(ProjectPage.this,ProjectDowload.class);
+                intent.putExtra("projects",projects);
+                startActivity(intent);
+            }
+        });
     }
 
     /**
@@ -136,10 +148,10 @@ public class ProjectPage extends AppCompatActivity {
     public void showMain(boolean ishow) {
         if (ishow) {
             getSupportFragmentManager().beginTransaction().hide(addItemFragment).show(itemFragment).commit();
-            btuAdd.setVisibility(View.VISIBLE);
+            //btuAdd.setVisibility(View.VISIBLE);
         } else {
             getSupportFragmentManager().beginTransaction().show(addItemFragment).hide(itemFragment).commit();
-            btuAdd.setVisibility(View.GONE);
+            //btuAdd.setVisibility(View.GONE);
         }
 
     }
