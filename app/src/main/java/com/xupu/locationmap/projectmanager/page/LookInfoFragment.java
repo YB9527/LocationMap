@@ -116,7 +116,7 @@ public class LookInfoFragment extends Fragment {
         frontFs.add(new EditFiledCusom(R.id.birthday, "birthday", false));
 
 
-        ItemDataChildCustom sfzFrontItemDataChildCustom = new ItemDataChildCustom(null, frontFs);
+        //ItemDataChildCustom sfzFrontItemDataChildCustom = new ItemDataChildCustom(null, frontFs);
 
         //身份证背面
         List<FiledCustom> backFs = new ArrayList<>();
@@ -126,7 +126,7 @@ public class LookInfoFragment extends Fragment {
 
 
         List<List<FiledCustom>> childridMap = new ArrayList<>();
-        childridMap.add(fs);
+        childridMap.add(frontFs);
         childridMap.add(backFs);
 
         fs.add( new EditFiledCusom(R.id.bz,"bz", false));

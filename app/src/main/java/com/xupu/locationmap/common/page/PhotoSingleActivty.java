@@ -1,10 +1,12 @@
 package com.xupu.locationmap.common.page;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.FileProvider;
 
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.graphics.PointF;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -14,8 +16,11 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 
 import com.xupu.locationmap.R;
+import com.xupu.locationmap.common.tools.AndroidTool;
 import com.xupu.locationmap.projectmanager.po.MyJSONObject;
 import com.xupu.locationmap.projectmanager.service.MediaService;
+
+import java.io.File;
 
 /**
  * 当个照片的显示
@@ -23,12 +28,14 @@ import com.xupu.locationmap.projectmanager.service.MediaService;
 public class PhotoSingleActivty extends AppCompatActivity {
 
     private static String path;
+
     public static PhotoSingleActivty getImageViewTouch(String path) {
         PhotoSingleActivty imageViewTouch = new PhotoSingleActivty();
 
         PhotoSingleActivty.path = path;
         return imageViewTouch;
     }
+
     ImageView imageView;
 
     @Override
@@ -37,17 +44,25 @@ public class PhotoSingleActivty extends AppCompatActivity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-        setContentView(R.layout.activity_project);
+        setContentView(R.layout.activity_photo_single);
 
         MyJSONObject media = (MyJSONObject) getIntent().getSerializableExtra("media");
-        ImageViewTouch imageViewTouch =ImageViewTouch.getImageViewTouch(MediaService.getPath(media));
+
+        Uri imageUri = FileProvider.getUriForFile(this, AndroidTool.FILEPROVIDER, new File(MediaService.getPath(media)));
+        imageView = findViewById(R.id.imageView);
+        imageView.setImageURI(imageUri);
+        imageView.setOnTouchListener(new ImageTouchListener(imageView));
+
+
+       /* ImageViewTouch imageViewTouch = ImageViewTouch.getImageViewTouch(MediaService.getPath(media));
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fl, imageViewTouch)   // 此处的R.id.fragment_container是要盛放fragment的父容器'
-                .commit();
+                .add(R.id.fl, imageViewTouch)   // 此处的R.id.fragment_container是要盛放fragment的父容器'
+                .commit();*/
      /*    imageView = findViewById(R.id.img);
         imageView.setImageBitmap(BitmapFactory.decodeFile(MediaService.getPath(media)));
         imageView.setOnTouchListener(new PhotoSingleActivty.ImageTouchListener(imageView));*/
     }
+
     /**
      * 图片 手势操作监听
      */
@@ -57,7 +72,10 @@ public class PhotoSingleActivty extends AppCompatActivity {
 
         public ImageTouchListener(ImageView imageView) {
             this.imageView = imageView;
+            imageView.setScaleType(ImageView.ScaleType.MATRIX);
+
         }
+
 
         //声明一个坐标点
         private PointF startPoint;
@@ -80,6 +98,7 @@ public class PhotoSingleActivty extends AppCompatActivity {
 
         @Override
         public boolean onTouch(View v, MotionEvent event) {
+
             switch (event.getAction() & MotionEvent.ACTION_MASK) {
                 case MotionEvent.ACTION_DOWN:
                     System.out.println("ACTION_DOWN");

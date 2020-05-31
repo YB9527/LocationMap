@@ -2,10 +2,12 @@ package com.xupu.locationmap.common.po;
 
 import com.baidu.ocr.sdk.model.IDCardResult;
 
+import java.io.Serializable;
+
 /**
  * 身份证正面
  */
-public class SFZFront {
+public class SFZFront implements Serializable {
     private String name;
     private String address;
     /**
@@ -21,38 +23,51 @@ public class SFZFront {
     /**
      * 生日
      */
-    private String  birthday;
+    private String birthday;
 
-    public void SetFont(String name,String sex,String nation,String address){
-        this.name =name;
+    public void SetFont(String name, String sex, String nation, String address) {
+        this.name = name;
         this.sex = sex;
         this.nation = nation;
         this.address = address;
     }
-    public void setFont(IDCardResult result){
+
+    public void setFont(IDCardResult result) {
         Object obj = result.getName();
-        if(obj != null){
-            this.name =obj.toString();
+        if (obj != null) {
+            this.name = obj.toString();
+        } else {
+            this.name = "";
         }
         obj = result.getGender();
-        if(obj != null){
-            this.sex =obj.toString();
+        if (obj != null) {
+            this.sex = obj.toString();
+        } else {
+            this.sex = "";
         }
         obj = result.getEthnic();
-        if(obj != null){
-            this.nation =obj.toString();
+        if (obj != null) {
+            this.nation = obj.toString();
+        } else {
+            this.nation = "";
         }
         obj = result.getAddress();
-        if(obj != null){
-            this.address =obj.toString();
+        if (obj != null) {
+            this.address = obj.toString();
+        } else {
+            this.address = "";
         }
         obj = result.getIdNumber();
-        if(obj != null){
-            this.idNumber =obj.toString();
+        if (obj != null) {
+            this.idNumber = obj.toString();
+        } else {
+            this.idNumber = "";
         }
         obj = result.getBirthday();
-        if(obj != null){
-            this.birthday =obj.toString();
+        if (obj != null) {
+            this.birthday = obj.toString();
+        } else {
+            this.birthday = "";
         }
 
     }
@@ -88,7 +103,6 @@ public class SFZFront {
     public void setAddress(String address) {
         this.address = address;
     }
-
 
 
     public String getIdNumber() {

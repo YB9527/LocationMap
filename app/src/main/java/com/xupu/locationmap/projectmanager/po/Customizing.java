@@ -6,7 +6,7 @@ import java.util.Map;
 public class Customizing {
     public static String PROJECT = "旭普公司测试软件";
     public static String PROJECT_name = "name";
-
+    public static String PARENTID="parentid";
 
     public static String NF = "农户";
     public static String NF_name = "name";
@@ -33,6 +33,8 @@ public class Customizing {
     public static Map<String, DatabaseField> NF_Field;
     public static Map<String, DatabaseField> XZQY_Field;
     public static Map<String, DatabaseField> MEDIA_Field;
+
+
     static {
         PROJECT_Field = new HashMap<>();
         {

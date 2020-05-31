@@ -13,7 +13,9 @@ public class SFZService {
 
 
     public static MyJSONObject frontToMyJSONObject(MyJSONObject media, SFZFront sfz) {
-        return new MyJSONObject(UUID.randomUUID().toString(), Customizing.SFZ_Front, media.getId(), JSONObject.toJSONString(sfz));
+
+        MyJSONObject sfzJson = new MyJSONObject(UUID.randomUUID().toString(), media.getJsonobject().getString("task"), media.getId(), JSONObject.toJSONString(sfz));
+        return sfzJson;
     }
 
     public static MyJSONObject backToMyJSONObject(MyJSONObject media, SFZBack sfz) {

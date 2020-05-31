@@ -19,6 +19,7 @@ import com.xupu.locationmap.common.po.ResultData;
 import com.xupu.locationmap.common.po.SFZBack;
 import com.xupu.locationmap.common.po.SFZFront;
 import com.xupu.locationmap.common.tools.AndroidTool;
+import com.xupu.locationmap.common.tools.FileTool;
 import com.xupu.locationmap.common.tools.MediaTool;
 import com.xupu.locationmap.common.tools.SFZPhotoTool;
 import com.xupu.locationmap.common.tools.TableTool;
@@ -90,7 +91,7 @@ public class NFActivity extends AppCompatActivity {
 
         List<FiledCustom> fs = new ArrayList<>();
         fs.add(new FiledCustom(R.id.name, "name"));
-        fs.add(new FiledCustom(R.id.name, "bz"));
+        fs.add(new FiledCustom(R.id.bz, "bz"));
         fs.add(new BtuFiledCustom(R.id.btu_delete, "删除") {
             @Override
             public void OnClick(MyJSONObject nf) {
@@ -152,12 +153,26 @@ public class NFActivity extends AppCompatActivity {
         fs.add(new EditFiledCusom(R.id.bz, "bz", false));
         fs.add(new BtuFiledCustom(R.id.btu_submit, "修改") {
             @Override
-            public void OnClick(MyJSONObject myJSONObject) {
+            public void OnClick(MyJSONObject nf) {
                 //更新listview
-
-                itemFragment.update(myJSONObject);
-                TableTool.updateById(myJSONObject);
+                //找到以前，看名字是否被更改，如果被更改，文件名字也要被改
+                MyJSONObject oldnf = TableTool.findById(nf.getId());
+                if (!NFService.getName(oldnf).equals(NFService.getName(nf))) {
+                    String olddir = MediaService.getMediaDir(oldnf);
+                    String newdir = MediaService.getMediaDir(nf);
+                    //修改media对象
+                    boolean isupdate = FileTool.reName(olddir, newdir);
+                    if (isupdate) {
+                        for (MyJSONObject media : lookInfoFragment.medias) {
+                            MediaService.setPath(media, MediaService.getPath(media).replace(olddir, newdir));
+                            media.toJson();
+                        }
+                    }
+                }
+                itemFragment.update(nf);
+                TableTool.updateById(nf);
                 TableTool.updateMany(lookInfoFragment.medias);
+
                 TableTool.updateMany(lookInfoFragment.sfzFronts);
                 TableTool.updateMany(lookInfoFragment.sfzBacks);
                 //修改多媒体文件
@@ -242,7 +257,7 @@ public class NFActivity extends AppCompatActivity {
                         //保存多媒体
                         TableTool.insert(media);
                         //保存身份证
-                        lookInfoFragment.setJSONbject(TableTool.findById(media.getParentid()));
+
                         //检查是否联网
                         if (SFZPhotoTool.INTERNET) {
                             if (!TextUtils.isEmpty(contentType)) {
@@ -271,6 +286,8 @@ public class NFActivity extends AppCompatActivity {
                                     });
                                 }
                             }
+                        } else {
+                            lookInfoFragment.setJSONbject(TableTool.findById(media.getParentid()));
                         }
 
                     }

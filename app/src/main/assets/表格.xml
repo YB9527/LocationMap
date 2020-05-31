@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pages>
+    <page tablename="地块">
+        <fieldCustom>
+            <id>title</id>
+            <attribute>dkbh</attribute>
+        </fieldCustom>
+        <fieldCustom>
+            <id>info1</id>
+            <attribute>zldwmc</attribute>
+        </fieldCustom>
+        <fieldCustom>
+            <id>info2</id>
+            <attribute>dlmc</attribute>
+        </fieldCustom>
+    </page>
+    <page  tablename="权属主体">
+        <fieldCustom>
+            <id>title</id>
+            <attribute>ztmc</attribute>
+        </fieldCustom>
+        <fieldCustom>
+            <id>info1</id>
+            <attribute>zjhm</attribute>
+        </fieldCustom>
+        <fieldCustom>
+            <id>info2</id>
+            <attribute>jtzz</attribute>
+        </fieldCustom>
+    </page>
+    <page tablename="行政区">
+        <fieldCustom>
+            <id>title</id>
+            <attribute>xzqmc</attribute>
+        </fieldCustom>
+        <fieldCustom>
+            <id>info1</id>
+            <attribute>xzqdm</attribute>
+        </fieldCustom>
+ <fieldCustom>
+            <id>info2</id>
+            <attribute></attribute>
+        </fieldCustom>
+    </page>
+    <page tablename="潜力图斑">
+        <fieldCustom>
+            <id>title</id>
+            <attribute>xzqmc</attribute>
+        </fieldCustom>
+ <fieldCustom>
+            <id>info1</id>
+            <attribute></attribute>
+        </fieldCustom>
+        <fieldCustom>
+            <id>info2</id>
+            <attribute></attribute>
+        </fieldCustom>
+    </page>
+</pages>

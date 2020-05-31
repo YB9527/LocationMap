@@ -67,7 +67,7 @@ public class TableListPage extends AppCompatActivity {
         List<MyJSONObject> tables = TableTool.findByTableName(ZTService.PROJECT_TABLE_LIST);
         for (MyJSONObject table : tables){
             //TableDataCustom tableDataCustom2 = new TableDataCustom_TableName(R.layout.fragment_item, null, table);
-            TableViewCustom  tc = new TableViewCustom(table.getJsonobject().getString("aliasname"), TableItemListPage.class, TableDataCustom.class);
+            TableViewCustom  tc = new TableViewCustom(table.getJsonobject().getString("aliasname"), TableItemListFragment.class, TableDataCustom.class);
             //tc.setTableDataCustom(tableDataCustom2);
             tableViewCustomList.add(tc);
         }

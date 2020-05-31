@@ -12,13 +12,16 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.core.content.FileProvider;
+import androidx.fragment.app.Fragment;
 
 import com.alibaba.fastjson.JSONObject;
+import com.baidu.ocr.ui.camera.CameraActivity;
 import com.esri.core.map.popup.PopupMediaInfo;
 import com.google.gson.Gson;
 
 import com.xupu.locationmap.projectmanager.po.Customizing;
 import com.xupu.locationmap.projectmanager.po.MyJSONObject;
+import com.xupu.locationmap.projectmanager.service.MediaService;
 
 import java.io.File;
 
@@ -35,7 +38,7 @@ public class MediaTool {
         }
     }
 
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+   /* @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     private static void photo(Activity activity, int requestCode, MyJSONObject media) {
         Uri imageUri;
         // 创建File对象，用于存储拍照后的图片
@@ -52,9 +55,9 @@ public class MediaTool {
         } catch (Exception e) {
             e.printStackTrace();
         }
-                  /* 7.0系统开始，直接使用本地真实路径的Uri被认为是不安全的，会抛 出一个FileUriExposedException异常。
+                  *//* 7.0系统开始，直接使用本地真实路径的Uri被认为是不安全的，会抛 出一个FileUriExposedException异常。
                    而FileProvider则是一种特殊的内容提供器，它使用了和内 容提供器类似的机制来对数据进行保护，
-                   可以选择性地将封装过的Uri共享给外部，从而提高了 应用的安全性*/
+                   可以选择性地将封装过的Uri共享给外部，从而提高了 应用的安全性*//*
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             //大于等于版本24（7.0）的场合
@@ -70,6 +73,30 @@ public class MediaTool {
         activity.getIntent().putExtra("media", media);
 
         activity.startActivityForResult(intent, requestCode);
-    }
+    }*/
 
+    //private static final int REQUEST_CODE_DRIVING_LICENSE = 103;
+
+    public static void photo(Activity activity,int requestCode,MyJSONObject media){
+        String path = MediaService.getPath(media);
+        //File outputImage = new File(media.getJsonobject().getString(Customizing.MEDIA_path));
+        Intent intent = new Intent(activity, CameraActivity.class);
+        intent.putExtra(CameraActivity.KEY_OUTPUT_FILE_PATH,path
+                );
+       intent.putExtra(CameraActivity.KEY_CONTENT_TYPE,
+                CameraActivity.CONTENT_TYPE_GENERAL);
+        activity.getIntent().putExtra("media", media);
+        activity.startActivityForResult(intent, requestCode);
+    }
+    public static void photo(Fragment fragment, int requestCode, MyJSONObject media){
+        String path = MediaService.getPath(media);
+        //File outputImage = new File(media.getJsonobject().getString(Customizing.MEDIA_path));
+        Intent intent = new Intent(fragment.getActivity(), CameraActivity.class);
+        intent.putExtra(CameraActivity.KEY_OUTPUT_FILE_PATH,path
+        );
+        intent.putExtra(CameraActivity.KEY_CONTENT_TYPE,
+                CameraActivity.CONTENT_TYPE_GENERAL);
+        fragment.getActivity().getIntent().putExtra("media", media);
+        fragment.startActivityForResult(intent, requestCode);
+    }
 }

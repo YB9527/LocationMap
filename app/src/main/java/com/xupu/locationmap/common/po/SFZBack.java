@@ -2,23 +2,31 @@ package com.xupu.locationmap.common.po;
 
 import com.baidu.ocr.sdk.model.IDCardResult;
 
+import java.io.Serializable;
+
 /**
  * 身份证背面
  */
-public class SFZBack {
+public class SFZBack implements Serializable {
 
     public void setBack(IDCardResult result) {
         Object obj = result.getSignDate();
         if (obj != null) {
             this.signDate = obj.toString();
+        }else{
+            this.signDate ="";
         }
         obj = result.getExpiryDate();
         if (obj != null) {
             this.expiryDate = obj.toString();
+        }else{
+            this.expiryDate ="";
         }
         obj = result.getIssueAuthority();
         if (obj != null) {
             this.issueAuthority = obj.toString();
+        }else{
+            this.issueAuthority ="";
         }
     }
 

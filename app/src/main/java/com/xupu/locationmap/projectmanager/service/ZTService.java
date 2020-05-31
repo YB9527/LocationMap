@@ -103,8 +103,8 @@ public class ZTService {
             }
         }
         String tableid = tableIdMap.get(itemid);
-        if(tableid == null){
-            AndroidTool.showAnsyTost("没有找到对应的表格,需要改后台api",1);
+        if (tableid == null) {
+            AndroidTool.showAnsyTost("没有找到对应的表格,需要改后台api", 1);
             try {
                 Thread.sleep(2000);
                 throw new RuntimeException("没有找到对应的表格,需要改后台api");
@@ -113,5 +113,14 @@ public class ZTService {
             }
         }
         return tableid;
+    }
+
+    public static String getItemIdByTableId(String itemid) {
+        for (String tableid : tableIdMap.keySet()) {
+            if (tableIdMap.get(tableid).equals(itemid)) {
+                return tableid;
+            }
+        }
+        return "";
     }
 }

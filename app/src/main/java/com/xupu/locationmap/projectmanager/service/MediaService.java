@@ -1,6 +1,10 @@
 package com.xupu.locationmap.projectmanager.service;
 
+import android.annotation.SuppressLint;
+import android.os.Build;
 import android.os.Environment;
+
+import androidx.annotation.RequiresApi;
 
 import com.alibaba.fastjson.JSONObject;
 import com.xupu.locationmap.common.tools.AndroidTool;
@@ -22,9 +26,18 @@ public class MediaService {
     private static String MARK = "media";
 
 
+    public static String getMediaDir(MyJSONObject parent) {
+        MyJSONObject project = ProjectService.getCurrentSugProject();
+        MyJSONObject xzdm = XZQYService.getCurrentXZDM();
+        String root = AndroidTool.getRootDir();
+        String dir = root + ProjectService.getName(project) + "/" + XZQYService.getCode(xzdm) + "_" + XZQYService.getCaption(xzdm) + "/"
+                + NFService.getName(parent) + "_" + parent.getId() + "/";
+        return dir;
+    }
+
     /**
      * @param parent
-     * @param mediaType
+     * @param mediaType 0 :照片，1：视频
      * @param task
      * @return
      */
@@ -42,8 +55,8 @@ public class MediaService {
 
         String root = AndroidTool.getRootDir();
         String uuid = UUID.randomUUID().toString();
-        String path = root  + ProjectService.getName(project) + "/" + XZQYService.getCode(xzdm) + "_" + XZQYService.getCaption(xzdm) + "/"
-                + NFService.getName(parent) + "_" + parent.getId() + "/" + task.replace("正面","").replace("反面","") + "/" + uuid;
+        String path = root + ProjectService.getName(project) + "/" + XZQYService.getCode(xzdm) + "_" + XZQYService.getCaption(xzdm) + "/"
+                + NFService.getName(parent) + "_" + parent.getId() + "/" + task.replace("正面", "").replace("反面", "") + "/" + uuid;
         FileTool.exitsDir(FileTool.getDir(path), true);
 
         switch (mediaType) {
@@ -74,5 +87,10 @@ public class MediaService {
 
     public static String getPath(MyJSONObject media) {
         return media.getJsonobject().getString(Customizing.MEDIA_path);
+    }
+
+    @SuppressLint("NewApi")
+    public static void setPath(MyJSONObject media, String path) {
+         media.getJsonobject().replace(Customizing.MEDIA_path,path);
     }
 }

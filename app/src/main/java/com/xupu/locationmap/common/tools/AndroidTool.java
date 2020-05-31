@@ -199,7 +199,7 @@ public class AndroidTool {
         List<FiledCustom> fs = itemDataCustom.getFiledCustoms();
         //使用副本修改，
         final MyJSONObject myJSONObject = itemDataCustom.getMyJSONObject();
-        JSONObject jsonObject;
+        final JSONObject jsonObject;
         if (isEdit) {
             jsonObject = myJSONObject.getJsonobject();
         } else {
@@ -211,12 +211,13 @@ public class AndroidTool {
             if (temView instanceof TextView) {
                 TextView tv = (TextView) temView;
                 if (filedCustom instanceof PositionField) {
-                    tv.setText(postion + 1 + "");
+                    PositionField positionField = (PositionField) filedCustom;
+                    tv.setText(positionField.getStartIndex() + postion + 1 + "");
                 } else {
                     String attribute = filedCustom.getAttribute();
-                    if(attribute == null){
+                    if (attribute == null) {
                         tv.setText("");
-                    }else{
+                    } else {
                         String str = jsonObject.getString(attribute);
                         if (str != null || temView instanceof EditText) {
                             tv.setText(str);
@@ -283,14 +284,25 @@ public class AndroidTool {
                     public void afterTextChanged(Editable s) {
                         String text = et.getText().toString();
                         jsonObject.replace(filedCustom.getAttribute(), text);
+                        // String aa ="123";
+                        //jsonObject.replace("a","123");
+
                     }
                 });
             } else if (temView instanceof ImageView) {
                 ImageView img = (ImageView) temView;
-                view.findViewById(R.id.SFZ_Front).setVisibility(View.GONE);
-                view.findViewById(R.id.SFZ_back).setVisibility(View.GONE);
-
+               /* View tem = view.findViewById(R.id.SFZ_Front);
+                if (tem != null) {
+                    tem.setVisibility(View.GONE);
+                }
+                tem = view.findViewById(R.id.SFZ_back);
+                if (tem != null) {
+                    tem.setVisibility(View.GONE);
+                }*/
                 String task = jsonObject.getString("task");
+                if (task == null) {
+                    return;
+                }
                 if (task.equals(Customizing.SFZ_Front)) {
                     //显示身份证正面
                     view.findViewById(R.id.SFZ_Front).setVisibility(View.VISIBLE);

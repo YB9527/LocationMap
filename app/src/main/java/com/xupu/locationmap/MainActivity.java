@@ -12,6 +12,7 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import android.view.MenuItem;
 
 import com.google.android.material.navigation.NavigationView;
+import com.xupu.locationmap.common.page.AskUser;
 import com.xupu.locationmap.common.tools.AndroidTool;
 import com.xupu.locationmap.projectmanager.page.LowMapManager;
 import com.xupu.locationmap.projectmanager.page.NFActivity;
@@ -49,6 +50,7 @@ public class MainActivity extends AppCompatActivity
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
         init();
+        AskUser.ask(this);
     }
 
     /**

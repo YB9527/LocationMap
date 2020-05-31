@@ -106,7 +106,6 @@ public class XZQYPage extends AppCompatActivity {
 
         TableDataCustom tableDataCustom = new TableDataCustom(R.layout.fragment_xzqy_item, fs, xzdms);
         itemFragment = new ItemFragment(tableDataCustom);
-
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.fl, itemFragment, "list")   // 此处的R.id.fragment_container是要盛放fragment的父容器'
                 .commit();
@@ -142,12 +141,9 @@ public class XZQYPage extends AppCompatActivity {
             }
         };
         fs.add(filedCustom);
-
-
         ItemDataCustom itemDataCustom = new ItemDataCustom(R.layout.fragment_add_item, XZQYService.newXZDM(), fs);
         addItemFragment = new AddItemFragment(itemDataCustom);
         getSupportFragmentManager().beginTransaction().add(R.id.fl, addItemFragment, "item").hide(addItemFragment).commit();
-
     }
 
     public void showMain(boolean ishow) {
@@ -158,8 +154,5 @@ public class XZQYPage extends AppCompatActivity {
             getSupportFragmentManager().beginTransaction().show(addItemFragment).hide(itemFragment).commit();
             btuAdd.setVisibility(View.GONE);
         }
-
     }
-
-
 }

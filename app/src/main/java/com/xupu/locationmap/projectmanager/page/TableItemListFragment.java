@@ -2,9 +2,12 @@ package com.xupu.locationmap.projectmanager.page;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
+import android.opengl.Visibility;
 import android.os.Bundle;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -22,6 +25,7 @@ import com.xupu.locationmap.R;
 import com.xupu.locationmap.common.tools.AndroidTool;
 import com.xupu.locationmap.common.tools.TableTool;
 import com.xupu.locationmap.projectmanager.po.BtuFiledCustom;
+import com.xupu.locationmap.projectmanager.po.Customizing;
 import com.xupu.locationmap.projectmanager.po.FiledCustom;
 import com.xupu.locationmap.projectmanager.po.MyJSONObject;
 import com.xupu.locationmap.projectmanager.po.PositionField;
@@ -44,7 +48,7 @@ import java.util.Map;
  * <p/>
  * interface.
  */
-public class TableItemListPage extends Fragment {
+public class TableItemListFragment extends Fragment {
 
     // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
@@ -57,7 +61,7 @@ public class TableItemListPage extends Fragment {
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
-    public TableItemListPage() {
+    public TableItemListFragment() {
 
     }
 
@@ -99,8 +103,11 @@ public class TableItemListPage extends Fragment {
             fs.add(filedCustom);
             filedCustom = new BtuFiledCustom(R.id.btn_tomedia, "多媒体") {
                 @Override
-                public void OnClick(MyJSONObject MyJSONObject) {
-                    AndroidTool.showAnsyTost("多媒体", 1);
+                public void OnClick(MyJSONObject myJSONObject) {
+                    //跳到任务界面
+                    Intent intent = new Intent(getActivity(), TaskActivty.class);
+                    intent.putExtra("parent",myJSONObject);
+                    getActivity().startActivity(intent);
                 }
             };
             fs.add(filedCustom);
@@ -138,8 +145,6 @@ public class TableItemListPage extends Fragment {
             myItemRecyclerViewAdapter = new MyItemRecyclerViewAdapter(tableDataCustom);
             recyclerView.setAdapter(myItemRecyclerViewAdapter);
         }
-        Resources res = getResources();
-        int viewId = AndroidTool.getCompentID("id", "index");
 
         return view;
     }
@@ -169,6 +174,16 @@ public class TableItemListPage extends Fragment {
 
     }
 
+    /**
+     * 显示fragment
+     *
+     * @param tagName
+     */
+    private void showFragment(String tagName) {
+        Intent intent = new Intent(getActivity(), LowMapManager.class);
+        startActivity(intent);
+    }
+
     public void remove(MyJSONObject jsonObject) {
         myItemRecyclerViewAdapter.remove(jsonObject);
     }
@@ -176,5 +191,6 @@ public class TableItemListPage extends Fragment {
     public void update(MyJSONObject jsonObject) {
         myItemRecyclerViewAdapter.update(jsonObject);
     }
+
 
 }

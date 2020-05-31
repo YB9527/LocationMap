@@ -50,7 +50,7 @@ public class TableTool {
      * @return
      */
     public static MyJSONObject findById(String id) {
-        String sql = "select" +FIELD+" from  " + Table_Name + " where  id =  '" + id + "'";
+        String sql = "select " +FIELD+" from  " + Table_Name + " where  id =  '" + id + "'";
         Cursor cursor = db.rawQuery(sql, null);
         while (cursor.moveToNext()) {
             MyJSONObject jsonObject = cursorToMyJSONObject(cursor);
@@ -225,10 +225,12 @@ public class TableTool {
      * 批量修改
      * @param myJSONObjects
      */
-    public static void updateMany(List<MyJSONObject> myJSONObjects) {
+    public static int updateMany(List<MyJSONObject> myJSONObjects) {
+        int count= 0;
         for (MyJSONObject myJSONObject : myJSONObjects) {
-            updateById(myJSONObject);
+             count +=  updateById(myJSONObject);
         }
+        return count ;
     }
 
 

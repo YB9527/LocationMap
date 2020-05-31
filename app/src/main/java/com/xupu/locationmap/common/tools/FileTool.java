@@ -240,5 +240,20 @@ public class FileTool {
         return null;
     }
 
-
+    /**
+     *
+     * @param olddir
+     * @param newdir
+     * @return 如果文件不存在，返回false
+     */
+    public static boolean reName(String olddir, String newdir) {
+        File oldfile = new File(olddir);
+        File newfile = new File(newdir);
+        if(oldfile.exists()){
+            oldfile.renameTo(newfile);
+            return true;
+        }
+       return false;
+       // file.renameTo(new File("D:\\Java\\gitworkspace\\Coding\\src\\com\\stono\\thread2\\page0"+substring));
+    }
 }

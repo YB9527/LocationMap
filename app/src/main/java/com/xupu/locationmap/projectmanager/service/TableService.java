@@ -31,8 +31,9 @@ public class TableService {
      * @return
      */
     public static TableDataCustom_TableName getTable(String tableName) {
-        String tableXmlPath = AndroidTool.getRootDir()+"表格.xml";
-        List<TableDataCustom_TableName> tts = getPages(tableXmlPath);
+        //String tableXmlPath = AndroidTool.getRootDir()+"表格.xml";
+        //String tableXmlPath = AndroidTool.getMainActivity().getFilesDir()+"/"+"表格.xml";
+        List<TableDataCustom_TableName> tts = getPages("表格.xml");
         for (TableDataCustom_TableName tt : tts) {
             if (tt.getTableName().equals(tableName)) {
                 return tt;
@@ -56,9 +57,10 @@ public class TableService {
         }
         InputStream inputStream = null;
         try {
-            inputStream = new FileInputStream(path);
+            inputStream = AndroidTool.getMainActivity().getAssets().open(path);
+            //inputStream = new FileInputStream(path);
             tts = readXmlBySAX(inputStream);
-        } catch (FileNotFoundException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return tts;

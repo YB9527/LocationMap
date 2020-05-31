@@ -17,7 +17,9 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.xupu.locationmap.R;
+import com.xupu.locationmap.common.po.Callback;
 import com.xupu.locationmap.common.po.ResultData;
+import com.xupu.locationmap.common.po.ViewHolderCallback;
 import com.xupu.locationmap.common.tools.AndroidTool;
 import com.xupu.locationmap.common.tools.TableTool;
 import com.xupu.locationmap.common.tools.Tool;
@@ -50,6 +52,10 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
     private int oldPostion;
     List<List<MyJSONObject>> childs;
     List<List<FiledCustom>> childRidMap;
+    private ViewHolderCallback callback;
+    public void setLoadViewCallback(ViewHolderCallback callback){
+        this.callback =callback;
+    }
 
     public List<MyJSONObject> getmValues() {
         return mValues;
@@ -63,7 +69,7 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
 
     public void setChilds(List<List<MyJSONObject>> childs) {
         this.childs = childs;
-        //notifyDataSetChanged();
+        notifyDataSetChanged();
     }
 
     @Override
@@ -75,6 +81,8 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
+
+
         MyJSONObject json = mValues.get(position);
         holder.itemView.setBackgroundColor(Color.WHITE);
         ItemDataCustom itemDataCustom = new ItemDataCustom(null, json, tableDataCustom.getFiledCustoms());
@@ -102,6 +110,9 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
                 oldHolder = holder;
             }
         });
+        if(callback != null){
+            callback.call(holder,position);
+        }
       /*  holder.mItem = json;
         for (View view : holder.vieMap.keySet()) {
 
@@ -171,7 +182,7 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
     public void remove(MyJSONObject jsonObject) {
         int index = this.mValues.indexOf(jsonObject);
         this.mValues.remove(index);
-        this.notifyDataSetChanged();
+        this.notifyItemRemoved(index);
     }
 
     public void update(MyJSONObject myJSONObject) {
