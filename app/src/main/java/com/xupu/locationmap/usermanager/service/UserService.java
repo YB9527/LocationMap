@@ -11,7 +11,8 @@ public class UserService {
     public static User user;
 
     public static User getUser() {
-        return user;
+        return  new User("123","张三","","","");
+        //return user;
     }
 
     public static void setUser(User user) {

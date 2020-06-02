@@ -1,5 +1,6 @@
 package com.xupu.locationmap.common.tools;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
@@ -18,6 +19,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,6 +44,7 @@ import com.xupu.locationmap.projectmanager.po.ImgFiledCusom;
 import com.xupu.locationmap.projectmanager.po.ItemDataCustom;
 import com.xupu.locationmap.projectmanager.po.MyJSONObject;
 import com.xupu.locationmap.projectmanager.po.PositionField;
+import com.xupu.locationmap.projectmanager.po.ProgressFiledCusom;
 
 import java.io.File;
 import java.util.Collection;
@@ -104,6 +107,7 @@ public class AndroidTool {
      */
     public static void setFullWindow(Activity activity) {
         activity.requestWindowFeature(Window.FEATURE_NO_TITLE);
+
         //activity.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
     }
 
@@ -195,6 +199,8 @@ public class AndroidTool {
      * @param itemDataCustom
      * @param isEdit         是否直接修改
      */
+
+    @SuppressLint("NewApi")
     public static void setView(View view, ItemDataCustom itemDataCustom, boolean isEdit, int postion) {
         List<FiledCustom> fs = itemDataCustom.getFiledCustoms();
         //使用副本修改，
@@ -300,16 +306,16 @@ public class AndroidTool {
                     tem.setVisibility(View.GONE);
                 }*/
                 String task = jsonObject.getString("task");
-                if (task == null) {
-                    return;
-                }
-                if (task.equals(Customizing.SFZ_Front)) {
-                    //显示身份证正面
-                    view.findViewById(R.id.SFZ_Front).setVisibility(View.VISIBLE);
-                }
-                if (task.equals(Customizing.SFZ_back)) {
-                    //显示身份证背面
-                    view.findViewById(R.id.SFZ_back).setVisibility(View.VISIBLE);
+                if (task != null) {
+                    if (task.equals(Customizing.SFZ_Front)) {
+                        //显示身份证正面
+                        view.findViewById(R.id.SFZ_Front).setVisibility(View.VISIBLE);
+                    }
+                    if (task.equals(Customizing.SFZ_back)) {
+                        //显示身份证背面
+                        view.findViewById(R.id.SFZ_back).setVisibility(View.VISIBLE);
+                    }
+
                 }
                 String path = jsonObject.getString("path");
                 if (FileTool.exitFile(path)) {
@@ -322,9 +328,12 @@ public class AndroidTool {
                         imgFiledCustom.onClick(myJSONObject);
                     }
                 });
+            } else if (temView instanceof ProgressBar) {
+                ProgressBar pb = (ProgressBar) temView;
+                ProgressFiledCusom pbFiledCustom = (ProgressFiledCusom) filedCustom;
+                pb.setProgress(jsonObject.getIntValue(pbFiledCustom.getAttribute()),true);
             }
         }
-
     }
 
     private static Map<String, Class<?>> clsMap = new HashMap<>();

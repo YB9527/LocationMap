@@ -151,6 +151,8 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
     }
 
 
+
+
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
         public JSONObject mItem;
@@ -161,6 +163,8 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
             mView = view;
             List<FiledCustom> filedMap = tableDataCustom.getFiledCustoms();
             for (FiledCustom filedCustom : filedMap) {
+                Integer id = filedCustom.getId();
+
                 View temView = view.findViewById(filedCustom.getId());
                 if (view != null) {
                     vieMap.put(temView, filedCustom);

@@ -93,6 +93,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                 User test = new User();
                 UserService.setUser(test);
                 startActivity(intent);
+                this.finish();
                 break;
             case R.id.btu_sign_up:
                 toSignUp();

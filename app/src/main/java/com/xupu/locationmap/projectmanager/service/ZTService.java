@@ -92,7 +92,7 @@ public class ZTService {
         });
     }
 
-    public static String getTableIdByItemId(String itemid) {
+    public static Map<String, String> getTableIdMap() {
         synchronized (ZTService.class) {
             if (tableIdMap == null) {
                 tableIdMap = new HashMap<>();
@@ -102,7 +102,12 @@ public class ZTService {
                 tableIdMap.put("6646c538-8a85-43fe-b102-5619baad0947", "bccbd22d-b5b8-4eb3-8225-acce9cd676bf");//潜力图斑
             }
         }
-        String tableid = tableIdMap.get(itemid);
+        return tableIdMap;
+    }
+
+    public static String getTableIdByItemId(String itemid) {
+
+        String tableid = getTableIdMap().get(itemid);
         if (tableid == null) {
             AndroidTool.showAnsyTost("没有找到对应的表格,需要改后台api", 1);
             try {
@@ -123,4 +128,19 @@ public class ZTService {
         }
         return "";
     }
+
+    /**
+     * 通过任务表格id 得到 正确表格id
+     *
+     * @param tasktableid
+     * @return
+     *//*
+    public static String getTasktableId(String tasktableid) {
+        for (String key : getTableIdMap().keySet()) {
+            if (tableIdMap.get(key).equals(tasktableid)) {
+                return key;
+            }
+        }
+        return null;
+    }*/
 }

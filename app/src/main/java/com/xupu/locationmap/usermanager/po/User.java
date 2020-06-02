@@ -37,6 +37,14 @@ public class User {
 
     }
 
+    public User(String account, String nickName, String password, String registDate, String email) {
+        this.account = account;
+        this.nickName = nickName;
+        this.password = password;
+        this.registDate = registDate;
+        this.email = email;
+    }
+
     public Long getId() {
         return id;
     }

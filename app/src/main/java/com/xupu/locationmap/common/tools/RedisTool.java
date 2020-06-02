@@ -14,9 +14,9 @@ import java.util.List;
 public class RedisTool {
 
 
-
     private static SQLiteDatabase db;
-    public final static String REDIS="redis.db";
+    public final static String REDIS = "redis.db";
+
     /**
      * 得到本地 sqlite 数据库
      *
@@ -24,7 +24,7 @@ public class RedisTool {
      */
     private static SQLiteDatabase getSQLiteDatabase() {
         if (db == null) {
-            PetDbHelper mDbHelper = new PetDbHelper(AndroidTool.getMainActivity(),REDIS);
+            PetDbHelper mDbHelper = new PetDbHelper(AndroidTool.getMainActivity(), REDIS);
             db = mDbHelper.getReadableDatabase();
         }
         return db;
@@ -43,8 +43,8 @@ public class RedisTool {
         values.put("mark", mark);
         Cursor cursor = db.rawQuery("select json from redis where mark = ?", new String[]{mark});
 
-        if(cursor !=null&&cursor.moveToFirst()&&cursor.getCount()>0) {
-            json =  cursor.getString(0);
+        if (cursor != null && cursor.moveToFirst() && cursor.getCount() > 0) {
+            json = cursor.getString(0);
         }
         cursor.close();
         return json;
@@ -64,23 +64,25 @@ public class RedisTool {
         int count = db
                 .update("redis", values, "mark" + " = ?", new String[]{mark});
         if (count == 0) {
-            insertData(mark,json);
+            insertData(mark, json);
         }
 
     }
 
     /**
      * 修改redis 如果没有就增加
+     *
      * @param mark
-     * @param obj   obj转换为json 进行保存
+     * @param obj  obj转换为json 进行保存
      */
     public static void updateRedis(String mark, Object obj) {
-        if(obj == null){
+        if (obj == null) {
             updateRedis(mark, "");
-        }else{
+        } else {
             updateRedis(mark, new Gson().toJson(obj));
         }
     }
+
     /**
      * 插入数据
      *
@@ -94,31 +96,43 @@ public class RedisTool {
         ContentValues values = new ContentValues();
         values.put("mark", mark);
         values.put("json", json);
-        long count =  db.insert("redis", null, values);
+        long count = db.insert("redis", null, values);
 
     }
 
     /**
      * 在 本地数据中找 缓存数据， 并转换成json
+     *
      * @param mark
-     * @param type  转换成的结果对象
+     * @param type 转换成的结果对象
      * @return
      */
     public static <T> T findRedis(String mark, Type type) {
         String json = findRedis(mark);
-        if(Tool.isEmpty(json)){
-            return  null;
+        if (Tool.isEmpty(json)) {
+            return null;
         }
-        return Tool.JsonToObject(json,type);
+        return Tool.JsonToObject(json, type);
     }
 
+    /**
+     * 保存 redis ，
+     *
+     * @param mark
+     * @param obj
+     * @return
+     */
+    public static void saveRedis(String mark, Object obj) {
+        String json = new Gson().toJson(obj);
+        insertData(mark, json);
+    }
     /**
      * 保存 redis ，
      * @param mark
      * @param obj
      * @return
      */
-    public static void  saveRedis(String mark,Object obj) {
+ /*   public static void  saveRedis(String mark,Object obj) {
         String jsonInDatabase = findRedis(mark);
         if (Tool.isEmpty(jsonInDatabase)) {
             String json =new Gson().toJson(obj);
@@ -127,10 +141,9 @@ public class RedisTool {
         }else{
             updateRedis(mark,obj);
         }
-    }
+    }*/
 
     /**
-     *
      * @param beginMark 匹配开始 mark 值
      * @param type
      * @return
@@ -139,35 +152,36 @@ public class RedisTool {
         ArrayList<T> list = new ArrayList<>();
         List<String> jsons = findListRedis(beginMark);
         for (String json : jsons
-             ) {
-            T t = Tool.JsonToObject(json,type);
+        ) {
+            T t = Tool.JsonToObject(json, type);
             list.add(t);
         }
-        return  list;
+        return list;
     }
 
     public static List<String> findListRedis(String mark) {
         SQLiteDatabase db = getSQLiteDatabase();
-        String sql = "select json from  redis where  mark like  '"+mark+"'";
+        String sql = "select json from  redis where  mark like  '" + mark + "'";
 
         //sql = "select json from  redis";
         List<String> jsons = new ArrayList<>();
         Cursor cursor = db.rawQuery(sql, null);
         while (cursor.moveToNext()) {
             String json = cursor.getString(0);
-           jsons.add(json);
+            jsons.add(json);
         }
-        return  jsons;
+        return jsons;
 
     }
 
     /**
      * 根据mark 删除地块
+     *
      * @param mark
      */
     public static int deleteRedisByMark(String mark) {
         SQLiteDatabase db = getSQLiteDatabase();
-        int count = db.delete("redis","mark = ?",new String[]{mark});
+        int count = db.delete("redis", "mark = ?", new String[]{mark});
         return count;
     }
 }

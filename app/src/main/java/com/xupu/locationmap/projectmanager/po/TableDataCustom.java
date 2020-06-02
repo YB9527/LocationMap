@@ -28,8 +28,8 @@ public class TableDataCustom {
     public TableDataCustom(int fragmentItem, List<FiledCustom> filedCustoms, List<MyJSONObject> list) {
         this.fragmentItem = fragmentItem;
         this.filedCustoms = filedCustoms;
-        this.list = new ArrayList<>();
-        this.list.addAll(list);
+        //this.list = new ArrayList<>();
+        this.list = (list);
 
     }
 

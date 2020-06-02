@@ -15,6 +15,7 @@ import android.widget.FrameLayout;
 import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.annotation.DrawableRes;
 import androidx.annotation.Nullable;
@@ -31,6 +32,7 @@ import com.baidu.ocr.ui.camera.CameraActivity;
 import com.xupu.locationmap.R;
 import com.xupu.locationmap.common.page.PhotoSingleActivty;
 import com.xupu.locationmap.common.po.Callback;
+import com.xupu.locationmap.common.po.Media;
 import com.xupu.locationmap.common.po.MyCallback;
 import com.xupu.locationmap.common.po.ResultData;
 import com.xupu.locationmap.common.po.SFZBack;
@@ -51,8 +53,6 @@ import com.xupu.locationmap.projectmanager.service.MediaService;
 import com.xupu.locationmap.projectmanager.service.SFZService;
 import com.xupu.locationmap.projectmanager.service.TableService;
 import com.xupu.locationmap.projectmanager.service.TaskService;
-
-import org.json.JSONException;
 
 
 import java.io.File;
@@ -78,10 +78,15 @@ public class TaskFragment extends Fragment {
     }
 
     public TaskFragment(MyJSONObject task, MyJSONObject parent, List<MyJSONObject> medias) {
-        this.medias = medias;
+        this.medias = new ArrayList<>();
+        for (MyJSONObject meidaJson : medias) {
+            Media media = meidaJson.getJsonobject().toJavaObject(Media.class);
+            if (media.getMilepost() != null && media.getMilepost().equals(task.getId())) {
+                this.medias.add(meidaJson);
+            }
+        }
         this.task = task;
         this.parent = parent;
-
     }
 
 
@@ -89,7 +94,7 @@ public class TaskFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_task_item, container, false);
-
+        initSelfPage(view);
         RecyclerView recyclerView = view.findViewById(R.id.recy);
         int fragmentItem = R.layout.fragment_task_photo;
         List<FiledCustom> filedCustoms = new ArrayList<>();
@@ -97,9 +102,10 @@ public class TaskFragment extends Fragment {
         filedCustoms.add(new ImgFiledCusom(R.id.img, "path") {
             @Override
             public void onClick(MyJSONObject myJSONObject) {
-                if (myJSONObject.getId().equals("0")) {
+                if (myJSONObject.getId().equals("-1")) {
                     //第一个添加按钮
-                    MyJSONObject media = MediaService.getMedia(parent, 0, TaskService.getTaskName(task));
+                    //MyJSONObject media = MediaService.getMedia(parent, 0, TaskService.getTaskName(task));
+                    MyJSONObject media =  MediaService.newMediaJSONObject(parent,task,0);
                     MediaTool.photo(TaskFragment.this, 101, media);
                 } else {
                     //后面的是 media
@@ -116,18 +122,18 @@ public class TaskFragment extends Fragment {
                 TableTool.delete(media);
             }
         }.setConfirm(true, "确定要删除吗？"));
-        List<MyJSONObject> list = new ArrayList<>();
+
 
 
         //第一个添加 添加按钮 ，任务名
         task.getJsonobject().put("name", "");
         MyJSONObject myJSONObject = MediaService.getMedia(task, 0, TaskService.getTaskName(task));
-        myJSONObject.setId("0");
+        myJSONObject.setId("-1");
         //MediaService.setPath(myJSONObject, getResourcesUri(R.drawable.good_night_img));
-        list.add(myJSONObject);
-        list.addAll(medias);
+        medias.add(myJSONObject);
 
-        TableDataCustom tableDataCustom = new TableDataCustom(fragmentItem, filedCustoms, list);
+
+        TableDataCustom tableDataCustom = new TableDataCustom(fragmentItem, filedCustoms, medias);
         myItemRecyclerViewAdapter = new MyItemRecyclerViewAdapter(tableDataCustom);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext(), RecyclerView.HORIZONTAL, false));
@@ -136,20 +142,37 @@ public class TaskFragment extends Fragment {
         myItemRecyclerViewAdapter.setLoadViewCallback(new ViewHolderCallback() {
             @Override
             public void call(MyItemRecyclerViewAdapter.ViewHolder holder, int position) {
-                if (position == 0) {
-                    holder.mView.findViewById(R.id.ll_data).setVisibility(View.GONE);
+                if (position == medias.size()-1) {
+                    holder.mView.findViewById(R.id.btn_delete).setVisibility(View.GONE);
+                    //holder.mView.findViewById(R.id.ll_data).setVisibility(View.GONE);
                     ImageView imageView = holder.mView.findViewById(R.id.img);
-                    android.widget.FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(200, 500);
 
-                    FrameLayout fl=   holder.mView.findViewById(R.id.fl);
-                    params.gravity= Gravity.CENTER_VERTICAL;
-                    params.topMargin=200;
-                    fl.setLayoutParams(params);
+                    ViewGroup.LayoutParams params = imageView.getLayoutParams();
+                    imageView.getLayoutParams().height=100;
+                    imageView.getLayoutParams().width=100;
+                    //FrameLayout fl = holder.mView.findViewById(R.id.fl);
+
+                    //ViewGroup.LayoutParams params = fl.getLayoutParams();
+                    //android.widget.FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(200, 200);
+                    //params.gravity = Gravity.CENTER_VERTICAL;
+                    //params.topMargin = 10;
+                    //fl.setLayoutParams(params);
                 }
             }
         });
 
         return view;
+    }
+
+    private void initSelfPage(View view) {
+       // TextView tv= view.findViewById(R.id.title);
+        //tv.setText(TaskService.getTaskName(task));
+        Integer rid =view.getId();
+        MyJSONObject jsonObject = task;
+        List<FiledCustom> filedCustoms = new ArrayList<>();
+        filedCustoms.add(new FiledCustom(R.id.title,"taskname"));
+        ItemDataCustom itemDataCustom = new ItemDataCustom( rid,  jsonObject,  filedCustoms);
+        AndroidTool.setView(view,itemDataCustom,false,0);
     }
 
     private String getResourcesUri(@DrawableRes int id) {
@@ -179,7 +202,10 @@ public class TaskFragment extends Fragment {
                     // 将拍摄的照片显示出来
                     MyJSONObject media = (MyJSONObject) getActivity().getIntent().getSerializableExtra("media");
                     TableTool.insert(media);
-                    myItemRecyclerViewAdapter.addItem(media);
+                    String path = MediaService.getPath(media);
+                    File file =new File(path);
+                    boolean bl = file.exists();
+                    myItemRecyclerViewAdapter.addItem(medias.size()-1, media);
                 }
                 break;
             default:
