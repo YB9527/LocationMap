@@ -26,7 +26,8 @@ public class ZTService {
     public static String APP_ID = "appid";
     public static String PROJECT_TABLE_NAME = "项目列表";
     public static String PROJECT_TABLE_LIST = "表列表_根据项目类型";
-    //public static String TABLE_FILED_LIST = "字段列表_根据表ID";
+    public static String TABLE_FILED_LIST = "字段列表_根据表ID";
+    public static String TABLE_Structure = "表结构";
     public static String QUAN_SHU_ZHU_TI = "权属主体";
     public static String DK_List = "地块列表";
     public static String TASK_LIST = "任务列表_根据项目类型";

@@ -14,6 +14,7 @@ import android.widget.Button;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.google.gson.Gson;
 import com.xupu.locationmap.R;
 import com.xupu.locationmap.common.po.Callback;
 import com.xupu.locationmap.common.tools.AndroidTool;
@@ -96,6 +97,10 @@ public class ProjectDownload extends AppCompatActivity {
                             //开始下载行政区
                             downXZQList(project, i);
                             break;
+                        case 3:
+                            //开始下载表结构
+                            downFiledTable(project, i);
+                            break;
                         default:
                             //开始下载各种业务表格
                             downLoadTable(tasks.get(i).getJsonobject());
@@ -107,6 +112,7 @@ public class ProjectDownload extends AppCompatActivity {
         ItemDataCustom itemDataCustom = new ItemDataCustom(rid, jsonObject, filedCustoms);
         AndroidTool.setView(findViewById(R.id.page), itemDataCustom, false, 0);
     }
+
 
     private void downProject(MyJSONObject project) {
         //2、创建下载表格的碎片
@@ -122,11 +128,11 @@ public class ProjectDownload extends AppCompatActivity {
         MyJSONObject listable = newDownLoadPo("项目表列表", new JSONObject());
         MyJSONObject tasktable = newDownLoadPo("任务表", new JSONObject());
         MyJSONObject xzqtable = newDownLoadPo("行政区列表", new JSONObject());
-
+        MyJSONObject fieldtable = newDownLoadPo("表结构", new JSONObject());
         tasks.add(listable);
         tasks.add(tasktable);
         tasks.add(xzqtable);
-
+        tasks.add(fieldtable);
 
         TableDataCustom tableDataCustom = new TableDataCustom(fragmentItem, fs, tasks);
         myItemRecyclerViewAdapter = new MyItemRecyclerViewAdapter(tableDataCustom);
@@ -245,6 +251,35 @@ public class ProjectDownload extends AppCompatActivity {
         });
     }
 
+    /**
+     * 下载表结构
+     *
+     * @param project
+     * @param taskindex
+     */
+    private void downFiledTable(MyJSONObject project, int taskindex) {
+        ZTService.getTableId(ZTService.TABLE_Structure, new Callback<String>() {
+            @Override
+            public void call(String tableid) {
+                ZTService.getTableItemList(tableid, project.getParentid(), new Callback<JSONArray>() {
+                    @Override
+                    public void call(JSONArray fileds) {
+                        setProgress(tasks.get(taskindex).getJsonobject(), 2);
+                        List<MyJSONObject> filedsMyJson = new ArrayList<>();
+                        //项目中表格条目，
+                        for (int i = 0; i < fileds.size(); i++) {
+                            JSONObject filed = fileds.getJSONObject(i);
+                            String structureid = ZTService.getTableIdByItemId(filed.getString("tableid"));
+                            filedsMyJson.add(new MyJSONObject(i + "", ZTService.TABLE_Structure, structureid, filed));
+                        }
+                        //项目中表格保存
+                        TableTool.insertMany(filedsMyJson);
+                        setProgress(tasks.get(taskindex).getJsonobject(), 3);
+                    }
+                });
+            }
+        });
+    }
 
     /**
      * 得到要下载的 业务表格
@@ -345,7 +380,7 @@ public class ProjectDownload extends AppCompatActivity {
     private void finshAllTask() {
         Intent intent = new Intent(this, XZQYPage.class);
         startActivity(intent);
-        AndroidTool.showAnsyTost("项目下载完成，请选择工作区域",0);
+        AndroidTool.showAnsyTost("项目下载完成，请选择工作区域", 0);
         this.finish();
     }
 
@@ -366,6 +401,7 @@ public class ProjectDownload extends AppCompatActivity {
         List<MyJSONObject> myJSONObjects = new ArrayList<>();
         for (int i = 0; i < objects.size(); i++) {
             JSONObject jsonObject = objects.getJSONObject(i);
+
             MyJSONObject myJSONObject = new MyJSONObject(jsonObject.getString("gid"), tablename, jsonObject.getString("gdomain"), jsonObject);
             myJSONObject.setTableid(tableid);
             myJSONObjects.add(myJSONObject);

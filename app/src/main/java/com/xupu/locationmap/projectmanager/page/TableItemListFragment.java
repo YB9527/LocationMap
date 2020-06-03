@@ -1,47 +1,30 @@
 package com.xupu.locationmap.projectmanager.page;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Resources;
-import android.opengl.Visibility;
 import android.os.Bundle;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.viewpager.widget.ViewPager;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.alibaba.fastjson.JSONObject;
-import com.google.gson.Gson;
 import com.xupu.locationmap.R;
 
 import com.xupu.locationmap.common.tools.AndroidTool;
 import com.xupu.locationmap.common.tools.TableTool;
 import com.xupu.locationmap.projectmanager.po.BtuFiledCustom;
-import com.xupu.locationmap.projectmanager.po.Customizing;
 import com.xupu.locationmap.projectmanager.po.FiledCustom;
 import com.xupu.locationmap.projectmanager.po.MyJSONObject;
 import com.xupu.locationmap.projectmanager.po.PositionField;
-import com.xupu.locationmap.projectmanager.po.TableDataCustom;
 import com.xupu.locationmap.projectmanager.po.TableDataCustom_TableName;
-import com.xupu.locationmap.projectmanager.po.TableViewCustom;
-import com.xupu.locationmap.projectmanager.po.XZDM;
 import com.xupu.locationmap.projectmanager.service.TableService;
 import com.xupu.locationmap.projectmanager.service.XZQYService;
-import com.xupu.locationmap.projectmanager.service.ZTService;
 
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 根据表格名称显示数据
@@ -96,8 +79,11 @@ public class TableItemListFragment extends Fragment {
             FiledCustom filedCustom;
             filedCustom = new BtuFiledCustom(R.id.btn_info, "详请") {
                 @Override
-                public void OnClick(MyJSONObject MyJSONObject) {
+                public void OnClick(MyJSONObject myJSONObject) {
                     AndroidTool.showAnsyTost("详请", 1);
+                    Intent intent = new Intent(getActivity(), ObjectInfoActivty.class);
+                    intent.putExtra("obj",myJSONObject);
+                    getActivity().startActivity(intent);
                 }
             };
             fs.add(filedCustom);

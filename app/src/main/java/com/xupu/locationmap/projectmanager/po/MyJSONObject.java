@@ -1,6 +1,7 @@
 package com.xupu.locationmap.projectmanager.po;
 
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.xupu.locationmap.common.tools.Tool;
 
 import java.io.Serializable;
@@ -52,11 +53,11 @@ public class MyJSONObject implements Serializable {
         this.id = id;
         this.tablename = tablename;
         this.parentid = parentid;
-        this.setJson(json);
         this.jsonobject = jsonObject;
         this.toJson();
         this.deletechild = 0;
     }
+
 
     public int getDeletechild() {
         return deletechild;
@@ -130,7 +131,8 @@ public class MyJSONObject implements Serializable {
      * @return
      */
     public MyJSONObject toJson() {
-        json = jsonobject.toJSONString();
+        json = JSONObject.toJSONString(jsonobject,SerializerFeature.WriteNullStringAsEmpty);
+
         return this;
     }
 
