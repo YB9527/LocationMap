@@ -97,7 +97,15 @@ public class ProjectPage extends AppCompatActivity {
             }
         }.setConfirm(true, "确定要选择这个项目吗？"));
 
+       /* fs.add(new BtuFiledCustom(R.id.btu_info, "详情") {
+            @Override
+            public void OnClick(MyJSONObject myJSONObject) {
+                Intent intent = new Intent(ProjectPage.this, ObjectInfoActivty.class);
+                intent.putExtra("id", myJSONObject.getId());
+                startActivityForResult(intent, 1);
 
+            }
+        });*/
         TableDataCustom tableDataCustom = new TableDataCustom(R.layout.fragment_project_item, fs, projects);
 
         itemFragment = new ItemFragment(tableDataCustom);

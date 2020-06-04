@@ -105,9 +105,9 @@ public class AndroidTool {
      *
      * @param activity
      */
-    public static void setFullWindow(Activity activity) {
-        activity.requestWindowFeature(Window.FEATURE_NO_TITLE);
-
+    public static boolean setFullWindow(Activity activity) {
+        boolean bl = activity.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        return bl;
         //activity.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
     }
 
@@ -228,6 +228,8 @@ public class AndroidTool {
                         if (str != null || temView instanceof EditText) {
                             tv.setText(str);
                         }
+                        //tv.setText(str);
+
                     }
                 }
             }
@@ -249,6 +251,13 @@ public class AndroidTool {
                         if (btuFiledCustom.isReturn() && !btuFiledCustom.isConfirm()) {
                             myJSONObject.setJsonobject(jsonObject);
                         }
+                        //先查 对象是否被更改
+                        if (btuFiledCustom.isCompare()) {
+                            if (jsonObject.toJSONString().equals(myJSONObject.getJsonobject().toJSONString())) {
+                                showAnsyTost(btuFiledCustom.getCompareMessage(), 2);
+                                return;
+                            }
+                        }
                         //是否 弹出确认窗口
                         if (btuFiledCustom.isConfirm()) {
                             confirm(temView.getContext(), btuFiledCustom.getConfirmmessage(), new MyCallback() {
@@ -256,6 +265,8 @@ public class AndroidTool {
                                 @Override
                                 public void call(ResultData resultData) {
                                     if (resultData.getStatus() == 0) {
+                                        //检查是否被更改
+
                                         myJSONObject.setJsonobject(jsonObject);
                                         // Log.v("yb",myJSONObject.toString());
                                         btuFiledCustom.OnClick(myJSONObject);
@@ -289,8 +300,11 @@ public class AndroidTool {
                     @Override
                     public void afterTextChanged(Editable s) {
                         String text = et.getText().toString();
+                        if("".equals(text) && jsonObject.getString(filedCustom.getAttribute()) == null){
+                            return;
+                        }
                         jsonObject.replace(filedCustom.getAttribute(), text);
-                        // String aa ="123";
+                        // String aa ="123";1
                         //jsonObject.replace("a","123");
 
                     }
@@ -331,7 +345,7 @@ public class AndroidTool {
             } else if (temView instanceof ProgressBar) {
                 ProgressBar pb = (ProgressBar) temView;
                 ProgressFiledCusom pbFiledCustom = (ProgressFiledCusom) filedCustom;
-                pb.setProgress(jsonObject.getIntValue(pbFiledCustom.getAttribute()),true);
+                pb.setProgress(jsonObject.getIntValue(pbFiledCustom.getAttribute()), true);
             }
         }
     }

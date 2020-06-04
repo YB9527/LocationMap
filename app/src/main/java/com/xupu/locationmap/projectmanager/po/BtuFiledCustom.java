@@ -31,6 +31,13 @@ public abstract class BtuFiledCustom<T> extends FiledCustom {
 
     private String confirmmessage;
 
+    /**
+     * 是否比对信息
+     */
+    private boolean isCompare;
+
+    private String compareMessage="没有修改";
+
     public boolean isConfirm() {
         return isConfirm;
     }
@@ -66,4 +73,30 @@ public abstract class BtuFiledCustom<T> extends FiledCustom {
     }
 
     public abstract void OnClick(MyJSONObject MyJSONObject);
+
+    public void setConfirm(boolean confirm) {
+        isConfirm = confirm;
+    }
+
+    public void setConfirmmessage(String confirmmessage) {
+        this.confirmmessage = confirmmessage;
+    }
+
+    public boolean isCompare() {
+        return isCompare;
+    }
+
+    public BtuFiledCustom setCompare(boolean compare) {
+        isCompare = compare;
+        return this;
+    }
+
+    public String getCompareMessage() {
+        return compareMessage;
+    }
+
+    public BtuFiledCustom setCompareMessage(String compareMessage) {
+        this.compareMessage = compareMessage;
+        return this;
+    }
 }

@@ -80,8 +80,9 @@ public class ProjectDownload extends AppCompatActivity {
                 //设置为当前项目
                 ProjectService.setCurrentSugProject(project);
                 RedisTool.saveRedis(ZTService.PROJECT_TABLE_NAME, project);
-                TableTool.createDB(ProjectService.getName(project));
+                TableTool.insert(project,0);
 
+                TableTool.createDB(ProjectService.getName(project));
                 for (int i = 0; i < tasks.size(); i++) {
                     setProgress(tasks.get(i).getJsonobject(), 1);
                     switch (i) {
@@ -186,7 +187,7 @@ public class ProjectDownload extends AppCompatActivity {
             tableitemsMyJson.add(table);
         }
         //项目中表格保存
-        TableTool.insertMany(tableitemsMyJson);
+        TableTool.insertMany(tableitemsMyJson,0);
         setProgress(tasks.get(taskindex).getJsonobject(), 3);
     }
 
@@ -213,7 +214,7 @@ public class ProjectDownload extends AppCompatActivity {
                             tableitemsMyJson.add(new MyJSONObject(tableItem.getString("id"), ZTService.TASK_LIST, tasktableid, tableItem));
                         }
                         //项目中表格保存
-                        TableTool.insertMany(tableitemsMyJson);
+                        TableTool.insertMany(tableitemsMyJson,0);
                         setProgress(tasks.get(taskindex).getJsonobject(), 3);
                     }
                 });
@@ -243,7 +244,7 @@ public class ProjectDownload extends AppCompatActivity {
                             tableitemsMyJson.add(new MyJSONObject(tableItem.getString("id"), ZTService.XZQ_LIST, project.getId(), tableItem));
                         }
                         //项目中表格保存
-                        TableTool.insertMany(tableitemsMyJson);
+                        TableTool.insertMany(tableitemsMyJson,0);
                         setProgress(tasks.get(taskindex).getJsonobject(), 3);
                     }
                 });
@@ -273,7 +274,7 @@ public class ProjectDownload extends AppCompatActivity {
                             filedsMyJson.add(new MyJSONObject(i + "", ZTService.TABLE_Structure, structureid, filed));
                         }
                         //项目中表格保存
-                        TableTool.insertMany(filedsMyJson);
+                        TableTool.insertMany(filedsMyJson,0);
                         setProgress(tasks.get(taskindex).getJsonobject(), 3);
                     }
                 });
@@ -406,7 +407,7 @@ public class ProjectDownload extends AppCompatActivity {
             myJSONObject.setTableid(tableid);
             myJSONObjects.add(myJSONObject);
         }
-        TableTool.insertMany(myJSONObjects);
+        TableTool.insertMany(myJSONObjects,0);
         Log.v("yb", tablename + " 完成");
     }
 

@@ -244,7 +244,7 @@ public class NFActivity extends AppCompatActivity {
                 if (resultCode == RESULT_OK) {
                     // 将拍摄的照片显示出来
                     MyJSONObject media = (MyJSONObject) this.getIntent().getSerializableExtra("media");
-                    TableTool.insert(media);
+                    TableTool.insert(media,TableTool.STATE_INSERT);
                     lookInfoFragment.setJSONbject(TableTool.findById(media.getParentid()));
                 }
                 break;
@@ -255,7 +255,7 @@ public class NFActivity extends AppCompatActivity {
                         String contentType = data.getStringExtra(CameraActivity.KEY_CONTENT_TYPE);
                         final MyJSONObject media = (MyJSONObject) this.getIntent().getSerializableExtra("media");
                         //保存多媒体
-                        TableTool.insert(media);
+                        TableTool.insert(media,TableTool.STATE_INSERT);
                         //保存身份证
 
                         //检查是否联网
@@ -270,7 +270,7 @@ public class NFActivity extends AppCompatActivity {
                                         public void call(ResultData<SFZFront> resultData) {
                                             SFZFront sfz = resultData.getT();
                                             //保存身份证
-                                            TableTool.insert(SFZService.frontToMyJSONObject(media, sfz));
+                                            TableTool.insert(SFZService.frontToMyJSONObject(media, sfz),TableTool.STATE_INSERT);
                                             lookInfoFragment.setJSONbject(TableTool.findById(media.getParentid()));
                                         }
                                     });
@@ -280,7 +280,7 @@ public class NFActivity extends AppCompatActivity {
                                         @Override
                                         public void call(ResultData<SFZBack> resultData) {
                                             SFZBack sfz = resultData.getT();
-                                            TableTool.insert(SFZService.backToMyJSONObject(media, sfz));
+                                            TableTool.insert(SFZService.backToMyJSONObject(media, sfz),TableTool.STATE_INSERT);
                                             lookInfoFragment.setJSONbject(TableTool.findById(media.getParentid()));
                                         }
                                     });
@@ -309,7 +309,7 @@ public class NFActivity extends AppCompatActivity {
         fs.add(new BtuFiledCustom(R.id.btu_submit, "添加") {
             @Override
             public void OnClick(MyJSONObject myJSONObject) {
-                TableTool.insert(myJSONObject);
+                TableTool.insert(myJSONObject,TableTool.STATE_INSERT);
                 itemFragment.addItem(myJSONObject);
                 showFragment(listTagName);
                 //init();

@@ -122,12 +122,12 @@ public class ZTService {
     }
 
     public static String getItemIdByTableId(String itemid) {
-        for (String tableid : tableIdMap.keySet()) {
+       /* for (String tableid : getTableIdMap().keySet()) {
             if (tableIdMap.get(tableid).equals(itemid)) {
                 return tableid;
             }
-        }
-        return "";
+        }*/
+        return getTableIdMap().get(itemid);
     }
 
     /**

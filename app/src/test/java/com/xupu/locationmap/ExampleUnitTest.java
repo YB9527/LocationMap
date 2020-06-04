@@ -1,5 +1,7 @@
 package com.xupu.locationmap;
 
+import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.xupu.locationmap.common.po.MyCallback;
 import com.xupu.locationmap.common.po.ResultData;
 import com.xupu.locationmap.common.tools.XMLTool;
@@ -30,6 +32,35 @@ public class ExampleUnitTest {
     public void addition_isCorrect() {
         //TableDataCustom_TableName table = getTable("地块");
         //table = getTable("地块");
+        Person person = new Person(null,"nan");
+        String aa= JSONObject.toJSONString(person, SerializerFeature.WriteMapNullValue);
+        aa ="123";
+    }
+
+    class Person {
+        private String name;
+        private String sex;
+
+        public Person(String name, String sex) {
+            this.name = name;
+            this.sex = sex;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getSex() {
+            return sex;
+        }
+
+        public void setSex(String sex) {
+            this.sex = sex;
+        }
     }
 
 

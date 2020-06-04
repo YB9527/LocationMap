@@ -11,7 +11,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".projectmanager.page.ObjectInfoActivty"></activity>
+        <activity android:name=".projectmanager.page.HelpActivty"></activity>
+        <activity android:name=".projectmanager.page.ObjectInfoActivty" />
         <activity android:name=".projectmanager.page.ProjectDownload" />
         <activity android:name=".projectmanager.page.TaskActivty" />
         <activity

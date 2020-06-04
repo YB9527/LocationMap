@@ -36,6 +36,14 @@ public class MyJSONObject implements Serializable {
      * 是否级联删除子对象，默认是0 不删除对象
      */
     private int deletechild;
+    /**
+     * 对象状态
+     * 0 未改变
+     * 1 修改
+     * 2 新增
+     * 3 删除
+     */
+    private int state;
 
 
     public MyJSONObject() {
@@ -49,6 +57,7 @@ public class MyJSONObject implements Serializable {
         this.setJson(json);
         this.deletechild = 0;
     }
+
     public MyJSONObject(String id, String tablename, String parentid, JSONObject jsonObject) {
         this.id = id;
         this.tablename = tablename;
@@ -58,6 +67,13 @@ public class MyJSONObject implements Serializable {
         this.deletechild = 0;
     }
 
+    public int getState() {
+        return state;
+    }
+
+    public void setState(int state) {
+        this.state = state;
+    }
 
     public int getDeletechild() {
         return deletechild;
@@ -111,7 +127,8 @@ public class MyJSONObject implements Serializable {
     }
 
     public void setJsonobject(JSONObject jsonobject) {
-        this.jsonobject = JSONObject.parseObject(jsonobject.toJSONString());
+
+        this.jsonobject = (JSONObject) jsonobject.clone();
         toJson();
     }
 
@@ -131,7 +148,7 @@ public class MyJSONObject implements Serializable {
      * @return
      */
     public MyJSONObject toJson() {
-        json = JSONObject.toJSONString(jsonobject,SerializerFeature.WriteNullStringAsEmpty);
+        json = JSONObject.toJSONString(jsonobject, SerializerFeature.WriteMapNullValue);
 
         return this;
     }
@@ -151,4 +168,11 @@ public class MyJSONObject implements Serializable {
     public void setTableid(String tableid) {
         this.tableid = tableid;
     }
+
+    public MyJSONObject copy() {
+
+        return JSONObject.parseObject(JSONObject.toJSONString(this,SerializerFeature.WriteMapNullValue), MyJSONObject.class);
+    }
+
+
 }

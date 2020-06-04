@@ -177,6 +177,7 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
     public void addItem(int index, MyJSONObject jsonObject) {
         this.mValues.add(index, jsonObject);
         this.notifyItemInserted(index);
+
     }
 
     public void addItem(MyJSONObject myJSONObject) {
@@ -185,6 +186,14 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
 
     public void remove(MyJSONObject jsonObject) {
         int index = this.mValues.indexOf(jsonObject);
+        if(index == -1){
+            for (int i = 0; i < this.mValues.size(); i++) {
+                if(this.mValues.get(i).getId().equals(jsonObject.getId())){
+                    index =i;
+                    break;
+                }
+            }
+        }
         this.mValues.remove(index);
         this.notifyItemRemoved(index);
     }

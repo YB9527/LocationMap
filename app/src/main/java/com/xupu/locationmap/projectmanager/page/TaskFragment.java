@@ -201,7 +201,7 @@ public class TaskFragment extends Fragment {
                 if (resultCode == RESULT_OK) {
                     // 将拍摄的照片显示出来
                     MyJSONObject media = (MyJSONObject) getActivity().getIntent().getSerializableExtra("media");
-                    TableTool.insert(media);
+                    TableTool.insert(media,TableTool.STATE_INSERT);
                     String path = MediaService.getPath(media);
                     File file =new File(path);
                     boolean bl = file.exists();

@@ -126,7 +126,7 @@ public class XZQYPage extends AppCompatActivity {
             @Override
             public void OnClick(MyJSONObject myJSONObject) {
                 itemFragment.addItem(myJSONObject);
-                TableTool.insert(myJSONObject);
+                TableTool.insert(myJSONObject,TableTool.STATE_INSERT);
                 showMain(true);
                 //init();
             }

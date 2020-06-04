@@ -24,6 +24,7 @@ public class TableViewCustom   {
      * 表格名称
      */
     private String tableName;
+    private String tableid;
 
     private TableDataCustom tableDataCustom;
 
@@ -76,5 +77,13 @@ public class TableViewCustom   {
 
     public void setTableDataCustom(TableDataCustom tableDataCustom) {
         this.tableDataCustom = tableDataCustom;
+    }
+
+    public String getTableid() {
+        return tableid;
+    }
+
+    public void setTableid(String tableid) {
+        this.tableid = tableid;
     }
 }

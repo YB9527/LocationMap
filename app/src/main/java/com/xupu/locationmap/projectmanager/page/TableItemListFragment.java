@@ -4,14 +4,18 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.xupu.locationmap.R;
 
 import com.xupu.locationmap.common.tools.AndroidTool;
@@ -25,6 +29,8 @@ import com.xupu.locationmap.projectmanager.service.TableService;
 import com.xupu.locationmap.projectmanager.service.XZQYService;
 
 import java.util.List;
+
+import static android.app.Activity.RESULT_OK;
 
 /**
  * 根据表格名称显示数据
@@ -59,14 +65,16 @@ public class TableItemListFragment extends Fragment {
         return fragment;
     }
 
-
+    private String tableid;
+    private String tablename ;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle aa = getArguments();
         if (getArguments() != null) {
             //根据表格名称来查找对象
-            String tablename = getArguments().getString("tablename");
+            tablename = getArguments().getString("tablename");
+            tableid=  getArguments().getString("tableid");
             tableDataCustom = TableService.getTable(tablename);
             //int a = R.id.title;
             //a = R.id.info1;
@@ -80,10 +88,10 @@ public class TableItemListFragment extends Fragment {
             filedCustom = new BtuFiledCustom(R.id.btn_info, "详请") {
                 @Override
                 public void OnClick(MyJSONObject myJSONObject) {
-                    AndroidTool.showAnsyTost("详请", 1);
+                    //AndroidTool.showAnsyTost("详请", 1);
                     Intent intent = new Intent(getActivity(), ObjectInfoActivty.class);
-                    intent.putExtra("obj",myJSONObject);
-                    getActivity().startActivity(intent);
+                    intent.putExtra("id", myJSONObject.getId());
+                    startActivityForResult(intent, 1);
                 }
             };
             fs.add(filedCustom);
@@ -92,8 +100,9 @@ public class TableItemListFragment extends Fragment {
                 public void OnClick(MyJSONObject myJSONObject) {
                     //跳到任务界面
                     Intent intent = new Intent(getActivity(), TaskActivty.class);
-                    intent.putExtra("parent",myJSONObject);
-                    getActivity().startActivity(intent);
+                    intent.putExtra("parent", myJSONObject);
+                    startActivity(intent);
+
                 }
             };
             fs.add(filedCustom);
@@ -104,6 +113,41 @@ public class TableItemListFragment extends Fragment {
             mColumnCount = tableDataCustom.getList().size();
         }
     }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        switch (requestCode) {
+            case 1:
+                //详情页面返回
+                switch (resultCode) {
+                    case TableTool.STATE_UPDATE:
+                        //修改
+                        MyJSONObject newObj = (MyJSONObject) data.getSerializableExtra("obj");
+                        update(newObj);
+                        break;
+                    case TableTool.STATE_DELETE:
+                        //删除
+                        MyJSONObject Obj = (MyJSONObject) data.getSerializableExtra("obj");
+                        remove(Obj);
+                        break;
+                    case TableTool.STATE_INSERT:
+                        //增加
+                        break;
+                }
+                break;
+            case  2:
+                switch (resultCode) {
+                    case TableTool.STATE_UPDATE:
+                        //这是增加，用的是修改按钮而已
+                        MyJSONObject newobj = (MyJSONObject)data.getSerializableExtra("obj");
+                        TableTool.insert(newobj,TableTool.STATE_INSERT);
+                        addItem(newobj);
+                        break;
+                }
+                break;
+        }
+    }
+
 
     /**
      * 使用java反射机制
@@ -117,47 +161,40 @@ public class TableItemListFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_item_list, container, false);
+        view = inflater.inflate(R.layout.fragment_table_item_list, container, false);
+        RecyclerView recyclerView = view.findViewById(R.id.recy);
         // Set the adapter
-        if (view instanceof RecyclerView) {
-            Context context = view.getContext();
-            RecyclerView recyclerView = (RecyclerView) view;
-            recyclerView.setLayoutManager(new LinearLayoutManager(context));
-            if (mColumnCount <= 1) {
-                //recyclerView.setLayoutManager(new LinearLayoutManager(context));
-            } else {
-                //recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
-            }
-            myItemRecyclerViewAdapter = new MyItemRecyclerViewAdapter(tableDataCustom);
-            recyclerView.setAdapter(myItemRecyclerViewAdapter);
+        Context context = view.getContext();
+        recyclerView.setLayoutManager(new LinearLayoutManager(context));
+        if (mColumnCount <= 1) {
+            //recyclerView.setLayoutManager(new LinearLayoutManager(context));
+        } else {
+            //recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
         }
+        myItemRecyclerViewAdapter = new MyItemRecyclerViewAdapter(tableDataCustom);
+        recyclerView.setAdapter(myItemRecyclerViewAdapter);
+
+
+        FloatingActionButton btn = view.findViewById(R.id.btn_add);
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Intent intent = new Intent(getActivity(), ObjectInfoActivty.class);
+                intent.putExtra("state", TableTool.STATE_INSERT);
+                intent.putExtra("id", tableid);
+                startActivityForResult(intent, 2);
+            }
+        });
 
         return view;
     }
 
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-       /* if (context instanceof OnListFragmentInteractionListener) {
-            //mListener = (OnListFragmentInteractionListener) context;
-            //TableListPage tableListPage = (TableListPage)context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnListFragmentInteractionListener");
-        }*/
-    }
 
-    @Override
-    public void onDetach() {
-        super.onDetach();
-
-    }
 
     public void addItem(MyJSONObject jsonObject) {
-
         myItemRecyclerViewAdapter.addItem(jsonObject);
-
     }
 
     /**
@@ -178,5 +215,9 @@ public class TableItemListFragment extends Fragment {
         myItemRecyclerViewAdapter.update(jsonObject);
     }
 
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
 
+    }
 }

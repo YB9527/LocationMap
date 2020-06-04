@@ -39,7 +39,7 @@ public class PetDbHelper extends SQLiteOpenHelper {
             String SQL_CREATE_PETS_TABLE2 = "CREATE TABLE redis (id INTEGER PRIMARY KEY AUTOINCREMENT,mark  TEXT NOT NULL,json TEXT)";
             db.execSQL(SQL_CREATE_PETS_TABLE2);
         } else {
-            String SQL_CREATE_PETS_TABLE = "CREATE TABLE " + TableTool.Table_Name + " (id TEXT  NOT NULL ,tablename TEXT  NOT NULL,parentid TEXT,json  NOT NULL,deletechild integer,tableid TEXT)";
+            String SQL_CREATE_PETS_TABLE = "CREATE TABLE " + TableTool.Table_Name + " (id TEXT  NOT NULL ,tablename TEXT  NOT NULL,parentid TEXT,json  NOT NULL,deletechild integer,tableid TEXT,state integer)";
             db.execSQL(SQL_CREATE_PETS_TABLE);
         }
     }
