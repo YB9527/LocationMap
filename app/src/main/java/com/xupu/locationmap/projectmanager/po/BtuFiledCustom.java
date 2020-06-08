@@ -72,7 +72,7 @@ public abstract class BtuFiledCustom<T> extends FiledCustom {
         return this;
     }
 
-    public abstract void OnClick(MyJSONObject MyJSONObject);
+    public abstract void OnClick(MyJSONObject myJSONObject);
 
     public void setConfirm(boolean confirm) {
         isConfirm = confirm;

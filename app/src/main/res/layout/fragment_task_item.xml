@@ -2,7 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginTop="5dp"
+    style="@style/itemmargin"
+    android:background="@color/itemback"
     android:orientation="vertical">
     <!-- <LinearLayout
          android:orientation="horizontal"
@@ -31,24 +32,19 @@
 <TextView
     android:text="标题"
     android:id="@+id/title"
-    android:textSize="20sp"
-    android:layout_marginLeft="20dp"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    style="@style/itemtitlestyle"
+   >
 
 </TextView>
 
-    <androidx.recyclerview.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
+    <androidx.recyclerview.widget.RecyclerView
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/recy"
+        android:layout_marginTop="15dp"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layoutManager="LinearLayoutManager"></androidx.recyclerview.widget.RecyclerView>
+        android:layout_height="wrap_content"
+        app:layoutManager="LinearLayoutManager"/>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginTop="25dp"
-        android:background="#009688" />
+
 </LinearLayout>

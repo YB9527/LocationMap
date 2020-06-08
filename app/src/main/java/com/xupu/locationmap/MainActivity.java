@@ -24,6 +24,7 @@ import com.xupu.locationmap.projectmanager.page.ProjectPage;
 import com.xupu.locationmap.projectmanager.page.TableListPage;
 import com.xupu.locationmap.projectmanager.page.XZQYPage;
 import com.xupu.locationmap.usermanager.page.UserInfo;
+import com.xupu.locationmap.usermanager.service.UserService;
 
 import androidx.drawerlayout.widget.DrawerLayout;
 
@@ -32,6 +33,7 @@ import androidx.appcompat.widget.Toolbar;
 
 import android.view.Menu;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity
@@ -40,13 +42,12 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        setTitle("");
         AndroidTool.setFullWindow(this);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setVisibility(View.VISIBLE);
         setSupportActionBar(toolbar);
-        setTitle("旭普软件");
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -60,7 +61,7 @@ public class MainActivity extends AppCompatActivity
 
     /**
      * 检查用户是否登录
-     *设置 Android tool 的active
+     * 设置 Android tool 的active
      */
     private void init() {
         AndroidTool.setMainActivity(this);
@@ -84,7 +85,7 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
         Intent intent;
-        switch (id){
+        switch (id) {
             case R.id.m_myproject:
 
                 intent = new Intent(this, ProjectPage.class);
@@ -96,7 +97,7 @@ public class MainActivity extends AppCompatActivity
                 startActivity(intent);
                 break;
             case R.id.m_lowmapmanager:
-                 intent = new Intent(this, LowMapManager.class);
+                intent = new Intent(this, LowMapManager.class);
                 startActivity(intent);
                 break;
             case R.id.m_nfmanager:
@@ -119,8 +120,12 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        //导航栏设置用户、账号
+        TextView tv_nickname = findViewById(R.id.tv_nickname);
+        tv_nickname.setText(UserService.getUser().getNickName());
+        TextView tv_account = findViewById(R.id.tv_account);
+        tv_account.setText(UserService.getUser().getAccount());
         MenuInflater inflater = getMenuInflater();
-        //inflater.inflate(R.menu.activity_main_drawer, menu);
         setHeadOnClick();
         return true;
     }

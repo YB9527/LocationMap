@@ -47,12 +47,17 @@ import java.util.Map;
 public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecyclerViewAdapter.ViewHolder> {
 
     private final List<MyJSONObject> mValues;
-    private final TableDataCustom tableDataCustom;
+    public final TableDataCustom tableDataCustom;
     private ViewHolder oldHolder;
     private int oldPostion;
     List<List<MyJSONObject>> childs;
     List<List<FiledCustom>> childRidMap;
     private ViewHolderCallback callback;
+
+    /**
+     * 设置每条数据加载完成的回调函数
+     * @param callback
+     */
     public void setLoadViewCallback(ViewHolderCallback callback){
         this.callback =callback;
     }
@@ -104,9 +109,9 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
             @Override
             public void onClick(View v) {
                 if (oldHolder != null) {
-                    oldHolder.itemView.setBackgroundColor(Color.WHITE);
+                    //oldHolder.itemView.setBackgroundColor(Color.WHITE);
                 }
-                holder.itemView.setBackgroundColor(Color.GRAY);
+                //holder.itemView.setBackgroundColor(Color.GRAY);
                 oldHolder = holder;
             }
         });

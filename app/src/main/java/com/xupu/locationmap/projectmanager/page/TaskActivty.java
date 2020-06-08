@@ -15,6 +15,7 @@ import android.view.WindowManager;
 
 import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItemAdapter;
 import com.xupu.locationmap.R;
+import com.xupu.locationmap.common.po.Callback;
 import com.xupu.locationmap.common.tools.AndroidTool;
 import com.xupu.locationmap.common.tools.TableTool;
 import com.xupu.locationmap.projectmanager.po.BtuFiledCustom;
@@ -34,7 +35,8 @@ public class TaskActivty extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //AndroidTool.setFullWindow(this);
+        AndroidTool.setFullWindow(this);
+        getSupportActionBar().hide();
         //getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         setContentView(R.layout.activity_task);
@@ -46,6 +48,11 @@ public class TaskActivty extends AppCompatActivity {
         //得到改对象所有的的多媒体
         List<MyJSONObject> medias = TableTool.findByTableNameAndParentId(Customizing.MEDIA, parent.getId());
         init(tableTasks,parent, medias);
+        initTitle();
+    }
+
+    private void initTitle() {
+        AndroidTool.addTitleFragment(this, "多媒体数据" );
     }
 
     /**

@@ -8,19 +8,33 @@
 
     <ImageView
         android:id="@+id/img"
-
+     android:layout_marginTop="10dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center"
         android:scaleType="fitXY"
-        android:src="@drawable/good_morning_img"></ImageView>
-    <Button
-        android:id="@+id/btn_delete"
+        android:src="@drawable/data_icon_add"></ImageView>
+    <ImageView
+        android:id="@+id/iv_delete"
+       android:layout_gravity="right"
+        android:layout_marginTop="2dp"
+        android:layout_width="20dp"
+        android:layout_height="30dp"
+        android:scaleType="matrix"
+        android:src="@drawable/date_icon_delete"
+        />
+   <!-- <Button
+
         android:layout_gravity="right"
-        android:layout_width="10dp"
-        android:layout_height="10dp"
-        android:background="#f00"  >
-    </Button>
+        android:layout_marginTop="2dp"
+        android:layout_width="20dp"
+        android:layout_height="30dp"
+        android:background="@drawable/date_icon_delete"
+        android:scaleX="0.5"
+        android:scaleY="0.5"
+        >
+
+    </Button>-->
   <!--  <LinearLayout
         android:id="@+id/ll_data"
         android:layout_width="wrap_content"

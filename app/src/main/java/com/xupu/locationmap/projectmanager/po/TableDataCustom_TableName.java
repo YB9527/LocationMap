@@ -44,4 +44,5 @@ public class TableDataCustom_TableName extends TableDataCustom {
     public void setTableItem(MyJSONObject tableItem) {
         this.tableItem = tableItem;
     }
+
 }

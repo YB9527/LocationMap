@@ -16,7 +16,9 @@ public class FiledCustom implements Serializable {
     public FiledCustom() {
 
     }
-
+    public FiledCustom(Integer id){
+        this.id = id;
+    }
     public Integer getId() {
         return id;
     }

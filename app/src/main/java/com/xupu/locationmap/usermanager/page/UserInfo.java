@@ -1,17 +1,16 @@
 package com.xupu.locationmap.usermanager.page;
 
-import androidx.appcompat.app.AppCompatActivity;
-
+import android.app.Activity;
 import android.os.Bundle;
 
 import com.xupu.locationmap.R;
 
-public class UserInfo extends AppCompatActivity {
+public class UserInfo extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setTitle("用户信息");
-        setContentView(R.layout.activity_user_info);
+        setContentView(R.layout.activity_login);
     }
 }

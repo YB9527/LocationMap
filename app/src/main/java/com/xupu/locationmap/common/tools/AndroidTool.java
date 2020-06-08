@@ -32,10 +32,13 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.alibaba.fastjson.JSONObject;
 import com.xupu.locationmap.R;
+import com.xupu.locationmap.common.page.TitleBarFragment;
+import com.xupu.locationmap.common.po.Callback;
 import com.xupu.locationmap.common.po.MyCallback;
 import com.xupu.locationmap.common.po.ResultData;
 import com.xupu.locationmap.projectmanager.page.AddItemFragment;
 import com.xupu.locationmap.projectmanager.page.NFActivity;
+import com.xupu.locationmap.projectmanager.page.ProjectPage;
 import com.xupu.locationmap.projectmanager.po.BtuFiledCustom;
 import com.xupu.locationmap.projectmanager.po.Customizing;
 import com.xupu.locationmap.projectmanager.po.EditFiledCusom;
@@ -45,6 +48,7 @@ import com.xupu.locationmap.projectmanager.po.ItemDataCustom;
 import com.xupu.locationmap.projectmanager.po.MyJSONObject;
 import com.xupu.locationmap.projectmanager.po.PositionField;
 import com.xupu.locationmap.projectmanager.po.ProgressFiledCusom;
+import com.xupu.locationmap.projectmanager.po.ViewFildCustom;
 
 import java.io.File;
 import java.util.Collection;
@@ -233,7 +237,27 @@ public class AndroidTool {
                     }
                 }
             }
-            if (temView instanceof Button) {
+            if (filedCustom instanceof ViewFildCustom) {
+                ViewFildCustom viewFildCustom = (ViewFildCustom) filedCustom;
+                temView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (viewFildCustom.isConfirm()) {
+                            confirm(temView.getContext(), viewFildCustom.getConfirmmessage(), new MyCallback() {
+                                @Override
+                                public void call(ResultData resultData) {
+                                    if (resultData.getStatus() == 0) {
+                                        viewFildCustom.OnClick(myJSONObject);
+                                    }
+                                }
+                            });
+                        } else {
+                            viewFildCustom.OnClick(myJSONObject);
+                        }
+                    }
+                });
+
+            } else if (temView instanceof Button) {
                 Button btu = (Button) temView;
                 btu.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -300,7 +324,7 @@ public class AndroidTool {
                     @Override
                     public void afterTextChanged(Editable s) {
                         String text = et.getText().toString();
-                        if("".equals(text) && jsonObject.getString(filedCustom.getAttribute()) == null){
+                        if ("".equals(text) && jsonObject.getString(filedCustom.getAttribute()) == null) {
                             return;
                         }
                         jsonObject.replace(filedCustom.getAttribute(), text);
@@ -338,8 +362,10 @@ public class AndroidTool {
                 img.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        ImgFiledCusom imgFiledCustom = (ImgFiledCusom) filedCustom;
-                        imgFiledCustom.onClick(myJSONObject);
+                        if (filedCustom instanceof ImgFiledCusom) {
+                            ImgFiledCusom imgFiledCustom = (ImgFiledCusom) filedCustom;
+                            imgFiledCustom.onClick(myJSONObject);
+                        }
                     }
                 });
             } else if (temView instanceof ProgressBar) {
@@ -394,5 +420,16 @@ public class AndroidTool {
             root = AndroidTool.getMainActivity().getFilesDir().getAbsolutePath();
         }
         return root + "/";
+    }
+
+    /**
+     * 添加标题
+     */
+    public static void addTitleFragment(Activity activity, String title) {
+        activity.getFragmentManager().beginTransaction().replace(R.id.title, new TitleBarFragment(title)).commit();
+    }
+
+    public static void addTitleFragment(Activity activity, String title, int leftIcRid, String rightStr, Callback callback) {
+        activity.getFragmentManager().beginTransaction().replace(R.id.title, new TitleBarFragment(leftIcRid, title, callback, rightStr)).commit();
     }
 }

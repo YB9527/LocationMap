@@ -4,7 +4,7 @@
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorPrimaryDark">@color/colorPrimary</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
@@ -32,11 +32,12 @@
         <item name="colorAccent">#8B8B83</item>
         <item name="android:textColorHint">#8B8B83</item>
     </style>
-
     <style name="Tabtext">
-        <item name="android:textColor">#fff</item>
-        <item name="android:textSize">20dp</item>
+
+        <item name="android:textColor">@drawable/selector_tab_text2</item>
+        <item name="android:textSize">12sp</item>
     </style>
+
 
     <style name="Btu">
         <item name="android:background">@drawable/btn_selector</item>
@@ -46,7 +47,27 @@
     <style name="titlebarstyle" parent="AppTheme.NoActionBar">
         <item name="android:windowTitleSize">318dp</item>
     </style>
+    <style name="itemtitlestyle" >
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">@dimen/item_height_20</item>
+    </style>
+    <style name="itemtext2style" >
+        <item name="android:textSize">10sp</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">4dp</item>
+    </style>
+    <style name="text2" >
+        <item name="android:windowTitleSize">318dp</item>
+    </style>
 
-
-
+    <style name="itemmargin">
+        <item name="android:layout_marginTop">10dp</item>
+        <item name="android:paddingTop">5dp</item>
+        <item name="android:paddingRight">5dp</item>
+        <item name="android:paddingLeft">5dp</item>
+        <item name="android:paddingBottom">5dp</item>
+    </style>
 </resources>

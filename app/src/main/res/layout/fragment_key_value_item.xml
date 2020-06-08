@@ -2,33 +2,41 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:paddingRight="@dimen/item_height_30"
+    android:paddingLeft="@dimen/item_height_30"
     android:layout_marginTop="5dp"
     android:focusableInTouchMode="true"
     android:orientation="horizontal">
-
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/item_height_50">
     <TextView
         android:id="@+id/key"
-        android:layout_width="0dp"
+        android:layout_centerVertical="true"
+        style="@style/itemtitlestyle"
         android:layout_height="wrap_content"
-        android:layout_weight="3"
-        android:gravity="right"
-        android:textSize="15sp"
-        android:text="123"/>
-
-    <TextView
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
         android:textSize="15sp"
-        android:text="："/>
-
+        android:text="123"
+        />
     <EditText
         android:id="@+id/value"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="6"
-        android:textSize="15sp"
-        android:text="345"/>
+        android:layout_centerVertical="true"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:paddingTop="15dp"
+        android:textSize="12sp"
+        android:textAlignment="gravity"
+        android:background="@null"
+        android:ems="10"
+        android:hint="请输入"
+        android:minWidth="@dimen/item_height_60"
+        android:layout_alignParentRight="true"
+        android:gravity="right"
+
+        />
+</RelativeLayout>
+
+
 
 </LinearLayout>

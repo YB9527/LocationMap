@@ -1,16 +1,22 @@
 package com.xupu.locationmap.projectmanager.page;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageView;
 
 import com.xupu.locationmap.R;
+import com.xupu.locationmap.common.po.Callback;
+import com.xupu.locationmap.common.po.ViewHolderCallback;
 import com.xupu.locationmap.common.tools.AndroidTool;
 import com.xupu.locationmap.common.tools.RedisTool;
+import com.xupu.locationmap.common.tools.Tool;
 import com.xupu.locationmap.projectmanager.po.BtuFiledCustom;
 import com.xupu.locationmap.projectmanager.po.EditFiledCusom;
 import com.xupu.locationmap.projectmanager.po.FiledCustom;
@@ -28,25 +34,36 @@ public class ProjectPage extends AppCompatActivity {
     Button btuAdd;
     AddItemFragment addItemFragment;
     ItemFragment itemFragment;
+    MyItemRecyclerViewAdapter myItemRecyclerViewAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         AndroidTool.setFullWindow(this);
-        setMyTitle();
+        getSupportActionBar().hide();
+        initTitle();
         setContentView(R.layout.activity_project);
         init();
     }
 
-    private void setMyTitle() {
-        String title;
-        MyJSONObject currentSugProject = ProjectService.getCurrentSugProject();
-        if (currentSugProject != null) {
-            title = "当前项目：" + ProjectService.getName(currentSugProject);
-        } else {
-            title = "还没有设置当前项目";
-        }
-        setTitle(title);
+    private void initTitle() {
+        AndroidTool.addTitleFragment(this, "项目管理", R.mipmap.topnav_icon_new, "下载", new Callback() {
+            @Override
+            public void call(Object o) {
+                toDownLoadProject();
+                //标题 右边下载按钮事件
+            }
+        });
+    }
+
+    /**
+     * 跳到下载项目页面
+     */
+    private void toDownLoadProject() {
+        Intent intent = new Intent(ProjectPage.this, SelectProjectDowload.class);
+        intent.putExtra("projects", projects);
+        startActivity(intent);
+        ProjectPage.this.finish();
     }
 
 
@@ -74,29 +91,51 @@ public class ProjectPage extends AppCompatActivity {
             }
         };
     }*/
+    ArrayList<MyJSONObject> projects;
+    MyJSONObject currentProject;
+
     private void init() {
-        btuAdd = findViewById(R.id.btu_add);
-        //btuAdd.setVisibility(View.VISIBLE);
-        btuAdd.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                ProjectPage.this.showMain(false);
+        projects = ProjectService.findAll();
+        if (!Tool.isEmpty(projects)) {
+            findViewById(R.id.recy).setVisibility(View.VISIBLE);
+            findViewById(R.id.data_no).setVisibility(View.GONE);
+            projects.add(projects.get(0));
+            projects.add(projects.get(0));
+            projects.add(projects.get(0));
+            //当前项目 放到第一个
+            currentProject = ProjectService.getCurrentSugProject();
+            if (currentProject != null) {
+                String currentProjectId = currentProject.getId();
+                currentProject = null;
+                for (int i = 0; i < projects.size(); i++) {
+                    if (currentProjectId.equals(projects.get(i).getId())) {
+                        currentProject = projects.remove(i);
+                        projects.add(0, currentProject);
+                        break;
+                    }
+                }
             }
-        });
-
-        ArrayList<MyJSONObject> projects = ProjectService.findAll();
+        }
         List<FiledCustom> fs = new ArrayList<>();
-        fs.add(new FiledCustom(R.id.name, "name"));
+        //项目名称
+        fs.add(new FiledCustom(R.id.tv_projectname, "name"));
+        //项目描述
+        fs.add(new FiledCustom(R.id.tv_descrip, "name"));
+        //项目选择
         fs.add(new BtuFiledCustom(R.id.btu_select, "选择") {
             @Override
             public void OnClick(MyJSONObject myJSONObject) {
                 ProjectService.setCurrentSugProject(myJSONObject);
-                setMyTitle();
                 AndroidTool.showAnsyTost("当前项目是：" + ProjectService.getName(myJSONObject), 0);
             }
         }.setConfirm(true, "确定要选择这个项目吗？"));
-
+        //下载按钮
+        findViewById(R.id.btn_down).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                toDownLoadProject();
+            }
+        });
        /* fs.add(new BtuFiledCustom(R.id.btu_info, "详情") {
             @Override
             public void OnClick(MyJSONObject myJSONObject) {
@@ -107,23 +146,30 @@ public class ProjectPage extends AppCompatActivity {
             }
         });*/
         TableDataCustom tableDataCustom = new TableDataCustom(R.layout.fragment_project_item, fs, projects);
-
-        itemFragment = new ItemFragment(tableDataCustom);
-
-        getSupportFragmentManager().beginTransaction()
-                .add(R.id.fl, itemFragment, "list")   // 此处的R.id.fragment_container是要盛放fragment的父容器'
-                .commit();
-        initAddItemFragment();
-
-        findViewById(R.id.btu_project_download).setOnClickListener(new View.OnClickListener() {
+        myItemRecyclerViewAdapter = new MyItemRecyclerViewAdapter(tableDataCustom);
+        RecyclerView recyclerView = findViewById(R.id.recy);
+        recyclerView.setAdapter(myItemRecyclerViewAdapter);
+        myItemRecyclerViewAdapter.setLoadViewCallback(new ViewHolderCallback() {
             @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(ProjectPage.this, SelectProjectDowload.class);
-                intent.putExtra("projects", projects);
-                startActivity(intent);
-                ProjectPage.this.finish();
+            public void call(MyItemRecyclerViewAdapter.ViewHolder holder, int position) {
+                ImageView imageView = holder.mView.findViewById(R.id.iv_currentIcon);
+                if (position == 0 && currentProject != null)  {
+                    imageView.setImageResource(R.drawable.project_icon_blue);
+                    holder.mView.findViewById(R.id.fl_currentproject).setVisibility(View.VISIBLE);
+                }else{
+                    imageView.setImageResource(R.drawable.project_icon_gray);
+                    holder.mView.findViewById(R.id.fl_currentproject).setVisibility(View.GONE);
+                }
             }
         });
+        //itemFragment = new ItemFragment(tableDataCustom);
+
+
+      /*  getSupportFragmentManager().beginTransaction()
+                .add(R.id.fl, itemFragment, "list")   // 此处的R.id.fragment_container是要盛放fragment的父容器'
+                .commit();*/
+        //initAddItemFragment();
+
     }
 
     /**

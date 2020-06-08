@@ -1,189 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:focusableInTouchMode="true"
-    tools:context=".usermanager.page.Login">
-
-
-    <FrameLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-
-        <ImageView
-            android:id="@+id/imageView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="centerCrop"
-            android:src="@drawable/good_morning_img" />
-
-    </FrameLayout>
-
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:id="@+id/page"
+    android:layout_height="match_parent">
 
     <LinearLayout
-        android:id="@+id/linearLayout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="80dp"
-        android:orientation="horizontal">
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/gotham"
-                android:text="Good "
-                android:textColor="#ffffff"
-                android:textSize="32sp" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/textView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_centerHorizontal="true"
-                android:fontFamily="@font/gotham"
-                android:text="Morning"
-                android:textColor="#ffffff"
-                android:textSize="32sp" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="2dp"
-                android:layout_marginTop="2dp"
-                android:background="#deff00" />
-
-        </LinearLayout>
-
-
-    </LinearLayout>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/linearLayout"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="4dp"
-        android:fontFamily="@font/calibri"
-        android:gravity="center"
-        android:text="We pursue a relaxed gaming experience"
-        android:textColor="#9affffff"
-        android:textSize="10sp" />
-
-
+        android:layout_width="20dp"
+        android:layout_height="match_parent"/>
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="32dp"
         android:orientation="vertical"
-        android:paddingLeft="32dp"
-        android:paddingRight="32dp">
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="match_parent">
+        <ImageView
+            android:src="@drawable/leftnav_img_default_head"
+            android:layout_gravity="center"
+            android:layout_marginTop="100dp"
+            android:layout_width="200dp"
+            android:layout_height="100dp">
+        </ImageView>
+        <androidx.appcompat.widget.LinearLayoutCompat
 
+            android:background="@drawable/bg_white_round" android:layout_width="match_parent" android:layout_height="43.0dip" android:layout_marginTop="30.0dip" >
+            <androidx.appcompat.widget.AppCompatImageView android:layout_gravity="center" android:layout_width="wrap_content" android:layout_height="wrap_content" android:src="@drawable/login_phone" />
+            <EditText android:id="@+id/et_account" android:textSize="@dimen/text_s12"  android:textColorHint="@color/text_hint" android:layout_gravity="center_vertical"  android:background="@null" android:layout_width="0dp" android:layout_weight="1" android:layout_height="fill_parent" android:hint="请输入账号" android:singleLine="true" android:maxLength="20" android:layout_marginStart="16.0dip" android:layout_marginEnd="16.0dip" />
+            <ImageView android:layout_gravity="center_vertical" android:id="@+id/login_username_cancel" android:layout_width="30dp" android:layout_height="wrap_content" android:src="@drawable/login_delete" />
+        </androidx.appcompat.widget.LinearLayoutCompat>
 
-        <com.google.android.material.textfield.TextInputLayout
+        <androidx.appcompat.widget.LinearLayoutCompat  android:background="@drawable/bg_white_round" android:layout_width="match_parent" android:layout_height="43.0dip" android:layout_marginTop="15.0dip" >
+            <androidx.appcompat.widget.AppCompatImageView android:layout_gravity="center" android:layout_width="wrap_content" android:layout_height="wrap_content" android:src="@drawable/login_password" />
+            <EditText android:id="@+id/et_password" android:inputType="textPassword" android:textSize="@dimen/text_s12" android:textColorHint="@color/text_hint" android:layout_gravity="center_vertical"  android:background="@null" android:layout_width="0dp" android:layout_weight="1" android:layout_height="fill_parent" android:hint="@string/password_number" android:singleLine="true" android:maxLength="15" android:layout_marginStart="16.0dip" android:layout_marginEnd="16.0dip" />
+            <ImageView android:layout_gravity="center_vertical" android:id="@+id/login_password_visible" android:layout_width="30dp" android:layout_height="wrap_content" android:src="@drawable/login_eye_open" />
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <Button android:id="@+id/btn_sign_in" android:textSize="@dimen/text_s18" android:textColor="@color/white" android:gravity="center_horizontal"  android:background="@drawable/login_btn" android:paddingTop="18.0dip" android:layout_width="match_parent" android:layout_height="85.0dip" android:layout_marginTop="20.0dip" android:text="@string/login"  />
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColorHint="#96ffffff"
-            android:theme="@style/EditScreenTextInputLayoutStyle">
-
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:drawablePadding="16dp"
-                android:drawableRight="@drawable/ic_email_white_24dp"
-                android:fontFamily="@font/calibri"
-                android:hint="Account"
-                android:inputType="textEmailAddress"
-                android:maxLines="1"
-                android:textColor="@android:color/white"
-                android:textSize="16sp" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColorHint="#96ffffff"
-            android:theme="@style/EditScreenTextInputLayoutStyle">
-
-
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:drawablePadding="16dp"
-                android:drawableRight="@drawable/ic_lock_white_24dp"
-                android:fontFamily="@font/calibri"
-                android:hint="Password"
-                android:inputType="textPassword"
-                android:maxLines="1"
-                android:textColor="@android:color/white"
-                android:textSize="16sp" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="8dp"
-            android:gravity="center"
-            android:orientation="horizontal">
-
-            <Button
-                android:id="@+id/btu_sign_up"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="16dp"
-                android:background="@drawable/buttonshapewhitebg"
-                android:fontFamily="@font/calibri"
-                android:text="注册"
-                android:textAllCaps="false"
-                android:textStyle="bold"
-                android:textColor="#96ffffff"
-                android:textSize="16dp" />
-
-            <Button
-                android:id="@+id/btu_sign_in"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:background="@drawable/buttonshapewhitebg"
-                android:fontFamily="@font/calibri"
-                android:text="登录"
-                android:textAllCaps="false"
-                android:textColor="#96ffffff"
-                android:textSize="16dp"
-                android:textStyle="bold" />
-
-
-        </LinearLayout>
-
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:fontFamily="@font/calibri"
-            android:text="Forgot Password?"
-            android:textAlignment="center"
-            android:textColor="#96ffffff"
-            android:textSize="16sp" />
+            android:layout_height="wrap_content">
+            <Button android:background="@drawable/white" android:id="@+id/btn_youke_login" android:textSize="@dimen/text_s15" android:textColor="@color/textblue"  android:layout_width="wrap_content" android:layout_height="wrap_content"  android:text="游客登录"  />
+            <Button android:background="@drawable/white"  android:id="@+id/btn_sign_up" android:layout_alignParentRight="true" android:textSize="@dimen/text_s15" android:textColor="@color/textblue"  android:layout_width="wrap_content" android:layout_height="wrap_content"  android:text="注册"  />
+        </RelativeLayout>
 
 
     </LinearLayout>
 
-</RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="20dp"
+        android:layout_height="match_parent"/>
+</LinearLayout>

@@ -45,15 +45,15 @@
     <page tablename="潜力图斑">
         <fieldCustom>
             <id>title</id>
-            <attribute>xzqmc</attribute>
+            <attribute>zldwmc</attribute>
         </fieldCustom>
- <fieldCustom>
+        <fieldCustom>
             <id>info1</id>
-            <attribute></attribute>
+            <attribute>tbbh</attribute>
         </fieldCustom>
         <fieldCustom>
             <id>info2</id>
-            <attribute></attribute>
+            <attribute>tbmj</attribute>
         </fieldCustom>
     </page>
 </pages>

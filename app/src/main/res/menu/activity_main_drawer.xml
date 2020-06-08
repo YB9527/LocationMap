@@ -3,18 +3,21 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
 
+
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/m_myproject"
-            android:icon="@drawable/ic_menu_camera"
-            android:title="我的项目" />
+            android:icon="@mipmap/leftnav_icon_project_gray"
+            android:title="我的项目" >
+        </item>
+
         <item
             android:id="@+id/m_xzqy"
-            android:icon="@drawable/ic_menu_gallery"
+            android:icon="@mipmap/leftnav_icon_area_gray"
             android:title="行政区域" />
         <item
             android:id="@+id/m_lowmapmanager"
-            android:icon="@drawable/ic_menu_gallery"
+            android:icon="@mipmap/leftnav_icon_basemap_gray"
             android:title="底图管理" />
         <item
             android:id="@+id/m_nfmanager"
@@ -23,19 +26,23 @@
             android:title="农户管理"/>
         <item
             android:id="@+id/m_tablelist"
-            android:icon="@drawable/ic_menu_gallery"
+            android:icon="@mipmap/leftnav_icon_data_gray"
             android:title="调查数据">
         </item>
 
 
     </group>
 
-    <item android:title="Communicate">
+    <item android:title="">
         <menu>
             <item
                 android:id="@+id/m_help"
-                android:icon="@drawable/ic_menu_share"
+                android:icon="@mipmap/leftnav_icon_help_gray"
                 android:title="帮助" />
+            <item
+                android:id="@+id/m_setting"
+                android:icon="@mipmap/leftnav_icon_setting_gray"
+                android:title="设置" />
         </menu>
     </item>
 

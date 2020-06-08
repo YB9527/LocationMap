@@ -49,6 +49,7 @@ import com.xupu.locationmap.projectmanager.po.ItemDataCustom;
 import com.xupu.locationmap.projectmanager.po.MyJSONObject;
 import com.xupu.locationmap.projectmanager.po.PositionField;
 import com.xupu.locationmap.projectmanager.po.TableDataCustom;
+import com.xupu.locationmap.projectmanager.po.ViewFildCustom;
 import com.xupu.locationmap.projectmanager.service.MediaService;
 import com.xupu.locationmap.projectmanager.service.SFZService;
 import com.xupu.locationmap.projectmanager.service.TableService;
@@ -104,7 +105,6 @@ public class TaskFragment extends Fragment {
             public void onClick(MyJSONObject myJSONObject) {
                 if (myJSONObject.getId().equals("-1")) {
                     //第一个添加按钮
-                    //MyJSONObject media = MediaService.getMedia(parent, 0, TaskService.getTaskName(task));
                     MyJSONObject media =  MediaService.newMediaJSONObject(parent,task,0);
                     MediaTool.photo(TaskFragment.this, 101, media);
                 } else {
@@ -115,13 +115,13 @@ public class TaskFragment extends Fragment {
                 }
             }
         });
-        filedCustoms.add(new BtuFiledCustom<MyJSONObject>(R.id.btn_delete, "删除") {
+        filedCustoms.add(new ViewFildCustom(R.id.iv_delete) {
             @Override
             public void OnClick(MyJSONObject media) {
                 myItemRecyclerViewAdapter.remove(media);
                 TableTool.delete(media);
             }
-        }.setConfirm(true, "确定要删除吗？"));
+        }.setConfirm(true,"确认要删除吗？"));
 
 
 
@@ -143,20 +143,10 @@ public class TaskFragment extends Fragment {
             @Override
             public void call(MyItemRecyclerViewAdapter.ViewHolder holder, int position) {
                 if (position == medias.size()-1) {
-                    holder.mView.findViewById(R.id.btn_delete).setVisibility(View.GONE);
-                    //holder.mView.findViewById(R.id.ll_data).setVisibility(View.GONE);
+                    holder.mView.findViewById(R.id.iv_delete).setVisibility(View.GONE);
                     ImageView imageView = holder.mView.findViewById(R.id.img);
-
-                    ViewGroup.LayoutParams params = imageView.getLayoutParams();
-                    imageView.getLayoutParams().height=100;
-                    imageView.getLayoutParams().width=100;
-                    //FrameLayout fl = holder.mView.findViewById(R.id.fl);
-
-                    //ViewGroup.LayoutParams params = fl.getLayoutParams();
-                    //android.widget.FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(200, 200);
-                    //params.gravity = Gravity.CENTER_VERTICAL;
-                    //params.topMargin = 10;
-                    //fl.setLayoutParams(params);
+                    imageView.getLayoutParams().height=150;
+                    imageView.getLayoutParams().width=150;
                 }
             }
         });

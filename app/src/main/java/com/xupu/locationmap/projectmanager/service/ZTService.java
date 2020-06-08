@@ -100,7 +100,7 @@ public class ZTService {
                 tableIdMap.put("03a5042f-fdba-483b-b0b7-c7706c22bb83", "313af5b5-44b0-4e41-88eb-d62dfc1dc7a4");//地块
                 tableIdMap.put("cef06e0e-3fd2-4cce-8451-f0ea1c36a5ca", "bccbd22d-b5b8-4eb3-8225-acce9cd676bf");//行政区
                 tableIdMap.put("aacd513d-e833-45cd-80c1-95dbec9ebaaa", "a43378a6-bf48-4023-95f3-b3378f27b951");//权属主体
-                tableIdMap.put("6646c538-8a85-43fe-b102-5619baad0947", "bccbd22d-b5b8-4eb3-8225-acce9cd676bf");//潜力图斑
+                tableIdMap.put("6646c538-8a85-43fe-b102-5619baad0947", "30b9f358-be11-41a3-aaa1-6f433e00ac34");//潜力图斑
             }
         }
         return tableIdMap;

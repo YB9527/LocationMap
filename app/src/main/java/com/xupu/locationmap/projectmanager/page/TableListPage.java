@@ -23,9 +23,11 @@ import com.ogaclejapan.smarttablayout.SmartTabLayout;
 import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItemAdapter;
 import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItems;
 import com.xupu.locationmap.R;
+import com.xupu.locationmap.common.po.Callback;
 import com.xupu.locationmap.common.tools.AndroidTool;
 
 import com.xupu.locationmap.common.tools.TableTool;
+import com.xupu.locationmap.common.tools.Tool;
 import com.xupu.locationmap.projectmanager.po.BtuFiledCustom;
 import com.xupu.locationmap.projectmanager.po.FiledCustom;
 import com.xupu.locationmap.projectmanager.po.MyJSONObject;
@@ -44,28 +46,20 @@ import java.util.Map;
 /**
  * 普通表格数据装载
  */
-public class TableListPage extends FragmentActivity {
+public class TableListPage extends AppCompatActivity {
 
-
-    public TableListPage() {
-
-
-    }
 
     List<MyJSONObject> tables;
-    List<String> tableids = new ArrayList<>();
+   public List<String> tableids = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
         AndroidTool.setFullWindow(this);
-        setTitle("数据");
+        getSupportActionBar().hide();
+        initTitle();
         setContentView(R.layout.activity_table_list);
-
         List<TableViewCustom> tableViewCustomList = new ArrayList<>();
-
         //得到要详细的表格
         //找到所有表
         //找到表的 对应的表id
@@ -81,8 +75,17 @@ public class TableListPage extends FragmentActivity {
         //init2();
         init(tableViewCustomList);
     }
+    private void initTitle() {
+        AndroidTool.addTitleFragment(this, "调查数据", R.mipmap.topnav_icon_new, "添加", new Callback() {
+            @Override
+            public void call(Object o) {
+                //跳到添加对象也米娜
+                //toAddDataPage(null);
+            }
+        });
+    }
 
-    int position = 0;
+   public int position = 0;
 
     private void init(List<TableViewCustom> tableViewCustomList) {
 
@@ -160,9 +163,11 @@ public class TableListPage extends FragmentActivity {
                         MyJSONObject newobj = (MyJSONObject) data.getSerializableExtra("obj");
                         TableTool.insert(newobj, TableTool.STATE_INSERT);
                         myItemRecyclerViewAdapter.addItem(newobj);
+                        findViewById(R.id.data_no).setVisibility(View.GONE);
                         break;
                 }
                 break;
         }
     }
+
 }

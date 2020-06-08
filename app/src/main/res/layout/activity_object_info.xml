@@ -3,30 +3,35 @@
     android:id="@+id/page"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-
     android:orientation="vertical">
 
+    <LinearLayout
+        android:orientation="horizontal"
+        android:id="@+id/title"
+        android:background="@color/pageback"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 
     <androidx.recyclerview.widget.RecyclerView
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/recy"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+
         android:layout_weight="1"
         app:layoutManager="LinearLayoutManager" />
-    <RelativeLayout
-        android:layout_marginTop="10dp"
 
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
         <Button
             android:id="@+id/btn_delete"
+            android:layout_marginTop="10dp"
+            android:textColor="@color/white"
+            android:layout_gravity="center"
+            android:text="删除数据"
+            android:background="@drawable/btn_bg_rad"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:text="删除"
-            />
-        <Button
+            android:layout_height="wrap_content"/>
+
+       <!-- <Button
             android:id="@+id/btn_update"
             android:layout_marginLeft="130dp"
             android:layout_width="wrap_content"
@@ -39,8 +44,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="返回"
-            />
+            />-->
 
-    </RelativeLayout>
 
 </LinearLayout>
