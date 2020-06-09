@@ -54,6 +54,7 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
     List<List<FiledCustom>> childRidMap;
     private ViewHolderCallback callback;
 
+
     /**
      * 设置每条数据加载完成的回调函数
      * @param callback
@@ -66,10 +67,11 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
         return mValues;
     }
 
-    public MyItemRecyclerViewAdapter(TableDataCustom tableDataCustom) {
+    public MyItemRecyclerViewAdapter(TableDataCustom tableDataCustom,RecyclerView recyclerView) {
         this.mValues = tableDataCustom.getList();
         this.tableDataCustom = tableDataCustom;
         this.childRidMap = tableDataCustom.getChildRidList();
+        this.recyclerView= recyclerView;
     }
 
     public void setChilds(List<List<MyJSONObject>> childs) {
@@ -92,7 +94,6 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
         holder.itemView.setBackgroundColor(Color.WHITE);
         ItemDataCustom itemDataCustom = new ItemDataCustom(null, json, tableDataCustom.getFiledCustoms());
         AndroidTool.setView(holder.mView, itemDataCustom, tableDataCustom.isEdit(), position);
-
         /**
          * 写入子对象的属性
          */
@@ -154,8 +155,10 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
         this.mValues.addAll(medias);
         this.notifyDataSetChanged();
     }
-
-
+    RecyclerView recyclerView;
+    public void setRecyclerView(RecyclerView recyclerView) {
+        this.recyclerView =recyclerView;
+    }
 
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -181,6 +184,9 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
 
     public void addItem(int index, MyJSONObject jsonObject) {
         this.mValues.add(index, jsonObject);
+        if(recyclerView != null){
+            recyclerView.scrollToPosition(index);
+        }
         this.notifyItemInserted(index);
 
     }

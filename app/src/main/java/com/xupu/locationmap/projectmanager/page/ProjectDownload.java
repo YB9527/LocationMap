@@ -114,7 +114,7 @@ public class ProjectDownload extends AppCompatActivity {
         AndroidTool.setView(findViewById(R.id.page), itemDataCustom, false, 0);
     }
 
-
+     RecyclerView recyclerView;
     private void downProject(MyJSONObject project) {
         //2、创建下载表格的碎片
         //页面显示
@@ -134,10 +134,10 @@ public class ProjectDownload extends AppCompatActivity {
         tasks.add(tasktable);
         tasks.add(xzqtable);
         tasks.add(fieldtable);
-
+         recyclerView = findViewById(R.id.list);
         TableDataCustom tableDataCustom = new TableDataCustom(fragmentItem, fs, tasks);
-        myItemRecyclerViewAdapter = new MyItemRecyclerViewAdapter(tableDataCustom);
-        RecyclerView recyclerView = findViewById(R.id.list);
+        myItemRecyclerViewAdapter = new MyItemRecyclerViewAdapter(tableDataCustom,recyclerView);
+
 
         //得到要下载的表格
         getTableList(project, new Callback<JSONArray>() {
@@ -379,10 +379,16 @@ public class ProjectDownload extends AppCompatActivity {
      * 完成所有任务执行方法
      */
     private void finshAllTask() {
-        Intent intent = new Intent(this, XZQYPage.class);
-        startActivity(intent);
-        AndroidTool.showAnsyTost("项目下载完成，请选择工作区域", 0);
-        this.finish();
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Intent intent = new Intent(ProjectDownload.this, XZQYPage.class);
+                startActivity(intent);
+                AndroidTool.showAnsyTost("项目下载完成，请选择工作区域", 0);
+                ProjectDownload.this.finish();
+            }
+        });
+
     }
 
 

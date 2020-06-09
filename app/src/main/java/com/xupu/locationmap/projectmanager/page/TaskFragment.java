@@ -134,7 +134,7 @@ public class TaskFragment extends Fragment {
 
 
         TableDataCustom tableDataCustom = new TableDataCustom(fragmentItem, filedCustoms, medias);
-        myItemRecyclerViewAdapter = new MyItemRecyclerViewAdapter(tableDataCustom);
+        myItemRecyclerViewAdapter = new MyItemRecyclerViewAdapter(tableDataCustom,recyclerView);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext(), RecyclerView.HORIZONTAL, false));
         recyclerView.setAdapter(myItemRecyclerViewAdapter);
@@ -145,8 +145,8 @@ public class TaskFragment extends Fragment {
                 if (position == medias.size()-1) {
                     holder.mView.findViewById(R.id.iv_delete).setVisibility(View.GONE);
                     ImageView imageView = holder.mView.findViewById(R.id.img);
-                    imageView.getLayoutParams().height=150;
-                    imageView.getLayoutParams().width=150;
+                   // imageView.getLayoutParams().height=150;
+                    //imageView.getLayoutParams().width=150;
                 }
             }
         });

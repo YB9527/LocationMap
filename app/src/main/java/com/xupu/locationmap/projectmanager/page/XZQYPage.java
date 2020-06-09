@@ -25,7 +25,9 @@ import com.xupu.locationmap.projectmanager.po.FiledCustom;
 import com.xupu.locationmap.projectmanager.po.ItemDataCustom;
 import com.xupu.locationmap.projectmanager.po.MyJSONObject;
 import com.xupu.locationmap.projectmanager.po.PositionField;
+import com.xupu.locationmap.projectmanager.po.SlidingFieldCustom;
 import com.xupu.locationmap.projectmanager.po.TableDataCustom;
+import com.xupu.locationmap.projectmanager.po.ViewFildCustom;
 import com.xupu.locationmap.projectmanager.po.XZDM;
 import com.xupu.locationmap.projectmanager.service.ProjectService;
 import com.xupu.locationmap.projectmanager.service.XZQYService;
@@ -91,20 +93,43 @@ public class XZQYPage extends AppCompatActivity {
         fs.add(new FiledCustom(R.id.tv_projectname, "caption"));
         //描述
         fs.add(new FiledCustom(R.id.tv_descrip, "code"));
-        //区域选择
-        fs.add(new BtuFiledCustom(R.id.btu_select, "选择") {
+
+
+        //侧滑功能
+        fs.add(new SlidingFieldCustom(R.id.slidingview, R.id.first));
+        //删除项目
+        fs.add(new ViewFildCustom(R.id.tv_delete1) {
             @Override
             public void OnClick(MyJSONObject myJSONObject) {
-                XZQYService.setCurrentXZDM(myJSONObject);
-                AndroidTool.showAnsyTost("当前区域是：" + ProjectService.getName(myJSONObject), 0);
+                //以后增加此功能
+                myItemRecyclerViewAdapter.remove(myJSONObject);
             }
-        }.setConfirm(true, "确定要选择这个区域吗？"));
+        }.setConfirm(true, "确认要删除此区域吗？"));
+
+        //区域选择
+        fs.add(new ViewFildCustom(R.id.item) {
+            @Override
+            public void OnClick(MyJSONObject myJSONObject) {
+                //如果是当前区域，不用选中
+                if (XZQYService.getCurrentXZDM() == null || !myJSONObject.getId().equals(XZQYService.getCurrentXZDM().getId())) {
+                    AndroidTool.confirm(XZQYPage.this, "确定要选择这个区域吗？", new MyCallback() {
+                        @Override
+                        public void call(ResultData resultData) {
+                            if (resultData.getStatus() == 0) {
+                                setCurrentXZQY(myJSONObject);
+
+                            }
+                        }
+                    });
+                }
+            }
+        });
+
         //新增区域按钮
         findViewById(R.id.btn_down).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 addXZQY();
-
             }
         });
        /* fs.add(new BtuFiledCustom(R.id.btu_info, "详情") {
@@ -117,9 +142,12 @@ public class XZQYPage extends AppCompatActivity {
             }
         });*/
         TableDataCustom tableDataCustom = new TableDataCustom(R.layout.fragment_project_item, fs, xzqys);
-        myItemRecyclerViewAdapter = new MyItemRecyclerViewAdapter(tableDataCustom);
         RecyclerView recyclerView = findViewById(R.id.recy);
+        myItemRecyclerViewAdapter = new MyItemRecyclerViewAdapter(tableDataCustom,recyclerView);
+
         recyclerView.setAdapter(myItemRecyclerViewAdapter);
+        myItemRecyclerViewAdapter.setRecyclerView(recyclerView);
+
         myItemRecyclerViewAdapter.setLoadViewCallback(new ViewHolderCallback() {
             @Override
             public void call(MyItemRecyclerViewAdapter.ViewHolder holder, int position) {
@@ -136,6 +164,22 @@ public class XZQYPage extends AppCompatActivity {
                 }
             }
         });
+
+    }
+
+    /**
+     * 设置为当前行政区域
+     * @param xzqy
+     */
+    private void setCurrentXZQY(MyJSONObject xzqy) {
+        this.currentXZQY =xzqy;
+        XZQYService.setCurrentXZDM(xzqy);
+        AndroidTool.showAnsyTost("当前区域是：" + XZQYService.getCaption(xzqy), 0);
+        myItemRecyclerViewAdapter.remove(xzqy);
+        myItemRecyclerViewAdapter.addItem(0,xzqy);
+        if(myItemRecyclerViewAdapter.getmValues().size() > 1){
+            myItemRecyclerViewAdapter.notifyItemChanged(1);
+        }
 
     }
 

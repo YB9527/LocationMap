@@ -125,15 +125,18 @@ public class SlidingDeleteView extends HorizontalScrollView {
             setDeleteViewGone();
         } else {
             setDeleteViewVisibile();
-            if(oldSlidingDeleteView == null){
-                oldSlidingDeleteView =this;
-            }else if(oldSlidingDeleteView != this){
-                if (onStateChangedListener != null) {
-                    oldSlidingDeleteView.onStateChangedListener.onDownOrMove();
-                }
-                oldSlidingDeleteView.setDeleteViewGone();
-                oldSlidingDeleteView =this;
+            removeOld();
+        }
+    }
+    public void removeOld(){
+        if(oldSlidingDeleteView == null){
+            oldSlidingDeleteView =this;
+        }else if(oldSlidingDeleteView != this){
+            if (onStateChangedListener != null) {
+                oldSlidingDeleteView.onStateChangedListener.onDownOrMove();
             }
+            oldSlidingDeleteView.setDeleteViewGone();
+            oldSlidingDeleteView =this;
         }
     }
 

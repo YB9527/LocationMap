@@ -167,6 +167,7 @@ public class TableItemListFragment extends Fragment {
                         //这是增加，用的是修改按钮而已
                         MyJSONObject newobj = (MyJSONObject) data.getSerializableExtra("obj");
                         TableTool.insert(newobj, TableTool.STATE_INSERT);
+
                         addItem(newobj);
                         checkHasDataAndShow();
                         break;
@@ -198,7 +199,7 @@ public class TableItemListFragment extends Fragment {
         } else {
             //recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
         }
-        myItemRecyclerViewAdapter = new MyItemRecyclerViewAdapter(tableDataCustom);
+        myItemRecyclerViewAdapter = new MyItemRecyclerViewAdapter(tableDataCustom,recyclerView);
         boolean flag = false;
         /**
          * 因为缓存问题，替换到当前 myItemRecyclerViewAdapter
@@ -247,11 +248,17 @@ public class TableItemListFragment extends Fragment {
      * 如果没有数据，显示缺省照片
      */
     private void checkHasDataAndShow() {
-        if (!Tool.isEmpty(tableDataCustom.getList())) {
-            view.findViewById(R.id.data_no).setVisibility(View.GONE);
-        } else {
-            view.findViewById(R.id.data_no).setVisibility(View.VISIBLE);
-        }
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (!Tool.isEmpty(tableDataCustom.getList())) {
+                    view.findViewById(R.id.data_no).setVisibility(View.GONE);
+                } else {
+                    view.findViewById(R.id.data_no).setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
     }
 
 

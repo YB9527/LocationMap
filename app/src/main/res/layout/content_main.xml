@@ -8,4 +8,12 @@
     tools:context=".MainActivity"
     tools:showIn="@layout/app_bar_main">
 
+<!--    <com.xupu.locationmap.common.page.ZQImageViewRoundOval
+        android:id="@+id/roundRect"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:src="@drawable/leftnav_img_head_bg">
+    </com.xupu.locationmap.common.page.ZQImageViewRoundOval>-->
+
 </LinearLayout>

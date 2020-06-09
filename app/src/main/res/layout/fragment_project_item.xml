@@ -1,98 +1,116 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.xupu.locationmap.common.page.SlidingDeleteView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="80dp"
+    android:id="@+id/slidingview"
     android:layout_marginTop="10dp"
     >
-
-  <!--  <Button
-        android:id="@+id/btu_info"
-        style="@style/Btu"
-        android:layout_width="wrap_content"
-        android:layout_height="30dp"
-        android:layout_marginRight="5dp"
-        android:layout_toLeftOf="@+id/btu_select"
-        android:text="查看详情" />
-
-
-    <Button
-        android:id="@+id/btu_select"
-        style="@style/Btu"
-        android:layout_width="wrap_content"
-        android:layout_height="30dp"
-        android:layout_alignParentRight="true"
-        android:text="选择此项目" />-->
-    <!-- -->
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="70dp"
-        android:layout_alignParentBottom="true"
-        android:background="@color/itemback"
-        android:paddingTop="10dp">
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
 
-        <LinearLayout
-            android:id="@+id/first"
-            android:layout_marginLeft="10dp"
+        <RelativeLayout
+            android:id="@+id/item"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
+            android:layout_height="70dp"
+            android:layout_alignParentBottom="true"
 
-            <ImageView
-                android:id="@+id/iv_currentIcon"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:src="@mipmap/project_icon_gray" />
+            android:paddingTop="10dp">
 
             <LinearLayout
-                android:layout_width="0dp"
+                android:id="@+id/first"
+                android:background="@color/itemback"
+                android:layout_marginLeft="10dp"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:orientation="vertical"
-                android:paddingLeft="10dp">
+                android:orientation="horizontal">
 
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                <ImageView
+                    android:id="@+id/iv_currentIcon"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@mipmap/project_icon_gray" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:paddingLeft="10dp">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:id="@+id/tv_projectname"
+                            style="@style/itemtitlestyle"
+                            android:text="泰康项目"
+                            />
+                        <FrameLayout
+                            android:id="@+id/fl_currentproject"
+                            android:visibility="gone"
+                            android:layout_alignBottom="@+id/tv_projectname"
+                            android:layout_toRightOf="@+id/tv_projectname"
+                            android:layout_width="40dp"
+                            android:layout_height="20dp">
+                            <ImageView
+                                android:layout_width="40dp"
+                                android:layout_height="20dp"
+                                android:src="@drawable/btn_bg_blue" />
+                            <TextView
+                                android:id="@+id/tv_current"
+                                android:layout_gravity="center"
+                                android:text="当前项目"
+                                android:textColor="@color/white"
+                                android:textSize="@dimen/text_s8"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"/>
+                        </FrameLayout>
+
+
+                    </RelativeLayout>
 
                     <TextView
-                        android:id="@+id/tv_projectname"
-                        style="@style/itemtitlestyle"
-                        android:text="泰康项目"
-                        />
-                    <FrameLayout
-                        android:id="@+id/fl_currentproject"
-                        android:visibility="gone"
-                        android:layout_alignBottom="@+id/tv_projectname"
-                        android:layout_toRightOf="@+id/tv_projectname"
-                        android:layout_width="40dp"
-                        android:layout_height="20dp">
-                        <ImageView
-                            android:layout_width="40dp"
-                            android:layout_height="20dp"
-                            android:src="@drawable/btn_bg_blue" />
-                        <TextView
-                            android:id="@+id/tv_current"
-                            android:layout_gravity="center"
-                            android:text="当前项目"
-                            android:textColor="@color/white"
-                            android:textSize="@dimen/text_s8"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"/>
-                    </FrameLayout>
-
-
-                </RelativeLayout>
-
-                <TextView
-                    android:id="@+id/tv_descrip"
-                    style="@style/itemtext2style"
-                    android:text="详情详情情详情详情详情详情详情详情详情" />
+                        android:id="@+id/tv_descrip"
+                        style="@style/itemtext2style"
+                        android:text="详情详情情详情详情详情详情详情详情详情" />
+                </LinearLayout>
             </LinearLayout>
+
+
+        </RelativeLayout>
+
+        <!-- 抽屉部分 -->
+        <LinearLayout
+            android:id="@+id/lay_sliding"
+            android:background="@color/pageback"
+            android:layout_marginLeft="@dimen/item_height_20"
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:layout_marginRight="10dp"
+            android:orientation="horizontal">
+            <RelativeLayout
+                android:id="@+id/tv_delete1"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <ImageView
+                    android:layout_centerVertical="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/area_icon_delete"
+                    android:paddingRight="@dimen/item_height_20"
+                    android:paddingLeft="@dimen/item_height_20"
+                    />
+
+            </RelativeLayout>
+
         </LinearLayout>
+    </LinearLayout>
 
 
-    </RelativeLayout>
 
 
 
-</RelativeLayout>
+</com.xupu.locationmap.common.page.SlidingDeleteView>

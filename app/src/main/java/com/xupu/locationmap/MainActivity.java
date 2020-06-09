@@ -16,6 +16,7 @@ import android.view.MenuItem;
 
 import com.google.android.material.navigation.NavigationView;
 import com.xupu.locationmap.common.page.AskUser;
+import com.xupu.locationmap.common.page.ZQImageViewRoundOval;
 import com.xupu.locationmap.common.tools.AndroidTool;
 import com.xupu.locationmap.projectmanager.page.HelpActivty;
 import com.xupu.locationmap.projectmanager.page.LowMapManager;
@@ -23,6 +24,8 @@ import com.xupu.locationmap.projectmanager.page.NFActivity;
 import com.xupu.locationmap.projectmanager.page.ProjectPage;
 import com.xupu.locationmap.projectmanager.page.TableListPage;
 import com.xupu.locationmap.projectmanager.page.XZQYPage;
+import com.xupu.locationmap.projectmanager.service.ProjectService;
+import com.xupu.locationmap.projectmanager.service.XZQYService;
 import com.xupu.locationmap.usermanager.page.UserInfo;
 import com.xupu.locationmap.usermanager.service.UserService;
 
@@ -65,6 +68,12 @@ public class MainActivity extends AppCompatActivity
      */
     private void init() {
         AndroidTool.setMainActivity(this);
+
+       /* ZQImageViewRoundOval iv_roundRect =(ZQImageViewRoundOval)findViewById(R.id.roundRect);
+
+        iv_roundRect.setType(ZQImageViewRoundOval.TYPE_ROUND);
+        iv_roundRect.setRoundRadius(20);//矩形凹行大小*/
+
     }
 
     @Override
@@ -87,14 +96,16 @@ public class MainActivity extends AppCompatActivity
         Intent intent;
         switch (id) {
             case R.id.m_myproject:
-
-                intent = new Intent(this, ProjectPage.class);
-                //intent = new Intent(this, Ph.class);
-                startActivity(intent);
+                toPrjectPage();
                 break;
             case R.id.m_xzqy:
-                intent = new Intent(this, XZQYPage.class);
-                startActivity(intent);
+                if(ProjectService.getCurrentSugProject() == null){
+                    toPrjectPage();
+                    AndroidTool.showAnsyTost("请先选择项目",1);
+                }else{
+                    intent = new Intent(this, XZQYPage.class);
+                    startActivity(intent);
+                }
                 break;
             case R.id.m_lowmapmanager:
                 intent = new Intent(this, LowMapManager.class);
@@ -105,8 +116,21 @@ public class MainActivity extends AppCompatActivity
                 startActivity(intent);
                 break;
             case R.id.m_tablelist:
-                intent = new Intent(this, TableListPage.class);
-                startActivity(intent);
+                if(ProjectService.getCurrentSugProject() == null){
+
+                    toPrjectPage();
+                    AndroidTool.showAnsyTost("请先选择项目，在选择区域",1);
+                }else if(XZQYService.getCurrentXZDM() == null){
+
+                    intent = new Intent(this, XZQYPage.class);
+                    startActivity(intent);
+                    AndroidTool.showAnsyTost("请先选择区域",1);
+                }else{
+                    intent = new Intent(this, TableListPage.class);
+                    startActivity(intent);
+                }
+
+
                 break;
             case R.id.m_help:
                 intent = new Intent(this, HelpActivty.class);
@@ -117,7 +141,11 @@ public class MainActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-
+    public void toPrjectPage(){
+        Intent intent = new Intent(this, ProjectPage.class);
+        //intent = new Intent(this, Ph.class);
+        startActivity(intent);
+    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         //导航栏设置用户、账号

@@ -151,7 +151,7 @@ public class LookInfoFragment extends Fragment {
         tableDataCustom.setEdit(true);
         View recy = view.findViewById(R.id.fl);
         RecyclerView recyclerView = (RecyclerView) recy;
-        myItemRecyclerViewAdapter = new MyItemRecyclerViewAdapter(tableDataCustom);
+        myItemRecyclerViewAdapter = new MyItemRecyclerViewAdapter(tableDataCustom,recyclerView);
         recyclerView.setAdapter(myItemRecyclerViewAdapter);
         //myItemRecyclerViewAdapter.notifyDataSetChanged();
         setJSONbject(itemDataCustom.getMyJSONObject());

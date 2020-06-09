@@ -10,19 +10,26 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import com.xupu.locationmap.R;
+import com.xupu.locationmap.common.page.SlidingDeleteView;
 import com.xupu.locationmap.common.po.Callback;
+import com.xupu.locationmap.common.po.MyCallback;
+import com.xupu.locationmap.common.po.ResultData;
 import com.xupu.locationmap.common.po.ViewHolderCallback;
 import com.xupu.locationmap.common.tools.AndroidTool;
 import com.xupu.locationmap.common.tools.RedisTool;
+import com.xupu.locationmap.common.tools.ScreenUtils;
 import com.xupu.locationmap.common.tools.Tool;
 import com.xupu.locationmap.projectmanager.po.BtuFiledCustom;
 import com.xupu.locationmap.projectmanager.po.EditFiledCusom;
 import com.xupu.locationmap.projectmanager.po.FiledCustom;
 import com.xupu.locationmap.projectmanager.po.ItemDataCustom;
 import com.xupu.locationmap.projectmanager.po.MyJSONObject;
+import com.xupu.locationmap.projectmanager.po.SlidingFieldCustom;
 import com.xupu.locationmap.projectmanager.po.TableDataCustom;
+import com.xupu.locationmap.projectmanager.po.ViewFildCustom;
 import com.xupu.locationmap.projectmanager.service.ProjectService;
 import com.xupu.locationmap.projectmanager.service.ZTService;
 
@@ -99,9 +106,7 @@ public class ProjectPage extends AppCompatActivity {
         if (!Tool.isEmpty(projects)) {
             findViewById(R.id.recy).setVisibility(View.VISIBLE);
             findViewById(R.id.data_no).setVisibility(View.GONE);
-            projects.add(projects.get(0));
-            projects.add(projects.get(0));
-            projects.add(projects.get(0));
+
             //当前项目 放到第一个
             currentProject = ProjectService.getCurrentSugProject();
             if (currentProject != null) {
@@ -129,6 +134,30 @@ public class ProjectPage extends AppCompatActivity {
                 AndroidTool.showAnsyTost("当前项目是：" + ProjectService.getName(myJSONObject), 0);
             }
         }.setConfirm(true, "确定要选择这个项目吗？"));
+        //侧滑功能
+        fs.add(new SlidingFieldCustom(R.id.slidingview, R.id.first));
+        //删除项目
+        fs.add(new ViewFildCustom(R.id.tv_delete1) {
+            @Override
+            public void OnClick(MyJSONObject myJSONObject) {
+                //以后增加此功能
+            }
+        }.setConfirm(true, "确认要删除项目吗？"));
+        fs.add(new ViewFildCustom(R.id.item) {
+            @Override
+            public void OnClick(MyJSONObject myJSONObject) {
+                if (!myJSONObject.getId().equals(ProjectService.getCurrentSugProject().getId())) {
+                    AndroidTool.confirm(ProjectPage.this, "确定要选择这个项目吗？", new MyCallback() {
+                        @Override
+                        public void call(ResultData resultData) {
+                            if (resultData.getStatus() == 0) {
+                                setCurrentProject(myJSONObject);
+                            }
+                        }
+                    });
+                }
+            }
+        });
         //下载按钮
         findViewById(R.id.btn_down).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -146,20 +175,22 @@ public class ProjectPage extends AppCompatActivity {
             }
         });*/
         TableDataCustom tableDataCustom = new TableDataCustom(R.layout.fragment_project_item, fs, projects);
-        myItemRecyclerViewAdapter = new MyItemRecyclerViewAdapter(tableDataCustom);
+
         RecyclerView recyclerView = findViewById(R.id.recy);
+        myItemRecyclerViewAdapter = new MyItemRecyclerViewAdapter(tableDataCustom,recyclerView);
         recyclerView.setAdapter(myItemRecyclerViewAdapter);
         myItemRecyclerViewAdapter.setLoadViewCallback(new ViewHolderCallback() {
             @Override
             public void call(MyItemRecyclerViewAdapter.ViewHolder holder, int position) {
                 ImageView imageView = holder.mView.findViewById(R.id.iv_currentIcon);
-                if (position == 0 && currentProject != null)  {
+                if (position == 0 && currentProject != null) {
                     imageView.setImageResource(R.drawable.project_icon_blue);
                     holder.mView.findViewById(R.id.fl_currentproject).setVisibility(View.VISIBLE);
-                }else{
+                } else {
                     imageView.setImageResource(R.drawable.project_icon_gray);
                     holder.mView.findViewById(R.id.fl_currentproject).setVisibility(View.GONE);
                 }
+
             }
         });
         //itemFragment = new ItemFragment(tableDataCustom);
@@ -169,6 +200,15 @@ public class ProjectPage extends AppCompatActivity {
                 .add(R.id.fl, itemFragment, "list")   // 此处的R.id.fragment_container是要盛放fragment的父容器'
                 .commit();*/
         //initAddItemFragment();
+
+    }
+
+    /**
+     * 设置为当前项目
+     *
+     * @param myJSONObject
+     */
+    private void setCurrentProject(MyJSONObject myJSONObject) {
 
     }
 

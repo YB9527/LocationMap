@@ -72,7 +72,8 @@ public class XZQYService {
     }
 
     public static String getCurrentCode() {
-        return "411627102205";
+        return "411627102";
+
        // return  getCode(getCurrentXZDM());
     }
 }

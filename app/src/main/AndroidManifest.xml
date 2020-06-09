@@ -12,40 +12,49 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".projectmanager.page.HelpActivty"></activity>
-        <activity android:name=".projectmanager.page.ObjectInfoActivty" />
-        <activity android:name=".projectmanager.page.ProjectDownload" />
-        <activity android:name=".projectmanager.page.TaskActivty" />
+        <activity android:name=".projectmanager.page.HelpActivty" android:screenOrientation="portrait" ></activity>
+        <activity android:name=".projectmanager.page.ObjectInfoActivty"  android:screenOrientation="portrait"/>
+        <activity android:name=".projectmanager.page.ProjectDownload" android:screenOrientation="portrait" />
+        <activity android:name=".projectmanager.page.TaskActivty" android:screenOrientation="portrait" />
         <activity
             android:name=".projectmanager.page.SelectProjectDowload"
-            android:parentActivityName=".projectmanager.page.ProjectPage" />
-        <activity android:name=".common.page.PhotoSingleActivty" />
+            android:parentActivityName=".projectmanager.page.ProjectPage" android:screenOrientation="portrait" />
+        <activity android:name=".common.page.PhotoSingleActivty" android:screenOrientation="portrait" />
         <activity
             android:name=".projectmanager.page.XZQYPage"
+            android:screenOrientation="portrait"
             android:parentActivityName=".MainActivity" />
         <activity
             android:name=".projectmanager.page.LowMapManager"
+            android:screenOrientation="portrait"
             android:parentActivityName=".MainActivity" />
         <activity
             android:name=".usermanager.page.UserInfo"
+            android:screenOrientation="portrait"
             android:parentActivityName=".MainActivity" />
         <activity
             android:name=".projectmanager.page.TableListPage"
+            android:screenOrientation="portrait"
             android:parentActivityName=".MainActivity" />
         <activity
+            android:screenOrientation="portrait"
             android:name=".projectmanager.page.ProjectPage"
            />
         <activity
             android:name=".usermanager.page.Regist"
+            android:screenOrientation="portrait"
             android:parentActivityName=".usermanager.page.Login" />
         <activity
             android:name=".projectmanager.page.NFActivity"
+            android:screenOrientation="portrait"
             android:parentActivityName=".MainActivity" />
         <activity
             android:name=".MainActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/titlebarstyle" />
         <activity
             android:name=".usermanager.page.Login"
+            android:screenOrientation="portrait"
             android:theme="@style/titlebarstyle"
             tools:targetApi="jelly_bean">
             <intent-filter>

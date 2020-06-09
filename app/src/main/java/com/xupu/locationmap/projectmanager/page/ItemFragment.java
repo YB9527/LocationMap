@@ -88,7 +88,7 @@ public class ItemFragment extends Fragment {
             } else {
                 //recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            myItemRecyclerViewAdapter = new MyItemRecyclerViewAdapter(tableDataCustom);
+            myItemRecyclerViewAdapter = new MyItemRecyclerViewAdapter(tableDataCustom,recyclerView);
 
             recyclerView.setAdapter(myItemRecyclerViewAdapter);
         }

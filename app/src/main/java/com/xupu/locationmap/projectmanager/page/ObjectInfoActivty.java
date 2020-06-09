@@ -244,8 +244,9 @@ public class ObjectInfoActivty extends AppCompatActivity {
 
         int fragmentItem = R.layout.fragment_key_value_item;
         TableDataCustom tableDataCustom = new TableDataCustom(fragmentItem, fs, fileds).setEdit(true);
-        myItemRecyclerViewAdapter = new MyItemRecyclerViewAdapter(tableDataCustom);
         RecyclerView recyclerView = findViewById(R.id.recy);
+        myItemRecyclerViewAdapter = new MyItemRecyclerViewAdapter(tableDataCustom,recyclerView);
+
         recyclerView.setAdapter(myItemRecyclerViewAdapter);
 
 

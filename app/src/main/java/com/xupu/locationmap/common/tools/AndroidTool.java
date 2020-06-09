@@ -7,6 +7,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
@@ -32,7 +34,10 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.alibaba.fastjson.JSONObject;
 import com.xupu.locationmap.R;
+import com.xupu.locationmap.common.page.MyDialog;
+import com.xupu.locationmap.common.page.SlidingDeleteView;
 import com.xupu.locationmap.common.page.TitleBarFragment;
+import com.xupu.locationmap.common.page.ZQImageViewRoundOval;
 import com.xupu.locationmap.common.po.Callback;
 import com.xupu.locationmap.common.po.MyCallback;
 import com.xupu.locationmap.common.po.ResultData;
@@ -48,6 +53,7 @@ import com.xupu.locationmap.projectmanager.po.ItemDataCustom;
 import com.xupu.locationmap.projectmanager.po.MyJSONObject;
 import com.xupu.locationmap.projectmanager.po.PositionField;
 import com.xupu.locationmap.projectmanager.po.ProgressFiledCusom;
+import com.xupu.locationmap.projectmanager.po.SlidingFieldCustom;
 import com.xupu.locationmap.projectmanager.po.ViewFildCustom;
 
 import java.io.File;
@@ -119,8 +125,10 @@ public class AndroidTool {
      * 两个按钮的 dialog
      */
     public static void confirm(Context context, String tip, final MyCallback callback) {
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(context).setIcon(R.mipmap.ic_launcher).setTitle("提示")
+        MyDialog myDialog =  MyDialog.newInstance(tip,callback);
+        Activity activity =(Activity)context;
+        myDialog.show(activity.getFragmentManager(),"123");
+       /* AlertDialog.Builder builder = new AlertDialog.Builder(context).setIcon(R.mipmap.ic_launcher).setTitle("提示")
                 .setMessage(tip)
                 .setPositiveButton("取消", new DialogInterface.OnClickListener() {
                     @Override
@@ -137,9 +145,14 @@ public class AndroidTool {
                         callback.call(new ResultData(0));
                     }
                 });
-        builder.create().show();
+        builder.create().show();*/
     }
 
+    public static void confirm(Context context, String tip,String okStr, final MyCallback callback) {
+        MyDialog myDialog = MyDialog.newInstance(tip, okStr, callback);
+        Activity activity = (Activity) context;
+        myDialog.show(activity.getFragmentManager(), "123");
+    }
 
     /**
      * 替换 fragment
@@ -197,13 +210,12 @@ public class AndroidTool {
         }
         return true;
     }
-
+    private static  SlidingDeleteView oldSliding;
     /**
      * @param view
      * @param itemDataCustom
      * @param isEdit         是否直接修改
      */
-
     @SuppressLint("NewApi")
     public static void setView(View view, ItemDataCustom itemDataCustom, boolean isEdit, int postion) {
         List<FiledCustom> fs = itemDataCustom.getFiledCustoms();
@@ -257,6 +269,16 @@ public class AndroidTool {
                     }
                 });
 
+            }else if( filedCustom instanceof SlidingFieldCustom){
+                SlidingFieldCustom slidingFieldCustom = (SlidingFieldCustom)filedCustom;
+                View containerView =  view.findViewById(slidingFieldCustom.getLayoutid());
+                containerView.getLayoutParams().width = ScreenUtils.getScreenWidth(AndroidTool.getMainActivity().getBaseContext());
+                SlidingDeleteView slidingview =  view.findViewById(slidingFieldCustom.getId());
+                slidingview.setEnable(true);
+                if(oldSliding != null){
+                    oldSliding.removeOld();
+                }
+                oldSliding = slidingview;
             } else if (temView instanceof Button) {
                 Button btu = (Button) temView;
                 btu.setOnClickListener(new View.OnClickListener() {
@@ -358,6 +380,11 @@ public class AndroidTool {
                 String path = jsonObject.getString("path");
                 if (FileTool.exitFile(path)) {
                     img.setImageBitmap(BitmapFactory.decodeFile(jsonObject.getString("path")));
+                }
+                if(img instanceof ZQImageViewRoundOval){
+                    ZQImageViewRoundOval iv_roundRect =(ZQImageViewRoundOval)img;
+                    iv_roundRect.setType(ZQImageViewRoundOval.TYPE_ROUND);
+                    iv_roundRect.setRoundRadius(10);//矩形凹行大小
                 }
                 img.setOnClickListener(new View.OnClickListener() {
                     @Override

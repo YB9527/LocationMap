@@ -4,23 +4,51 @@
     android:layout_gravity="center"
     android:layout_width="80dp"
     android:layout_height="100dp"
+
     android:layout_marginLeft="20dp">
+  <!--  <RelativeLayout
+        android:background="@drawable/bg_white_round3"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <ImageView
+            android:id="@+id/img"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:scaleType="centerCrop"
+            android:src="@drawable/data_icon_add"/>
+    </RelativeLayout>-->
+
+        <com.xupu.locationmap.common.page.ZQImageViewRoundOval
+            android:id="@+id/img"
+            android:layout_marginTop="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:layout_gravity="center"
+            android:scaleType="centerCrop"
+            android:src="@drawable/data_icon_add">
+        </com.xupu.locationmap.common.page.ZQImageViewRoundOval>
+        <!--<ImageView
+            android:id="@+id/img"
+            android:layout_marginTop="3dp"
+            android:layout_marginBottom="3dp"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:scaleType="centerCrop"
+            android:src="@drawable/data_icon_add"/>-->
+
 
     <ImageView
-        android:id="@+id/img"
-     android:layout_marginTop="10dp"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="center"
-        android:scaleType="fitXY"
-        android:src="@drawable/data_icon_add"></ImageView>
-    <ImageView
         android:id="@+id/iv_delete"
+
        android:layout_gravity="right"
         android:layout_marginTop="2dp"
         android:layout_width="20dp"
-        android:layout_height="30dp"
-        android:scaleType="matrix"
+        android:layout_height="40dp"
+        android:scaleType="fitStart"
         android:src="@drawable/date_icon_delete"
         />
    <!-- <Button
