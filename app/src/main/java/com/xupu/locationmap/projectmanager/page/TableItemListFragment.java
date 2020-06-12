@@ -109,13 +109,16 @@ public class TableItemListFragment extends Fragment {
             filedCustom = new ViewFildCustom(R.id.v_toinfo) {
                 @Override
                 public void OnClick(MyJSONObject myJSONObject) {
-                    //AndroidTool.showAnsyTost("详请", 1);
-                    Intent intent = new Intent(getActivity(), ObjectInfoActivty.class);
-                    intent.putExtra("id", myJSONObject.getId());
-                    startActivityForResult(intent, 1);
+                    toInfoPage(myJSONObject);
                 }
             };
             fs.add(filedCustom);
+            fs.add(new ViewFildCustom(R.id.item_info) {
+                @Override
+                public void OnClick(MyJSONObject myJSONObject) {
+                    toInfoPage(myJSONObject);
+                }
+            });
             if (haseTask) {
                 //到多媒体
                 filedCustom = new ViewFildCustom(R.id.v_tomedia) {
@@ -139,7 +142,12 @@ public class TableItemListFragment extends Fragment {
             mColumnCount = tableDataCustom.getList().size();
         }
     }
-
+    public void toInfoPage(MyJSONObject obj){
+        //AndroidTool.showAnsyTost("详请", 1);
+        Intent intent = new Intent(getActivity(), ObjectInfoActivty.class);
+        intent.putExtra("id", obj.getId());
+        startActivityForResult(intent, 1);
+    }
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         switch (requestCode) {

@@ -21,6 +21,7 @@ import com.xupu.locationmap.common.po.ViewHolderCallback;
 import com.xupu.locationmap.common.tools.AndroidTool;
 import com.xupu.locationmap.common.tools.RedisTool;
 import com.xupu.locationmap.common.tools.ScreenUtils;
+import com.xupu.locationmap.common.tools.TableTool;
 import com.xupu.locationmap.common.tools.Tool;
 import com.xupu.locationmap.projectmanager.po.BtuFiledCustom;
 import com.xupu.locationmap.projectmanager.po.EditFiledCusom;
@@ -125,7 +126,7 @@ public class ProjectPage extends AppCompatActivity {
         //项目名称
         fs.add(new FiledCustom(R.id.tv_projectname, "name"));
         //项目描述
-        fs.add(new FiledCustom(R.id.tv_descrip, "name"));
+        fs.add(new FiledCustom(R.id.tv_descrip, "srs"));
         //项目选择
         fs.add(new BtuFiledCustom(R.id.btu_select, "选择") {
             @Override
@@ -141,6 +142,8 @@ public class ProjectPage extends AppCompatActivity {
             @Override
             public void OnClick(MyJSONObject myJSONObject) {
                 //以后增加此功能
+               ProjectService.deleteProject(myJSONObject);
+               myItemRecyclerViewAdapter.remove(myJSONObject);
             }
         }.setConfirm(true, "确认要删除项目吗？"));
         fs.add(new ViewFildCustom(R.id.item) {

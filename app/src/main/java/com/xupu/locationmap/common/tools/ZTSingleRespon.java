@@ -15,6 +15,7 @@ public abstract class ZTSingleRespon extends ZTRespon {
     public void onSuccess(JSONArray httpRespon) {
         if (httpRespon.size() > 0) {
             JSONObject jsonObject = httpRespon.getJSONObject(0);
+            jsonObject.remove("value");
             onSuccess(jsonObject);
         }
         onSuccess(new JSONObject());

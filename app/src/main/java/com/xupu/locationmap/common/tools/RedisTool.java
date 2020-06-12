@@ -184,4 +184,10 @@ public class RedisTool {
         int count = db.delete("redis", "mark = ?", new String[]{mark});
         return count;
     }
+
+    public static int deleteByJson(String json) {
+        SQLiteDatabase db = getSQLiteDatabase();
+        int count = db.delete("redis", "json = ?", new String[]{json});
+        return count;
+    }
 }

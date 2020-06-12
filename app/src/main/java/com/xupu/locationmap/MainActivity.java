@@ -14,12 +14,21 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 
 import android.view.MenuItem;
 
+import com.esri.arcgisruntime.ArcGISRuntimeEnvironment;
+import com.esri.arcgisruntime.ArcGISRuntimeException;
+import com.esri.arcgisruntime.data.TileCache;
+import com.esri.arcgisruntime.geometry.Point;
+import com.esri.arcgisruntime.layers.ArcGISTiledLayer;
+import com.esri.arcgisruntime.loadable.LoadStatus;
+import com.esri.arcgisruntime.mapping.ArcGISMap;
+import com.esri.arcgisruntime.mapping.view.MapView;
 import com.google.android.material.navigation.NavigationView;
 import com.xupu.locationmap.common.page.AskUser;
 import com.xupu.locationmap.common.page.ZQImageViewRoundOval;
 import com.xupu.locationmap.common.tools.AndroidTool;
 import com.xupu.locationmap.projectmanager.page.HelpActivty;
 import com.xupu.locationmap.projectmanager.page.LowMapManager;
+import com.xupu.locationmap.projectmanager.page.MapFragment;
 import com.xupu.locationmap.projectmanager.page.NFActivity;
 import com.xupu.locationmap.projectmanager.page.ProjectPage;
 import com.xupu.locationmap.projectmanager.page.TableListPage;
@@ -60,8 +69,9 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
         init();
 
-    }
 
+    }
+    private MapView mMapView;
     /**
      * 检查用户是否登录
      * 设置 Android tool 的active
@@ -69,10 +79,11 @@ public class MainActivity extends AppCompatActivity
     private void init() {
         AndroidTool.setMainActivity(this);
 
-       /* ZQImageViewRoundOval iv_roundRect =(ZQImageViewRoundOval)findViewById(R.id.roundRect);
+        mMapView =findViewById(R.id.mv_tian_di_tu);
 
-        iv_roundRect.setType(ZQImageViewRoundOval.TYPE_ROUND);
-        iv_roundRect.setRoundRadius(20);//矩形凹行大小*/
+        //消除水印
+        ArcGISRuntimeEnvironment.setLicense("runtimelite,1000,rud4449636536,none,NKMFA0PL4S0DRJE15166");
+        getSupportFragmentManager().beginTransaction().replace(R.id.page, new MapFragment(),"tinaditu").commit();
 
     }
 

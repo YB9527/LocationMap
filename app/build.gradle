@@ -5,7 +5,7 @@ android {
     buildToolsVersion "29.0.3"
     defaultConfig {
         applicationId "com.xupu.locationmap"
-        minSdkVersion 15
+        minSdkVersion 19
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
@@ -55,7 +55,8 @@ dependencies {
     implementation files('libs/universalimageloader.jar')
     implementation 'com.google.code.gson:gson:2.7'
     implementation 'com.squareup.okhttp3:okhttp:4.3.1'
-    implementation 'com.esri.arcgis.android:arcgis-android:10.2.9'
+    //implementation 'com.esri.arcgis.android:arcgis-android:10.2.9'
+    implementation 'com.esri.arcgisruntime:arcgis-android:100.3.0'
     //implementation 'com.android.support:multidex:1.0.3'
     // 基础依赖包，必须要依赖
     implementation 'com.gyf.immersionbar:immersionbar:3.0.0'

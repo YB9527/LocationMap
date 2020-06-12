@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".projectmanager.page.MapFragment">
+
+
+    <com.esri.arcgisruntime.mapping.view.MapView
+        android:id="@+id/mv_tian_di_tu"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <Button
+            android:id="@+id/btn_layers"
+            android:text="图层"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="30dp"
+            android:layout_alignParentRight="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <Button
+            android:id="@+id/btn_location"
+            android:text="定位"
+            android:layout_alignParentBottom="true"
+            android:layout_marginLeft="20dp"
+            android:layout_marginBottom="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <Button
+            android:id="@+id/btn_time"
+            android:text="随手拍"
+            android:layout_above="@+id/btn_location"
+            android:layout_marginLeft="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <Button
+            android:id="@+id/btn_add_point"
+            android:text="打点"
+            android:layout_alignBottom="@+id/btn_location"
+            android:layout_toRightOf="@+id/btn_location"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"/>
+        <Button
+            android:id="@+id/btn_graphic"
+            android:text="绘制"
+            android:layout_alignBottom="@+id/btn_location"
+            android:layout_toRightOf="@+id/btn_add_point"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <Button
+            android:id="@+id/btn_graphic_move"
+            android:layout_alignRight="@+id/btn_graphic"
+            android:layout_above="@+id/btn_graphic"
+            android:text="轨迹"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </RelativeLayout>
+</FrameLayout>

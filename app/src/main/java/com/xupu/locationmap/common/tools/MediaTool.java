@@ -16,7 +16,7 @@ import androidx.fragment.app.Fragment;
 
 import com.alibaba.fastjson.JSONObject;
 import com.baidu.ocr.ui.camera.CameraActivity;
-import com.esri.core.map.popup.PopupMediaInfo;
+
 import com.google.gson.Gson;
 
 import com.xupu.locationmap.projectmanager.po.Customizing;

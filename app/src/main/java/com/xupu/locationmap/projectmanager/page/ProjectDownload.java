@@ -33,6 +33,7 @@ import com.xupu.locationmap.projectmanager.service.ZTService;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 /**
  * 单个项目下载
@@ -77,12 +78,18 @@ public class ProjectDownload extends AppCompatActivity {
             @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void OnClick(MyJSONObject project) {
+
+                String projectRandom = UUID.randomUUID().toString();
+                project.getJsonobject().put(ProjectService.PROJECT_RANDOM_MARK, projectRandom);
+                project.toJson();
+
                 //设置为当前项目
                 ProjectService.setCurrentSugProject(project);
-                RedisTool.saveRedis(ZTService.PROJECT_TABLE_NAME, project);
-                TableTool.insert(project,0);
 
-                TableTool.createDB(ProjectService.getName(project));
+                RedisTool.saveRedis(ZTService.PROJECT_TABLE_NAME + "_" + ProjectService.getProjectDBName(project), project);
+                TableTool.insert(project, 0);
+
+                //TableTool.createDB(ProjectService.getName(project)+"_"+projectRandom);
                 for (int i = 0; i < tasks.size(); i++) {
                     setProgress(tasks.get(i).getJsonobject(), 1);
                     switch (i) {
@@ -114,7 +121,8 @@ public class ProjectDownload extends AppCompatActivity {
         AndroidTool.setView(findViewById(R.id.page), itemDataCustom, false, 0);
     }
 
-     RecyclerView recyclerView;
+    RecyclerView recyclerView;
+
     private void downProject(MyJSONObject project) {
         //2、创建下载表格的碎片
         //页面显示
@@ -134,9 +142,9 @@ public class ProjectDownload extends AppCompatActivity {
         tasks.add(tasktable);
         tasks.add(xzqtable);
         tasks.add(fieldtable);
-         recyclerView = findViewById(R.id.list);
+        recyclerView = findViewById(R.id.list);
         TableDataCustom tableDataCustom = new TableDataCustom(fragmentItem, fs, tasks);
-        myItemRecyclerViewAdapter = new MyItemRecyclerViewAdapter(tableDataCustom,recyclerView);
+        myItemRecyclerViewAdapter = new MyItemRecyclerViewAdapter(tableDataCustom, recyclerView);
 
 
         //得到要下载的表格
@@ -187,7 +195,7 @@ public class ProjectDownload extends AppCompatActivity {
             tableitemsMyJson.add(table);
         }
         //项目中表格保存
-        TableTool.insertMany(tableitemsMyJson,0);
+        TableTool.insertMany(tableitemsMyJson, 0);
         setProgress(tasks.get(taskindex).getJsonobject(), 3);
     }
 
@@ -214,7 +222,7 @@ public class ProjectDownload extends AppCompatActivity {
                             tableitemsMyJson.add(new MyJSONObject(tableItem.getString("id"), ZTService.TASK_LIST, tasktableid, tableItem));
                         }
                         //项目中表格保存
-                        TableTool.insertMany(tableitemsMyJson,0);
+                        TableTool.insertMany(tableitemsMyJson, 0);
                         setProgress(tasks.get(taskindex).getJsonobject(), 3);
                     }
                 });
@@ -244,7 +252,7 @@ public class ProjectDownload extends AppCompatActivity {
                             tableitemsMyJson.add(new MyJSONObject(tableItem.getString("id"), ZTService.XZQ_LIST, project.getId(), tableItem));
                         }
                         //项目中表格保存
-                        TableTool.insertMany(tableitemsMyJson,0);
+                        TableTool.insertMany(tableitemsMyJson, 0);
                         setProgress(tasks.get(taskindex).getJsonobject(), 3);
                     }
                 });
@@ -274,7 +282,7 @@ public class ProjectDownload extends AppCompatActivity {
                             filedsMyJson.add(new MyJSONObject(i + "", ZTService.TABLE_Structure, structureid, filed));
                         }
                         //项目中表格保存
-                        TableTool.insertMany(filedsMyJson,0);
+                        TableTool.insertMany(filedsMyJson, 0);
                         setProgress(tasks.get(taskindex).getJsonobject(), 3);
                     }
                 });
@@ -408,12 +416,14 @@ public class ProjectDownload extends AppCompatActivity {
         List<MyJSONObject> myJSONObjects = new ArrayList<>();
         for (int i = 0; i < objects.size(); i++) {
             JSONObject jsonObject = objects.getJSONObject(i);
-
+            if( jsonObject.containsKey("geom") ){
+                jsonObject.remove("geom");
+            }
             MyJSONObject myJSONObject = new MyJSONObject(jsonObject.getString("gid"), tablename, jsonObject.getString("gdomain"), jsonObject);
             myJSONObject.setTableid(tableid);
             myJSONObjects.add(myJSONObject);
         }
-        TableTool.insertMany(myJSONObjects,0);
+        TableTool.insertMany(myJSONObjects, 0);
         Log.v("yb", tablename + " 完成");
     }
 

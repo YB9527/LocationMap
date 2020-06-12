@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.alibaba.fastjson.JSONObject;
+import com.xupu.locationmap.exceptionmanager.MapException;
 import com.xupu.locationmap.projectmanager.page.ProjectPage;
 import com.xupu.locationmap.projectmanager.po.MyJSONObject;
 import com.xupu.locationmap.projectmanager.po.Redis;
@@ -41,11 +42,11 @@ public class TableTool {
             } else {
                 MyJSONObject project = JSONObject.parseObject(projectJson, MyJSONObject.class);
                 ProjectService.setCurrentSugProject(project);
-                createDB(ProjectService.getName(project));
-
+                createDB(ProjectService.getName(project)+"_"+ProjectService.getProjectRandom(project));
             }
         }
     }
+
 
     /**
      * 根据id 查找对象
@@ -162,7 +163,7 @@ public class TableTool {
      * @return
      */
     public static List<MyJSONObject> findByParentIdAndSmybol(String parentid, String smybol, int state) {
-        String sql = "select " + FIELD + " from  " + Table_Name + " where  parentid =  '" + parentid + " 'AND state " + smybol + "  '" + state + "'";
+        String sql = "select " + FIELD + " from  " + Table_Name + " where  parentid =  '" + parentid + "' AND state " + smybol + "  '" + state + "'";
         List<MyJSONObject> jsons = new ArrayList<>();
         Cursor cursor = db.rawQuery(sql, null);
         while (cursor.moveToNext()) {
