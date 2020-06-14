@@ -1,14 +1,12 @@
-package com.xupu.locationmap.projectmanager.po;
+package com.xupu.locationmap.projectmanager.view;
 
-import com.xupu.locationmap.common.tools.AndroidTool;
+public class ProgressFieldCusom extends FieldCustom {
 
-public class ProgressFiledCusom extends FiledCustom {
-
-    public ProgressFiledCusom(String idText, String attribute) {
+    public ProgressFieldCusom(String idText, String attribute) {
         super(idText, attribute);
     }
 
-    public ProgressFiledCusom(Integer id, String attribute) {
+    public ProgressFieldCusom(Integer id, String attribute) {
         super(id, attribute);
     }
 

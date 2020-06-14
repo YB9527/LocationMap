@@ -1,9 +1,14 @@
 package com.xupu.locationmap.projectmanager.po;
 
+import com.xupu.locationmap.projectmanager.view.DatabaseField;
+
 import java.util.HashMap;
 import java.util.Map;
 
 public class Customizing {
+
+
+
     public static String PROJECT = "旭普公司测试软件";
     public static String PROJECT_name = "name";
     public static String PARENTID="parentid";
@@ -36,6 +41,8 @@ public class Customizing {
 
 
     static {
+
+
         PROJECT_Field = new HashMap<>();
         {
 

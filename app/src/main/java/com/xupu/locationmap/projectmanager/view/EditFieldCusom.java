@@ -1,17 +1,17 @@
-package com.xupu.locationmap.projectmanager.po;
+package com.xupu.locationmap.projectmanager.view;
 
-public class EditFiledCusom extends FiledCustom {
+public class EditFieldCusom extends FieldCustom {
 
 
-    public EditFiledCusom() {
+    public EditFieldCusom() {
 
     }
 
-    public EditFiledCusom(String idText, String attribute, boolean isMust) {
+    public EditFieldCusom(String idText, String attribute, boolean isMust) {
         super(idText,attribute);
         this.isMust = isMust;
     }
-    public EditFiledCusom(Integer id, String attribute, boolean isMust) {
+    public EditFieldCusom(Integer id, String attribute, boolean isMust) {
         super(id,attribute);
         this.isMust = isMust;
     }

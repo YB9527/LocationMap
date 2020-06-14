@@ -9,36 +9,27 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.TextView;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.ogaclejapan.smarttablayout.SmartTabLayout;
 import com.xupu.locationmap.R;
 
 import com.xupu.locationmap.common.po.ViewHolderCallback;
-import com.xupu.locationmap.common.tools.AndroidTool;
 import com.xupu.locationmap.common.tools.TableTool;
 import com.xupu.locationmap.common.tools.Tool;
-import com.xupu.locationmap.projectmanager.po.BtuFiledCustom;
-import com.xupu.locationmap.projectmanager.po.FiledCustom;
+import com.xupu.locationmap.projectmanager.view.FieldCustom;
 import com.xupu.locationmap.projectmanager.po.MyJSONObject;
-import com.xupu.locationmap.projectmanager.po.PositionField;
-import com.xupu.locationmap.projectmanager.po.TableDataCustom_TableName;
-import com.xupu.locationmap.projectmanager.po.ViewFildCustom;
+import com.xupu.locationmap.projectmanager.view.PositionField;
+import com.xupu.locationmap.projectmanager.view.TableDataCustom_TableName;
+import com.xupu.locationmap.projectmanager.view.ViewFieldCustom;
 import com.xupu.locationmap.projectmanager.service.TableService;
 import com.xupu.locationmap.projectmanager.service.TaskService;
 import com.xupu.locationmap.projectmanager.service.XZQYService;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static android.app.Activity.RESULT_OK;
 
 /**
  * 根据表格名称显示数据
@@ -100,30 +91,30 @@ public class TableItemListFragment extends Fragment {
             //a = R.id.info1;
             //a = R.id.info2;
             tableDataCustom.setFragmentItem(R.layout.fragment_item);
-            List<FiledCustom> fs = tableDataCustom.getFiledCustoms();
+            List<FieldCustom> fs = tableDataCustom.getFieldCustoms();
             fs.add(new PositionField(R.id.index, "PositionField"));
 
 
-            FiledCustom filedCustom;
+            FieldCustom filedCustom;
             //到详情
-            filedCustom = new ViewFildCustom(R.id.v_toinfo) {
+            filedCustom = new ViewFieldCustom(R.id.v_toinfo) {
                 @Override
-                public void OnClick(MyJSONObject myJSONObject) {
+                public void OnClick(View view, MyJSONObject myJSONObject) {
                     toInfoPage(myJSONObject);
                 }
             };
             fs.add(filedCustom);
-            fs.add(new ViewFildCustom(R.id.item_info) {
+            fs.add(new ViewFieldCustom(R.id.item_info) {
                 @Override
-                public void OnClick(MyJSONObject myJSONObject) {
+                public void OnClick(View view, MyJSONObject myJSONObject) {
                     toInfoPage(myJSONObject);
                 }
             });
             if (haseTask) {
                 //到多媒体
-                filedCustom = new ViewFildCustom(R.id.v_tomedia) {
+                filedCustom = new ViewFieldCustom(R.id.v_tomedia) {
                     @Override
-                    public void OnClick(MyJSONObject myJSONObject) {
+                    public void OnClick(View view,MyJSONObject myJSONObject) {
                         //跳到任务界面
                         Intent intent = new Intent(getActivity(), TaskActivty.class);
                         intent.putExtra("parent", myJSONObject);

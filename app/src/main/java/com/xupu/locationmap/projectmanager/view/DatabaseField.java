@@ -1,6 +1,4 @@
-package com.xupu.locationmap.projectmanager.po;
-
-import android.widget.EditText;
+package com.xupu.locationmap.projectmanager.view;
 
 public class DatabaseField {
 

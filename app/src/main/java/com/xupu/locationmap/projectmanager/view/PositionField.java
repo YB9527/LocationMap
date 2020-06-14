@@ -1,6 +1,6 @@
-package com.xupu.locationmap.projectmanager.po;
+package com.xupu.locationmap.projectmanager.view;
 
-public class PositionField extends FiledCustom {
+public class PositionField extends FieldCustom {
 
 
     public PositionField(String idText, String attribute) {

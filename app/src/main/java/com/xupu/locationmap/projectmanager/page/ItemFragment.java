@@ -1,29 +1,21 @@
 package com.xupu.locationmap.projectmanager.page;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.viewpager.widget.ViewPager;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.alibaba.fastjson.JSONObject;
 import com.google.gson.Gson;
 import com.xupu.locationmap.R;
 
 import com.xupu.locationmap.projectmanager.po.MyJSONObject;
-import com.xupu.locationmap.projectmanager.po.TableDataCustom;
-import com.xupu.locationmap.projectmanager.po.TableViewCustom;
-import com.xupu.locationmap.projectmanager.po.XZDM;
-
-import java.util.List;
+import com.xupu.locationmap.projectmanager.view.TableDataCustom;
 
 /**
  * A fragment representing a list of Items.

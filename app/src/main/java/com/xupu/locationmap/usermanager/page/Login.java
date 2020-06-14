@@ -6,29 +6,23 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputType;
-import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.material.textfield.TextInputEditText;
 import com.xupu.locationmap.MainActivity;
 import com.xupu.locationmap.R;
 import com.xupu.locationmap.common.page.AskUser;
 import com.xupu.locationmap.common.tools.AndroidTool;
 import com.xupu.locationmap.common.tools.RedisTool;
-import com.xupu.locationmap.projectmanager.po.BtuFiledCustom;
-import com.xupu.locationmap.projectmanager.po.EditFiledCusom;
-import com.xupu.locationmap.projectmanager.po.FiledCustom;
-import com.xupu.locationmap.projectmanager.po.ImgFiledCusom;
-import com.xupu.locationmap.projectmanager.po.ItemDataCustom;
+import com.xupu.locationmap.projectmanager.view.BtuFieldCustom;
+import com.xupu.locationmap.projectmanager.view.EditFieldCusom;
+import com.xupu.locationmap.projectmanager.view.FieldCustom;
+import com.xupu.locationmap.projectmanager.view.ImgFieldCusom;
+import com.xupu.locationmap.projectmanager.view.ItemDataCustom;
 import com.xupu.locationmap.projectmanager.po.MyJSONObject;
 import com.xupu.locationmap.usermanager.po.User;
 import com.xupu.locationmap.usermanager.service.UserService;
-
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,23 +51,23 @@ public class Login extends AppCompatActivity {
             //user.setAccount("525730167@qq.com");
             //user.setPassword("1");
         }
-        List<FiledCustom> filedCustoms = new ArrayList<>();
-        filedCustoms.add(new EditFiledCusom(R.id.et_account, "account", true));
-        filedCustoms.add(new EditFiledCusom(R.id.et_password, "password", true));
-        filedCustoms.add(new BtuFiledCustom(R.id.btn_sign_in, "登录") {
+        List<FieldCustom> filedCustoms = new ArrayList<>();
+        filedCustoms.add(new EditFieldCusom(R.id.et_account, "account", true));
+        filedCustoms.add(new EditFieldCusom(R.id.et_password, "password", true));
+        filedCustoms.add(new BtuFieldCustom(R.id.btn_sign_in, "登录") {
             @Override
             public void OnClick(MyJSONObject myJSONObject) {
                 RedisTool.updateRedis(USERREDISMark, myJSONObject.getJson());
                 login(myJSONObject.getJsonobject().toJavaObject(User.class));
             }
         }.setCheck(true).setReturn(true));
-        filedCustoms.add(new BtuFiledCustom(R.id.btn_sign_up, "注册") {
+        filedCustoms.add(new BtuFieldCustom(R.id.btn_sign_up, "注册") {
             @Override
             public void OnClick(MyJSONObject myJSONObject) {
                 toSignUp();
             }
         });
-        filedCustoms.add(new BtuFiledCustom(R.id.btn_youke_login, "游客登录") {
+        filedCustoms.add(new BtuFieldCustom(R.id.btn_youke_login, "游客登录") {
             @Override
             public void OnClick(MyJSONObject myJSONObject) {
                 AndroidTool.showAnsyTost("还没有开发功能", 2);
@@ -82,7 +76,7 @@ public class Login extends AppCompatActivity {
         /**
          * 清除账号
          */
-        filedCustoms.add(new ImgFiledCusom(R.id.login_username_cancel) {
+        filedCustoms.add(new ImgFieldCusom(R.id.login_username_cancel) {
             @SuppressLint("NewApi")
             @Override
             public void onClick(MyJSONObject myJSONObject) {
@@ -93,7 +87,7 @@ public class Login extends AppCompatActivity {
         /**
          * 查看密码
          */
-        filedCustoms.add(new ImgFiledCusom(R.id.login_password_visible) {
+        filedCustoms.add(new ImgFieldCusom(R.id.login_password_visible) {
             @Override
             public void onClick(MyJSONObject myJSONObject) {
                 EditText et = findViewById(R.id.et_password);

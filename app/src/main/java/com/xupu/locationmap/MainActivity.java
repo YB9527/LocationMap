@@ -33,6 +33,7 @@ import com.xupu.locationmap.projectmanager.page.NFActivity;
 import com.xupu.locationmap.projectmanager.page.ProjectPage;
 import com.xupu.locationmap.projectmanager.page.TableListPage;
 import com.xupu.locationmap.projectmanager.page.XZQYPage;
+import com.xupu.locationmap.projectmanager.po.MapResult;
 import com.xupu.locationmap.projectmanager.service.ProjectService;
 import com.xupu.locationmap.projectmanager.service.XZQYService;
 import com.xupu.locationmap.usermanager.page.UserInfo;
@@ -72,6 +73,7 @@ public class MainActivity extends AppCompatActivity
 
     }
     private MapView mMapView;
+    MapFragment mapFragment ;
     /**
      * 检查用户是否登录
      * 设置 Android tool 的active
@@ -83,7 +85,8 @@ public class MainActivity extends AppCompatActivity
 
         //消除水印
         ArcGISRuntimeEnvironment.setLicense("runtimelite,1000,rud4449636536,none,NKMFA0PL4S0DRJE15166");
-        getSupportFragmentManager().beginTransaction().replace(R.id.page, new MapFragment(),"tinaditu").commit();
+        mapFragment = new MapFragment();
+        getSupportFragmentManager().beginTransaction().replace(R.id.page, mapFragment,"tinaditu").commit();
 
     }
 
@@ -120,7 +123,8 @@ public class MainActivity extends AppCompatActivity
                 break;
             case R.id.m_lowmapmanager:
                 intent = new Intent(this, LowMapManager.class);
-                startActivity(intent);
+                //startActivity(intent);
+                mapFragment.startActivityForResult(intent, MapResult.layer);
                 break;
             case R.id.m_nfmanager:
                 intent = new Intent(this, NFActivity.class);
@@ -199,12 +203,14 @@ public class MainActivity extends AppCompatActivity
                 //System.currentTimeMillis()系统当前时间
                 mExitTime = System.currentTimeMillis();
             } else {
+                mapFragment.close();
                 finish();
             }
             return true;
         }
         return super.onKeyDown(keyCode, event);
     }
+
 
 
 }

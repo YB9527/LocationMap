@@ -10,7 +10,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.alibaba.fastjson.JSONObject;
 import com.xupu.locationmap.R;
 import com.xupu.locationmap.common.po.Callback;
 import com.xupu.locationmap.common.po.MyCallback;
@@ -19,23 +18,18 @@ import com.xupu.locationmap.common.po.ViewHolderCallback;
 import com.xupu.locationmap.common.tools.AndroidTool;
 import com.xupu.locationmap.common.tools.TableTool;
 import com.xupu.locationmap.common.tools.Tool;
-import com.xupu.locationmap.projectmanager.po.BtuFiledCustom;
-import com.xupu.locationmap.projectmanager.po.EditFiledCusom;
-import com.xupu.locationmap.projectmanager.po.FiledCustom;
-import com.xupu.locationmap.projectmanager.po.ItemDataCustom;
+import com.xupu.locationmap.projectmanager.view.BtuFieldCustom;
+import com.xupu.locationmap.projectmanager.view.EditFieldCusom;
+import com.xupu.locationmap.projectmanager.view.FieldCustom;
+import com.xupu.locationmap.projectmanager.view.ItemDataCustom;
 import com.xupu.locationmap.projectmanager.po.MyJSONObject;
-import com.xupu.locationmap.projectmanager.po.PositionField;
-import com.xupu.locationmap.projectmanager.po.SlidingFieldCustom;
-import com.xupu.locationmap.projectmanager.po.TableDataCustom;
-import com.xupu.locationmap.projectmanager.po.ViewFildCustom;
-import com.xupu.locationmap.projectmanager.po.XZDM;
-import com.xupu.locationmap.projectmanager.service.ProjectService;
+import com.xupu.locationmap.projectmanager.view.SlidingFieldCustom;
+import com.xupu.locationmap.projectmanager.view.TableDataCustom;
+import com.xupu.locationmap.projectmanager.view.ViewFieldCustom;
 import com.xupu.locationmap.projectmanager.service.XZQYService;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class XZQYPage extends AppCompatActivity {
 
@@ -88,28 +82,28 @@ public class XZQYPage extends AppCompatActivity {
                 }
             }
         }
-        List<FiledCustom> fs = new ArrayList<>();
+        List<FieldCustom> fs = new ArrayList<>();
         //名称
-        fs.add(new FiledCustom(R.id.tv_projectname, "caption"));
+        fs.add(new FieldCustom(R.id.tv_projectname, "caption"));
         //描述
-        fs.add(new FiledCustom(R.id.tv_descrip, "code"));
+        fs.add(new FieldCustom(R.id.tv_descrip, "code"));
 
 
         //侧滑功能
         fs.add(new SlidingFieldCustom(R.id.slidingview, R.id.first));
         //删除项目
-        fs.add(new ViewFildCustom(R.id.tv_delete1) {
+        fs.add(new ViewFieldCustom(R.id.tv_delete1) {
             @Override
-            public void OnClick(MyJSONObject myJSONObject) {
+            public void OnClick(View view,MyJSONObject myJSONObject) {
                 //以后增加此功能
                 myItemRecyclerViewAdapter.remove(myJSONObject);
             }
         }.setConfirm(true, "确认要删除此区域吗？"));
 
         //区域选择
-        fs.add(new ViewFildCustom(R.id.item) {
+        fs.add(new ViewFieldCustom(R.id.item) {
             @Override
-            public void OnClick(MyJSONObject myJSONObject) {
+            public void OnClick(View view,MyJSONObject myJSONObject) {
                 //如果是当前区域，不用选中
                 if (XZQYService.getCurrentXZDM() == null || !myJSONObject.getId().equals(XZQYService.getCurrentXZDM().getId())) {
                     AndroidTool.confirm(XZQYPage.this, "确定要选择这个区域吗？", new MyCallback() {
@@ -132,7 +126,7 @@ public class XZQYPage extends AppCompatActivity {
                 addXZQY();
             }
         });
-       /* fs.add(new BtuFiledCustom(R.id.btu_info, "详情") {
+       /* fs.add(new BtuFieldCustom(R.id.btu_info, "详情") {
             @Override
             public void OnClick(MyJSONObject myJSONObject) {
                 Intent intent = new Intent(ProjectPage.this, ObjectInfoActivty.class);
@@ -206,13 +200,13 @@ public class XZQYPage extends AppCompatActivity {
 
 
         List<MyJSONObject> xzdms =XZQYService.findByProject();
-        List<FiledCustom> fs = new ArrayList<>();
-        FiledCustom filedCustom ;
-        filedCustom = new FiledCustom(R.id.code,"code");
+        List<FieldCustom> fs = new ArrayList<>();
+        FieldCustom filedCustom ;
+        filedCustom = new FieldCustom(R.id.code,"code");
         fs.add(filedCustom);
-        filedCustom = new FiledCustom(R.id.caption,"caption");
+        filedCustom = new FieldCustom(R.id.caption,"caption");
         fs.add(filedCustom);
-        filedCustom = new BtuFiledCustom(R.id.btu_delete, "删除") {
+        filedCustom = new BtuFieldCustom(R.id.btu_delete, "删除") {
             @Override
             public void OnClick(MyJSONObject myJSONObject) {
                 TableTool.delete(myJSONObject);
@@ -220,7 +214,7 @@ public class XZQYPage extends AppCompatActivity {
             }
         }.setConfirm(true,"确认要删除行政区域吗？");
         fs.add(filedCustom);
-        filedCustom = new BtuFiledCustom(R.id.btu_select, "选择") {
+        filedCustom = new BtuFieldCustom(R.id.btu_select, "选择") {
             @Override
             public void OnClick(MyJSONObject myJSONObject) {
                 AndroidTool.confirm(XZQYPage.this, "确定要选择这个区域吗？", new MyCallback() {
@@ -249,13 +243,13 @@ public class XZQYPage extends AppCompatActivity {
      */
     private void initAddItemFragment() {
         List<MyJSONObject> xzdms =XZQYService.findByProject();
-        List<FiledCustom> fs = new ArrayList<>();
-        FiledCustom filedCustom ;
-        filedCustom = new EditFiledCusom(R.id.code,"code", true);
+        List<FieldCustom> fs = new ArrayList<>();
+        FieldCustom filedCustom ;
+        filedCustom = new EditFieldCusom(R.id.code,"code", true);
         fs.add(filedCustom);
-        filedCustom = new EditFiledCusom(R.id.caption,"caption", true);
+        filedCustom = new EditFieldCusom(R.id.caption,"caption", true);
         fs.add(filedCustom);
-        filedCustom = new BtuFiledCustom(R.id.btu_submit, "添加") {
+        filedCustom = new BtuFieldCustom(R.id.btu_submit, "添加") {
             @Override
             public void OnClick(MyJSONObject myJSONObject) {
                 itemFragment.addItem(myJSONObject);
@@ -267,7 +261,7 @@ public class XZQYPage extends AppCompatActivity {
         fs.add(filedCustom);
 
 
-        filedCustom = new BtuFiledCustom(R.id.btu_cancel, "取消") {
+        filedCustom = new BtuFieldCustom(R.id.btu_cancel, "取消") {
             @Override
             public void OnClick(MyJSONObject myJSONObject) {
                 showMain(true);

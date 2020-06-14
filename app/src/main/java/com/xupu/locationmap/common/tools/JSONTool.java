@@ -6,6 +6,9 @@ import android.os.Build;
 import androidx.annotation.RequiresApi;
 
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.xupu.locationmap.projectmanager.page.LowMapManager;
+import com.xupu.locationmap.projectmanager.po.LowImage;
 import com.xupu.locationmap.projectmanager.po.MyJSONObject;
 
 import java.util.ArrayList;
@@ -42,5 +45,48 @@ public class JSONTool {
             list.add(myJSONObject);
         }
         return map;
+    }
+
+    /**
+     * 转 JSONObject
+     * @param obj
+     * @return
+     */
+    public static JSONObject toJSONObject(Object obj){
+       String json = JSONObject.toJSONString(obj, SerializerFeature.WriteMapNullValue);
+       return  JSONObject.parseObject(json);
+    }
+
+    /**
+     * 用的是 myJSONObject.getJsonobject() 转换
+     * @param myJSONObjects
+     * @param clazz
+     * @param <T>
+     * @return
+     */
+    public static <T> List<T> toObject(List<MyJSONObject> myJSONObjects,Class<T> clazz) {
+        List<T> list = new ArrayList<>();
+        if(myJSONObjects != null){
+            for (MyJSONObject myJSONObject : myJSONObjects){
+                T t = JSONObject.toJavaObject(myJSONObject.getJsonobject(),clazz);
+                list.add(t);
+            }
+        }
+        return  list;
+    }
+
+    /**
+     * new MyJSONObject(null, null, null, JSONTool.toJSONObject(obj))
+     * @param extiLayers
+     * @return
+     */
+    public static <T> List<MyJSONObject> toMyJSONObject(List<T> extiLayers) {
+        List<MyJSONObject> myShowLayers = new ArrayList<>();
+        if(extiLayers != null){
+            for(Object obj : extiLayers){
+                myShowLayers.add(new MyJSONObject(null, null, null, JSONTool.toJSONObject(obj)));
+            }
+        }
+        return  myShowLayers;
     }
 }

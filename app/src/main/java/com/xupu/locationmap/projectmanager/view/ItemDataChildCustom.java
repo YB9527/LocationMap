@@ -1,25 +1,26 @@
-package com.xupu.locationmap.projectmanager.po;
+package com.xupu.locationmap.projectmanager.view;
+
+import com.xupu.locationmap.projectmanager.po.MyJSONObject;
 
 import java.util.List;
-import java.util.Map;
 
 public class ItemDataChildCustom {
 
 
     private List<MyJSONObject>  childs;
-    private List<FiledCustom> filedCustoms;
+    private List<FieldCustom> filedCustoms;
 
 
-    public ItemDataChildCustom(List<MyJSONObject> childs, List<FiledCustom> filedCustoms) {
+    public ItemDataChildCustom(List<MyJSONObject> childs, List<FieldCustom> filedCustoms) {
         this.childs = childs;
         this.filedCustoms = filedCustoms;
     }
 
-    public List<FiledCustom> getFiledCustoms() {
+    public List<FieldCustom> getFieldCustoms() {
         return filedCustoms;
     }
 
-    public void setFiledCustoms(List<FiledCustom> filedCustoms) {
+    public void setFieldCustoms(List<FieldCustom> filedCustoms) {
         this.filedCustoms = filedCustoms;
     }
 

@@ -1,19 +1,18 @@
-package com.xupu.locationmap.projectmanager.po;
+package com.xupu.locationmap.projectmanager.view;
 
-import com.alibaba.fastjson.JSONObject;
-import com.xupu.locationmap.common.po.ResultData;
+import com.xupu.locationmap.projectmanager.po.MyJSONObject;
 
-public abstract class BtuFiledCustom<T> extends FiledCustom {
+public abstract class BtuFieldCustom<T> extends FieldCustom {
 
 
-    public BtuFiledCustom() {
+    public BtuFieldCustom() {
 
     }
 
-    public BtuFiledCustom(String idText, String attribute) {
+    public BtuFieldCustom(String idText, String attribute) {
         super(idText,attribute);
     }
-    public BtuFiledCustom(Integer id, String attribute) {
+    public BtuFieldCustom(Integer id, String attribute) {
         super(id,attribute);
     }
     /**
@@ -42,7 +41,7 @@ public abstract class BtuFiledCustom<T> extends FiledCustom {
         return isConfirm;
     }
 
-    public BtuFiledCustom setConfirm(boolean confirm, String confirmmessage) {
+    public BtuFieldCustom setConfirm(boolean confirm, String confirmmessage) {
         isConfirm = confirm;
         this.confirmmessage = confirmmessage;
         return this;
@@ -58,7 +57,7 @@ public abstract class BtuFiledCustom<T> extends FiledCustom {
     }
 
 
-    public BtuFiledCustom setReturn(boolean aReturn) {
+    public BtuFieldCustom setReturn(boolean aReturn) {
         isReturn = aReturn;
         return this;
     }
@@ -67,7 +66,7 @@ public abstract class BtuFiledCustom<T> extends FiledCustom {
         return isCheck;
     }
 
-    public BtuFiledCustom setCheck(boolean check) {
+    public BtuFieldCustom setCheck(boolean check) {
         isCheck = check;
         return this;
     }
@@ -86,7 +85,7 @@ public abstract class BtuFiledCustom<T> extends FiledCustom {
         return isCompare;
     }
 
-    public BtuFiledCustom setCompare(boolean compare) {
+    public BtuFieldCustom setCompare(boolean compare) {
         isCompare = compare;
         return this;
     }
@@ -95,7 +94,7 @@ public abstract class BtuFiledCustom<T> extends FiledCustom {
         return compareMessage;
     }
 
-    public BtuFiledCustom setCompareMessage(String compareMessage) {
+    public BtuFieldCustom setCompareMessage(String compareMessage) {
         this.compareMessage = compareMessage;
         return this;
     }

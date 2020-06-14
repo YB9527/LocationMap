@@ -11,10 +11,10 @@ import com.xupu.locationmap.R;
 import com.xupu.locationmap.common.po.Callback;
 import com.xupu.locationmap.common.tools.ReflectTool;
 import com.xupu.locationmap.exceptionmanager.MapException;
-import com.xupu.locationmap.projectmanager.po.BtuFiledCustom;
-import com.xupu.locationmap.projectmanager.po.FiledCustom;
+import com.xupu.locationmap.projectmanager.view.BtuFieldCustom;
+import com.xupu.locationmap.projectmanager.view.FieldCustom;
 import com.xupu.locationmap.projectmanager.po.MyJSONObject;
-import com.xupu.locationmap.projectmanager.po.TableDataCustom;
+import com.xupu.locationmap.projectmanager.view.TableDataCustom;
 import com.xupu.locationmap.projectmanager.service.ZTService;
 
 import java.util.ArrayList;
@@ -91,9 +91,9 @@ public class SelectProjectDowload extends AppCompatActivity {
                     newProjects.add(new MyJSONObject(project.getString(ZTService.ID), ZTService.PROJECT_TABLE_NAME, project.getString(ZTService.APP_ID), project));
                 }
             }
-            List<FiledCustom> fs = new ArrayList<>();
-            fs.add(new FiledCustom(R.id.name,"name"));
-            fs.add(new BtuFiledCustom(R.id.btu_dowload, "下载") {
+            List<FieldCustom> fs = new ArrayList<>();
+            fs.add(new FieldCustom(R.id.name,"name"));
+            fs.add(new BtuFieldCustom(R.id.btu_dowload, "下载") {
                 @Override
                 public void OnClick(MyJSONObject newproject) {
                     Intent intent = new Intent(SelectProjectDowload.this,ProjectDownload.class);

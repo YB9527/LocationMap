@@ -23,23 +23,20 @@ import com.xupu.locationmap.common.tools.FileTool;
 import com.xupu.locationmap.common.tools.MediaTool;
 import com.xupu.locationmap.common.tools.SFZPhotoTool;
 import com.xupu.locationmap.common.tools.TableTool;
-import com.xupu.locationmap.projectmanager.po.BtuFiledCustom;
+import com.xupu.locationmap.projectmanager.view.BtuFieldCustom;
 import com.xupu.locationmap.projectmanager.po.Customizing;
-import com.xupu.locationmap.projectmanager.po.EditFiledCusom;
-import com.xupu.locationmap.projectmanager.po.FiledCustom;
-import com.xupu.locationmap.projectmanager.po.ItemDataCustom;
+import com.xupu.locationmap.projectmanager.view.EditFieldCusom;
+import com.xupu.locationmap.projectmanager.view.FieldCustom;
+import com.xupu.locationmap.projectmanager.view.ItemDataCustom;
 import com.xupu.locationmap.projectmanager.po.MyJSONObject;
-import com.xupu.locationmap.projectmanager.po.TableDataCustom;
+import com.xupu.locationmap.projectmanager.view.TableDataCustom;
 import com.xupu.locationmap.projectmanager.service.MediaService;
 import com.xupu.locationmap.projectmanager.service.NFService;
 import com.xupu.locationmap.projectmanager.service.SFZService;
 import com.xupu.locationmap.projectmanager.service.XZQYService;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 
 
 public class NFActivity extends AppCompatActivity {
@@ -89,10 +86,10 @@ public class NFActivity extends AppCompatActivity {
 
         List<MyJSONObject> nfs = NFService.findByXZDM();
 
-        List<FiledCustom> fs = new ArrayList<>();
-        fs.add(new FiledCustom(R.id.name, "name"));
-        fs.add(new FiledCustom(R.id.bz, "bz"));
-        fs.add(new BtuFiledCustom(R.id.btu_delete, "删除") {
+        List<FieldCustom> fs = new ArrayList<>();
+        fs.add(new FieldCustom(R.id.name, "name"));
+        fs.add(new FieldCustom(R.id.bz, "bz"));
+        fs.add(new BtuFieldCustom(R.id.btu_delete, "删除") {
             @Override
             public void OnClick(MyJSONObject nf) {
                 if (TableTool.delete(nf)) {
@@ -101,7 +98,7 @@ public class NFActivity extends AppCompatActivity {
             }
         }.setConfirm(true, "确定要删除农户吗？"));
 
-        fs.add(new BtuFiledCustom(R.id.btu_lookinfo, "查看") {
+        fs.add(new BtuFieldCustom(R.id.btu_lookinfo, "查看") {
             @Override
             public void OnClick(MyJSONObject nf) {
                 //跳到详细信息页面
@@ -148,10 +145,10 @@ public class NFActivity extends AppCompatActivity {
      * @return
      */
     private ItemDataCustom getLookInfoFragmentItemDataCustom() {
-        List<FiledCustom> fs = new ArrayList<>();
-        fs.add(new EditFiledCusom(R.id.name, "name", true));
-        fs.add(new EditFiledCusom(R.id.bz, "bz", false));
-        fs.add(new BtuFiledCustom(R.id.btu_submit, "修改") {
+        List<FieldCustom> fs = new ArrayList<>();
+        fs.add(new EditFieldCusom(R.id.name, "name", true));
+        fs.add(new EditFieldCusom(R.id.bz, "bz", false));
+        fs.add(new BtuFieldCustom(R.id.btu_submit, "修改") {
             @Override
             public void OnClick(MyJSONObject nf) {
                 //更新listview
@@ -180,7 +177,7 @@ public class NFActivity extends AppCompatActivity {
                 showFragment(listTagName);
             }
         }.setCheck(true).setReturn(true).setConfirm(true, "确认要修改吗？"));
-        fs.add(new BtuFiledCustom(R.id.btu_cancel, "取消") {
+        fs.add(new BtuFieldCustom(R.id.btu_cancel, "取消") {
             @Override
             public void OnClick(MyJSONObject myJSONObject) {
                 showFragment(listTagName);
@@ -188,9 +185,9 @@ public class NFActivity extends AppCompatActivity {
         });
 
 
-        //RecyclerViewFiledCustom recyclerViewFiledCustom = new  RecyclerViewFiledCustom.Builder(R.id.fl_photos).addFiledCustom(R.id.img,new FiledCustom())
+        //RecyclerViewFieldCustom recyclerViewFieldCustom = new  RecyclerViewFieldCustom.Builder(R.id.fl_photos).addFieldCustom(R.id.img,new FieldCustom())
         //添加照片的按钮
-        fs.add(new BtuFiledCustom(R.id.btu_add_sfz_photo_front, "添加身份证正面照片") {
+        fs.add(new BtuFieldCustom(R.id.btu_add_sfz_photo_front, "添加身份证正面照片") {
             @Override
             public void OnClick(MyJSONObject myJSONObject) {
                 //添加照片
@@ -198,7 +195,7 @@ public class NFActivity extends AppCompatActivity {
                 SFZPhotoTool.getSFZPhotoTool(NFActivity.this).front(media);
             }
         });
-        fs.add(new BtuFiledCustom(R.id.btu_add_sfz_photo_back, "添加身份证反面照片") {
+        fs.add(new BtuFieldCustom(R.id.btu_add_sfz_photo_back, "添加身份证反面照片") {
             @Override
             public void OnClick(MyJSONObject myJSONObject) {
                 //添加照片
@@ -206,14 +203,14 @@ public class NFActivity extends AppCompatActivity {
                 SFZPhotoTool.getSFZPhotoTool(NFActivity.this).back(media);
             }
         });
-        fs.add(new BtuFiledCustom(R.id.btu_add_hkb_photo, "添加户口本照片") {
+        fs.add(new BtuFieldCustom(R.id.btu_add_hkb_photo, "添加户口本照片") {
             @Override
             public void OnClick(MyJSONObject myJSONObject) {
                 MyJSONObject media = MediaService.getMedia(myJSONObject, 0, "户口本");
                 MediaTool.to(NFActivity.this, 101, media);
             }
         });
-        fs.add(new BtuFiledCustom(R.id.btu_add_fw_photo, "添加房屋照片") {
+        fs.add(new BtuFieldCustom(R.id.btu_add_fw_photo, "添加房屋照片") {
             @Override
             public void OnClick(MyJSONObject myJSONObject) {
                 MyJSONObject media = MediaService.getMedia(myJSONObject, 0, "房屋");
@@ -303,10 +300,10 @@ public class NFActivity extends AppCompatActivity {
      */
     private void initAddItemFragment() {
 
-        List<FiledCustom> fs = new ArrayList<>();
-        fs.add(new EditFiledCusom(R.id.name, "name", true));
-        fs.add(new EditFiledCusom(R.id.bz, "bz", false));
-        fs.add(new BtuFiledCustom(R.id.btu_submit, "添加") {
+        List<FieldCustom> fs = new ArrayList<>();
+        fs.add(new EditFieldCusom(R.id.name, "name", true));
+        fs.add(new EditFieldCusom(R.id.bz, "bz", false));
+        fs.add(new BtuFieldCustom(R.id.btu_submit, "添加") {
             @Override
             public void OnClick(MyJSONObject myJSONObject) {
                 TableTool.insert(myJSONObject,TableTool.STATE_INSERT);
@@ -316,7 +313,7 @@ public class NFActivity extends AppCompatActivity {
             }
         }.setCheck(true).setReturn(true));
 
-        fs.add(new BtuFiledCustom(R.id.btu_cancel, "取消") {
+        fs.add(new BtuFieldCustom(R.id.btu_cancel, "取消") {
             @Override
             public void OnClick(MyJSONObject myJSONObject) {
                 showFragment(listTagName);

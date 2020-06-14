@@ -2,31 +2,23 @@ package com.xupu.locationmap.common.tools;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.ActivityManager;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -42,26 +34,24 @@ import com.xupu.locationmap.common.po.Callback;
 import com.xupu.locationmap.common.po.MyCallback;
 import com.xupu.locationmap.common.po.ResultData;
 import com.xupu.locationmap.projectmanager.page.AddItemFragment;
-import com.xupu.locationmap.projectmanager.page.NFActivity;
-import com.xupu.locationmap.projectmanager.page.ProjectPage;
-import com.xupu.locationmap.projectmanager.po.BtuFiledCustom;
+import com.xupu.locationmap.projectmanager.view.BtuFieldCustom;
 import com.xupu.locationmap.projectmanager.po.Customizing;
-import com.xupu.locationmap.projectmanager.po.EditFiledCusom;
-import com.xupu.locationmap.projectmanager.po.FiledCustom;
-import com.xupu.locationmap.projectmanager.po.ImgFiledCusom;
-import com.xupu.locationmap.projectmanager.po.ItemDataCustom;
+import com.xupu.locationmap.projectmanager.view.CheckBoxFieldCustom;
+import com.xupu.locationmap.projectmanager.view.EditFieldCusom;
+import com.xupu.locationmap.projectmanager.view.FieldCustom;
+import com.xupu.locationmap.projectmanager.view.ImgFieldCusom;
+import com.xupu.locationmap.projectmanager.view.ItemDataCustom;
 import com.xupu.locationmap.projectmanager.po.MyJSONObject;
-import com.xupu.locationmap.projectmanager.po.PositionField;
-import com.xupu.locationmap.projectmanager.po.ProgressFiledCusom;
-import com.xupu.locationmap.projectmanager.po.SlidingFieldCustom;
-import com.xupu.locationmap.projectmanager.po.ViewFildCustom;
+import com.xupu.locationmap.projectmanager.view.PositionField;
+import com.xupu.locationmap.projectmanager.view.ProgressFieldCusom;
+import com.xupu.locationmap.projectmanager.view.SlidingFieldCustom;
+import com.xupu.locationmap.projectmanager.view.ViewFieldCustom;
 
 import java.io.File;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 
 /**
@@ -125,9 +115,9 @@ public class AndroidTool {
      * 两个按钮的 dialog
      */
     public static void confirm(Context context, String tip, final MyCallback callback) {
-        MyDialog myDialog =  MyDialog.newInstance(tip,callback);
-        Activity activity =(Activity)context;
-        myDialog.show(activity.getFragmentManager(),"123");
+        MyDialog myDialog = MyDialog.newInstance(tip, callback);
+        Activity activity = (Activity) context;
+        myDialog.show(activity.getFragmentManager(), "123");
        /* AlertDialog.Builder builder = new AlertDialog.Builder(context).setIcon(R.mipmap.ic_launcher).setTitle("提示")
                 .setMessage(tip)
                 .setPositiveButton("取消", new DialogInterface.OnClickListener() {
@@ -148,7 +138,7 @@ public class AndroidTool {
         builder.create().show();*/
     }
 
-    public static void confirm(Context context, String tip,String okStr, final MyCallback callback) {
+    public static void confirm(Context context, String tip, String okStr, final MyCallback callback) {
         MyDialog myDialog = MyDialog.newInstance(tip, okStr, callback);
         Activity activity = (Activity) context;
         myDialog.show(activity.getFragmentManager(), "123");
@@ -192,15 +182,15 @@ public class AndroidTool {
      * 检查数据是否满足要求
      *
      * @param jsonObject
-     * @param filedCustoms
+     * @param FieldCustoms
      * @return
      */
-    private static boolean checkData(JSONObject jsonObject, Collection<FiledCustom> filedCustoms) {
-        for (FiledCustom filedCustom : filedCustoms) {
-            if (filedCustom instanceof EditFiledCusom) {
-                EditFiledCusom editFiledCusom = (EditFiledCusom) filedCustom;
-                if (editFiledCusom.isMust()) {
-                    String result = jsonObject.getString(filedCustom.getAttribute());
+    private static boolean checkData(JSONObject jsonObject, Collection<FieldCustom> FieldCustoms) {
+        for (FieldCustom FieldCustom : FieldCustoms) {
+            if (FieldCustom instanceof EditFieldCusom) {
+                EditFieldCusom editFieldCusom = (EditFieldCusom) FieldCustom;
+                if (editFieldCusom.isMust()) {
+                    String result = jsonObject.getString(FieldCustom.getAttribute());
                     if (Tool.isEmpty(result)) {
                         AndroidTool.showAnsyTost("数据没有填写完整", 1);
                         return false;
@@ -210,7 +200,9 @@ public class AndroidTool {
         }
         return true;
     }
-    private static  SlidingDeleteView oldSliding;
+
+    private static SlidingDeleteView oldSliding;
+
     /**
      * @param view
      * @param itemDataCustom
@@ -218,7 +210,7 @@ public class AndroidTool {
      */
     @SuppressLint("NewApi")
     public static void setView(View view, ItemDataCustom itemDataCustom, boolean isEdit, int postion) {
-        List<FiledCustom> fs = itemDataCustom.getFiledCustoms();
+        List<FieldCustom> fs = itemDataCustom.getFieldCustoms();
         //使用副本修改，
         final MyJSONObject myJSONObject = itemDataCustom.getMyJSONObject();
         final JSONObject jsonObject;
@@ -228,15 +220,15 @@ public class AndroidTool {
             jsonObject = (JSONObject) myJSONObject.getJsonobject().clone();
         }
 
-        for (FiledCustom filedCustom : fs) {
-            View temView = view.findViewById(filedCustom.getId());
+        for (FieldCustom fieldCustom : fs) {
+            View temView = view.findViewById(fieldCustom.getId());
             if (temView instanceof TextView) {
                 TextView tv = (TextView) temView;
-                if (filedCustom instanceof PositionField) {
-                    PositionField positionField = (PositionField) filedCustom;
+                if (fieldCustom instanceof PositionField) {
+                    PositionField positionField = (PositionField) fieldCustom;
                     tv.setText(positionField.getStartIndex() + postion + 1 + "");
-                } else {
-                    String attribute = filedCustom.getAttribute();
+                } else  if(!(fieldCustom instanceof  CheckBoxFieldCustom)){
+                    String attribute = fieldCustom.getAttribute();
                     if (attribute == null) {
                         tv.setText("");
                     } else {
@@ -249,33 +241,55 @@ public class AndroidTool {
                     }
                 }
             }
-            if (filedCustom instanceof ViewFildCustom) {
-                ViewFildCustom viewFildCustom = (ViewFildCustom) filedCustom;
+            if (fieldCustom instanceof ViewFieldCustom) {
+                ViewFieldCustom viewFieldCustom = (ViewFieldCustom) fieldCustom;
                 temView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        if (viewFildCustom.isConfirm()) {
-                            confirm(temView.getContext(), viewFildCustom.getConfirmmessage(), new MyCallback() {
+                        if (viewFieldCustom.isConfirm()) {
+                            confirm(temView.getContext(), viewFieldCustom.getConfirmmessage(), new MyCallback() {
                                 @Override
                                 public void call(ResultData resultData) {
                                     if (resultData.getStatus() == 0) {
-                                        viewFildCustom.OnClick(myJSONObject);
+                                        viewFieldCustom.OnClick(view, myJSONObject);
                                     }
                                 }
                             });
                         } else {
-                            viewFildCustom.OnClick(myJSONObject);
+                            viewFieldCustom.OnClick(view,myJSONObject);
                         }
                     }
                 });
 
-            }else if( filedCustom instanceof SlidingFieldCustom){
-                SlidingFieldCustom slidingFieldCustom = (SlidingFieldCustom)filedCustom;
-                View containerView =  view.findViewById(slidingFieldCustom.getLayoutid());
+            } else if (fieldCustom instanceof CheckBoxFieldCustom) {
+                CheckBoxFieldCustom checkBoxFieldCustom = (CheckBoxFieldCustom) fieldCustom;
+
+                boolean bl = jsonObject.getBoolean(checkBoxFieldCustom.getAttribute());
+                CheckBox checkBox = view.findViewById(checkBoxFieldCustom.getId());
+                checkBox.setChecked(bl);
+
+                view.findViewById(checkBoxFieldCustom.getItemRid()).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        boolean bl = !jsonObject.getBoolean(checkBoxFieldCustom.getAttribute());
+                        CheckBox checkBox = view.findViewById(checkBoxFieldCustom.getId());
+                        checkBox.setChecked(bl);
+                        jsonObject.replace(checkBoxFieldCustom.getAttribute(), bl);
+                        Callback callback = checkBoxFieldCustom.getCallback();
+                        if (callback != null) {
+                            callback.call(jsonObject);
+                        }
+                    }
+                });
+
+
+            } else if (fieldCustom instanceof SlidingFieldCustom) {
+                SlidingFieldCustom slidingFieldCustom = (SlidingFieldCustom) fieldCustom;
+                View containerView = view.findViewById(slidingFieldCustom.getLayoutid());
                 containerView.getLayoutParams().width = ScreenUtils.getScreenWidth(AndroidTool.getMainActivity().getBaseContext());
-                SlidingDeleteView slidingview =  view.findViewById(slidingFieldCustom.getId());
+                SlidingDeleteView slidingview = view.findViewById(slidingFieldCustom.getId());
                 slidingview.setEnable(true);
-                if(oldSliding != null){
+                if (oldSliding != null) {
                     oldSliding.removeOld();
                 }
                 oldSliding = slidingview;
@@ -284,29 +298,29 @@ public class AndroidTool {
                 btu.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        BtuFiledCustom btuFiledCustom = (BtuFiledCustom) filedCustom;
+                        BtuFieldCustom btuFieldCustom = (BtuFieldCustom) fieldCustom;
                         //是否是检查选项按钮
                         ResultData<JSONObject> resultData = new ResultData<JSONObject>(0, jsonObject);
-                        if (btuFiledCustom.isCheck()) {
+                        if (btuFieldCustom.isCheck()) {
                             //检查数据
                             boolean checkresult = checkData(jsonObject, fs);
                             if (!checkresult) {
                                 return;
                             }
                         }
-                        if (btuFiledCustom.isReturn() && !btuFiledCustom.isConfirm()) {
+                        if (btuFieldCustom.isReturn() && !btuFieldCustom.isConfirm()) {
                             myJSONObject.setJsonobject(jsonObject);
                         }
                         //先查 对象是否被更改
-                        if (btuFiledCustom.isCompare()) {
+                        if (btuFieldCustom.isCompare()) {
                             if (jsonObject.toJSONString().equals(myJSONObject.getJsonobject().toJSONString())) {
-                                showAnsyTost(btuFiledCustom.getCompareMessage(), 2);
+                                showAnsyTost(btuFieldCustom.getCompareMessage(), 2);
                                 return;
                             }
                         }
                         //是否 弹出确认窗口
-                        if (btuFiledCustom.isConfirm()) {
-                            confirm(temView.getContext(), btuFiledCustom.getConfirmmessage(), new MyCallback() {
+                        if (btuFieldCustom.isConfirm()) {
+                            confirm(temView.getContext(), btuFieldCustom.getConfirmmessage(), new MyCallback() {
 
                                 @Override
                                 public void call(ResultData resultData) {
@@ -315,13 +329,13 @@ public class AndroidTool {
 
                                         myJSONObject.setJsonobject(jsonObject);
                                         // Log.v("yb",myJSONObject.toString());
-                                        btuFiledCustom.OnClick(myJSONObject);
+                                        btuFieldCustom.OnClick(myJSONObject);
 
                                     }
                                 }
                             });
                         } else {
-                            btuFiledCustom.OnClick(myJSONObject);
+                            btuFieldCustom.OnClick(myJSONObject);
                         }
                     }
                 });
@@ -346,10 +360,10 @@ public class AndroidTool {
                     @Override
                     public void afterTextChanged(Editable s) {
                         String text = et.getText().toString();
-                        if ("".equals(text) && jsonObject.getString(filedCustom.getAttribute()) == null) {
+                        if ("".equals(text) && jsonObject.getString(fieldCustom.getAttribute()) == null) {
                             return;
                         }
-                        jsonObject.replace(filedCustom.getAttribute(), text);
+                        jsonObject.replace(fieldCustom.getAttribute(), text);
                         // String aa ="123";1
                         //jsonObject.replace("a","123");
 
@@ -381,24 +395,24 @@ public class AndroidTool {
                 if (FileTool.exitFile(path)) {
                     img.setImageBitmap(BitmapFactory.decodeFile(jsonObject.getString("path")));
                 }
-                if(img instanceof ZQImageViewRoundOval){
-                    ZQImageViewRoundOval iv_roundRect =(ZQImageViewRoundOval)img;
+                if (img instanceof ZQImageViewRoundOval) {
+                    ZQImageViewRoundOval iv_roundRect = (ZQImageViewRoundOval) img;
                     iv_roundRect.setType(ZQImageViewRoundOval.TYPE_ROUND);
                     iv_roundRect.setRoundRadius(10);//矩形凹行大小
                 }
                 img.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        if (filedCustom instanceof ImgFiledCusom) {
-                            ImgFiledCusom imgFiledCustom = (ImgFiledCusom) filedCustom;
-                            imgFiledCustom.onClick(myJSONObject);
+                        if (fieldCustom instanceof ImgFieldCusom) {
+                            ImgFieldCusom imgFieldCustom = (ImgFieldCusom) fieldCustom;
+                            imgFieldCustom.onClick(myJSONObject);
                         }
                     }
                 });
             } else if (temView instanceof ProgressBar) {
                 ProgressBar pb = (ProgressBar) temView;
-                ProgressFiledCusom pbFiledCustom = (ProgressFiledCusom) filedCustom;
-                pb.setProgress(jsonObject.getIntValue(pbFiledCustom.getAttribute()), true);
+                ProgressFieldCusom pbFieldCustom = (ProgressFieldCusom) fieldCustom;
+                pb.setProgress(jsonObject.getIntValue(pbFieldCustom.getAttribute()), true);
             }
         }
     }
@@ -429,10 +443,9 @@ public class AndroidTool {
 
     public static String getRootDir() {
         String root;
-
         String state = Environment.getExternalStorageState();
         if (state.equals("mounted")) {
-            root = Environment.getExternalStorageDirectory().getAbsolutePath() + "/旭普公司";
+            root = Environment.getExternalStorageDirectory().getAbsolutePath() + "/外业调查";
             if (!new File(root).exists()) {
                 boolean bl = new File(root).mkdirs();
                 if (!bl) {
@@ -452,11 +465,22 @@ public class AndroidTool {
     /**
      * 添加标题
      */
-    public static void addTitleFragment(Activity activity, String title) {
-        activity.getFragmentManager().beginTransaction().replace(R.id.title, new TitleBarFragment(title)).commit();
+    public static TitleBarFragment addTitleFragment(Activity activity, String title) {
+        TitleBarFragment titleBarFragment = new TitleBarFragment(title);
+        activity.getFragmentManager().beginTransaction().replace(R.id.title, titleBarFragment).commit();
+        return titleBarFragment;
     }
 
-    public static void addTitleFragment(Activity activity, String title, int leftIcRid, String rightStr, Callback callback) {
+    public static TitleBarFragment addTitleFragment(Activity activity, String title, int leftIcRid, String rightStr, Callback callback) {
+        TitleBarFragment titleBarFragment = new TitleBarFragment(title);
         activity.getFragmentManager().beginTransaction().replace(R.id.title, new TitleBarFragment(leftIcRid, title, callback, rightStr)).commit();
+        return titleBarFragment;
+    }
+
+
+    public static TitleBarFragment addTitleFragment(Activity activity, String title, int leftIcRid, String rightStr, Callback callback, String confirmMessage) {
+        TitleBarFragment titleBarFragment = new TitleBarFragment(title);
+        activity.getFragmentManager().beginTransaction().replace(R.id.title, new TitleBarFragment(leftIcRid, title, callback, rightStr, confirmMessage)).commit();
+        return titleBarFragment;
     }
 }

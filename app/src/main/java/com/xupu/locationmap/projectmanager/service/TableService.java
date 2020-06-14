@@ -3,10 +3,8 @@ package com.xupu.locationmap.projectmanager.service;
 import com.xupu.locationmap.common.tools.AndroidTool;
 import com.xupu.locationmap.common.tools.XMLTool;
 import com.xupu.locationmap.projectmanager.po.MyJSONObject;
-import com.xupu.locationmap.projectmanager.po.TableDataCustom_TableName;
+import com.xupu.locationmap.projectmanager.view.TableDataCustom_TableName;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;

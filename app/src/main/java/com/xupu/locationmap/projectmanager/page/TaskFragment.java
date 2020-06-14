@@ -2,63 +2,39 @@ package com.xupu.locationmap.projectmanager.page;
 
 import android.annotation.SuppressLint;
 import android.content.ContentResolver;
-import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
-import android.text.TextUtils;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
-import android.widget.GridLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import androidx.annotation.DrawableRes;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
-import com.alibaba.fastjson.JSONObject;
-import com.baidu.ocr.sdk.model.IDCardParams;
-import com.baidu.ocr.ui.camera.CameraActivity;
 import com.xupu.locationmap.R;
 import com.xupu.locationmap.common.page.PhotoSingleActivty;
-import com.xupu.locationmap.common.po.Callback;
 import com.xupu.locationmap.common.po.Media;
-import com.xupu.locationmap.common.po.MyCallback;
-import com.xupu.locationmap.common.po.ResultData;
-import com.xupu.locationmap.common.po.SFZBack;
-import com.xupu.locationmap.common.po.SFZFront;
 import com.xupu.locationmap.common.po.ViewHolderCallback;
 import com.xupu.locationmap.common.tools.AndroidTool;
 import com.xupu.locationmap.common.tools.MediaTool;
-import com.xupu.locationmap.common.tools.SFZPhotoTool;
 import com.xupu.locationmap.common.tools.TableTool;
-import com.xupu.locationmap.projectmanager.po.BtuFiledCustom;
-import com.xupu.locationmap.projectmanager.po.FiledCustom;
-import com.xupu.locationmap.projectmanager.po.ImgFiledCusom;
-import com.xupu.locationmap.projectmanager.po.ItemDataCustom;
+import com.xupu.locationmap.projectmanager.view.FieldCustom;
+import com.xupu.locationmap.projectmanager.view.ImgFieldCusom;
+import com.xupu.locationmap.projectmanager.view.ItemDataCustom;
 import com.xupu.locationmap.projectmanager.po.MyJSONObject;
-import com.xupu.locationmap.projectmanager.po.PositionField;
-import com.xupu.locationmap.projectmanager.po.TableDataCustom;
-import com.xupu.locationmap.projectmanager.po.ViewFildCustom;
+import com.xupu.locationmap.projectmanager.view.PositionField;
+import com.xupu.locationmap.projectmanager.view.TableDataCustom;
+import com.xupu.locationmap.projectmanager.view.ViewFieldCustom;
 import com.xupu.locationmap.projectmanager.service.MediaService;
-import com.xupu.locationmap.projectmanager.service.SFZService;
-import com.xupu.locationmap.projectmanager.service.TableService;
 import com.xupu.locationmap.projectmanager.service.TaskService;
 
 
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -98,9 +74,9 @@ public class TaskFragment extends Fragment {
         initSelfPage(view);
         RecyclerView recyclerView = view.findViewById(R.id.recy);
         int fragmentItem = R.layout.fragment_task_photo;
-        List<FiledCustom> filedCustoms = new ArrayList<>();
+        List<FieldCustom> filedCustoms = new ArrayList<>();
         filedCustoms.add(new PositionField(R.id.index, "").setStartIndex(-1));
-        filedCustoms.add(new ImgFiledCusom(R.id.img, "path") {
+        filedCustoms.add(new ImgFieldCusom(R.id.img, "path") {
             @Override
             public void onClick(MyJSONObject myJSONObject) {
                 if (myJSONObject.getId().equals("-1")) {
@@ -115,9 +91,9 @@ public class TaskFragment extends Fragment {
                 }
             }
         });
-        filedCustoms.add(new ViewFildCustom(R.id.iv_delete) {
+        filedCustoms.add(new ViewFieldCustom(R.id.iv_delete) {
             @Override
-            public void OnClick(MyJSONObject media) {
+            public void OnClick(View view,MyJSONObject media) {
                 myItemRecyclerViewAdapter.remove(media);
                 TableTool.delete(media);
             }
@@ -159,8 +135,8 @@ public class TaskFragment extends Fragment {
         //tv.setText(TaskService.getTaskName(task));
         Integer rid =view.getId();
         MyJSONObject jsonObject = task;
-        List<FiledCustom> filedCustoms = new ArrayList<>();
-        filedCustoms.add(new FiledCustom(R.id.title,"taskname"));
+        List<FieldCustom> filedCustoms = new ArrayList<>();
+        filedCustoms.add(new FieldCustom(R.id.title,"taskname"));
         ItemDataCustom itemDataCustom = new ItemDataCustom( rid,  jsonObject,  filedCustoms);
         AndroidTool.setView(view,itemDataCustom,false,0);
     }

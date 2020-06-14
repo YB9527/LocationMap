@@ -1,11 +1,8 @@
-package com.xupu.locationmap.projectmanager.po;
+package com.xupu.locationmap.projectmanager.view;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
+import com.xupu.locationmap.projectmanager.po.MyJSONObject;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class TableDataCustom {
 
@@ -17,17 +14,17 @@ public class TableDataCustom {
     /**
      * 当个item 显示的内容
      */
-    List<FiledCustom> filedCustoms;
-    private List<List<FiledCustom>> childRidList;
+    List<FieldCustom> FieldCustoms;
+    private List<List<FieldCustom>> childRidList;
 
     private List<MyJSONObject> list;
 
     public TableDataCustom(){
 
     }
-    public TableDataCustom(int fragmentItem, List<FiledCustom> filedCustoms, List<MyJSONObject> list) {
+    public TableDataCustom(int fragmentItem, List<FieldCustom> FieldCustoms, List<MyJSONObject> list) {
         this.fragmentItem = fragmentItem;
-        this.filedCustoms = filedCustoms;
+        this.FieldCustoms = FieldCustoms;
         //this.list = new ArrayList<>();
         this.list = (list);
 
@@ -61,22 +58,22 @@ public class TableDataCustom {
     }
 
 
-    public List<FiledCustom> getFiledCustoms() {
-        return filedCustoms;
+    public List<FieldCustom> getFieldCustoms() {
+        return FieldCustoms;
     }
 
-    public List<List<FiledCustom>> getChildRidList() {
+    public List<List<FieldCustom>> getChildRidList() {
         return childRidList;
     }
 
-    public TableDataCustom setChildRidList(List<List<FiledCustom>> childRidList) {
+    public TableDataCustom setChildRidList(List<List<FieldCustom>> childRidList) {
         this.childRidList = childRidList;
         return this;
     }
 
 
 
-    public void setFiledCustoms(List<FiledCustom> fs) {
-        this.filedCustoms = fs;
+    public void setFieldCustoms(List<FieldCustom> fs) {
+        this.FieldCustoms = fs;
     }
 }

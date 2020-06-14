@@ -1,20 +1,17 @@
-package com.xupu.locationmap.projectmanager.po;
+package com.xupu.locationmap.projectmanager.view;
 
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
-import com.google.gson.Gson;
-import com.xupu.locationmap.usermanager.po.User;
+import com.xupu.locationmap.projectmanager.po.MyJSONObject;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class ItemDataCustom {
 
-    private List<FiledCustom> filedCustoms;
+    private List<FieldCustom> filedCustoms;
 
 
-    public ItemDataCustom(Integer rid, MyJSONObject jsonObject, List<FiledCustom> filedCustoms) {
+    public ItemDataCustom(Integer rid, MyJSONObject jsonObject, List<FieldCustom> filedCustoms) {
         this.myJSONObject = jsonObject;
         this.filedCustoms = filedCustoms;
         this.rid = rid;
@@ -23,7 +20,7 @@ public class ItemDataCustom {
     private Integer rid;
     private MyJSONObject myJSONObject;
 
-    public ItemDataCustom(Integer rid, Object obj, List<FiledCustom> filedCustoms) {
+    public ItemDataCustom(Integer rid, Object obj, List<FieldCustom> filedCustoms) {
         MyJSONObject myJSONObject = new MyJSONObject();
         String json = JSONObject.toJSONString(obj, SerializerFeature.WriteMapNullValue);
         JSONObject jsonObject = JSONObject.parseObject(json);
@@ -34,11 +31,11 @@ public class ItemDataCustom {
         this.rid = rid;
     }
 
-    public List<FiledCustom> getFiledCustoms() {
+    public List<FieldCustom> getFieldCustoms() {
         return filedCustoms;
     }
 
-    public void setFiledCustoms(List<FiledCustom> filedCustoms) {
+    public void setFieldCustoms(List<FieldCustom> filedCustoms) {
         this.filedCustoms = filedCustoms;
     }
 

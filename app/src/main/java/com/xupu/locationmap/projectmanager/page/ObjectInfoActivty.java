@@ -1,16 +1,12 @@
 package com.xupu.locationmap.projectmanager.page;
 
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 
 import com.alibaba.fastjson.JSONObject;
 import com.xupu.locationmap.R;
@@ -18,17 +14,13 @@ import com.xupu.locationmap.common.po.Callback;
 import com.xupu.locationmap.common.po.MyCallback;
 import com.xupu.locationmap.common.po.ResultData;
 import com.xupu.locationmap.common.tools.AndroidTool;
-import com.xupu.locationmap.common.tools.RedisTool;
 import com.xupu.locationmap.common.tools.TableTool;
-import com.xupu.locationmap.projectmanager.po.BtuFiledCustom;
-import com.xupu.locationmap.projectmanager.po.EditFiledCusom;
-import com.xupu.locationmap.projectmanager.po.FiledCustom;
-import com.xupu.locationmap.projectmanager.po.ItemDataCustom;
+import com.xupu.locationmap.projectmanager.view.BtuFieldCustom;
+import com.xupu.locationmap.projectmanager.view.EditFieldCusom;
+import com.xupu.locationmap.projectmanager.view.FieldCustom;
+import com.xupu.locationmap.projectmanager.view.ItemDataCustom;
 import com.xupu.locationmap.projectmanager.po.MyJSONObject;
-import com.xupu.locationmap.projectmanager.po.PositionField;
-import com.xupu.locationmap.projectmanager.po.ProgressFiledCusom;
-import com.xupu.locationmap.projectmanager.po.TableDataCustom;
-import com.xupu.locationmap.projectmanager.service.ProjectService;
+import com.xupu.locationmap.projectmanager.view.TableDataCustom;
 import com.xupu.locationmap.projectmanager.service.XZQYService;
 import com.xupu.locationmap.projectmanager.service.ZTService;
 
@@ -157,9 +149,9 @@ public class ObjectInfoActivty extends AppCompatActivity {
     private void initPage() {
         Integer rid = this.getTaskId();
         MyJSONObject jsonObject = obj;
-        List<FiledCustom> filedCustoms = new ArrayList<>();
+        List<FieldCustom> filedCustoms = new ArrayList<>();
         //开始下载按钮
-      /*  filedCustoms.add(new BtuFiledCustom(R.id.btn_update, "修改") {
+      /*  filedCustoms.add(new BtuFieldCustom(R.id.btn_update, "修改") {
             public void OnClick(MyJSONObject project) {
                 //1、拿到最新的对象
                 MyJSONObject newobj = getCopyObj(project, fileds);
@@ -195,13 +187,13 @@ public class ObjectInfoActivty extends AppCompatActivity {
             }
         });*/
 
-       /* filedCustoms.add(new BtuFiledCustom(R.id.btn_back, "返回") {
+       /* filedCustoms.add(new BtuFieldCustom(R.id.btn_back, "返回") {
             public void OnClick(MyJSONObject project) {
                 finish();
             }
         });*/
 
-        filedCustoms.add(new BtuFiledCustom(R.id.btn_delete, "删除") {
+        filedCustoms.add(new BtuFieldCustom(R.id.btn_delete, "删除") {
             public void OnClick(MyJSONObject project) {
 
                 Intent intent = new Intent();
@@ -229,7 +221,7 @@ public class ObjectInfoActivty extends AppCompatActivity {
 
     private void init(MyJSONObject obj, List<MyJSONObject> fileds) {
         //页面显示
-        List<FiledCustom> fs = new ArrayList<>();
+        List<FieldCustom> fs = new ArrayList<>();
 
         for (MyJSONObject filed : fileds) {
             String name = filed.getJsonobject().getString("fieldname").toLowerCase();
@@ -239,8 +231,8 @@ public class ObjectInfoActivty extends AppCompatActivity {
             }
             filed.getJsonobject().put("my_value", value);
         }
-        fs.add(new FiledCustom(R.id.key, "fieldaliasname"));
-        fs.add(new EditFiledCusom(R.id.value, "my_value", false));
+        fs.add(new FieldCustom(R.id.key, "fieldaliasname"));
+        fs.add(new EditFieldCusom(R.id.value, "my_value", false));
 
         int fragmentItem = R.layout.fragment_key_value_item;
         TableDataCustom tableDataCustom = new TableDataCustom(fragmentItem, fs, fileds).setEdit(true);

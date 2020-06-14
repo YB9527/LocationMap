@@ -1,15 +1,9 @@
-package com.xupu.locationmap.projectmanager.po;
+package com.xupu.locationmap.projectmanager.view;
 
 import androidx.fragment.app.Fragment;
 
-import android.os.Bundle;
-import android.view.View;
 
-
-import java.io.Serializable;
 import java.lang.reflect.Type;
-import java.util.List;
-import java.util.Map;
 
 /**
  * smarttable要装载的单个表格

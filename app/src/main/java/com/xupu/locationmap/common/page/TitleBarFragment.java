@@ -23,6 +23,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.xupu.locationmap.R;
 import com.xupu.locationmap.common.po.Callback;
 import com.xupu.locationmap.common.po.MyCallback;
+import com.xupu.locationmap.common.po.ResultData;
+import com.xupu.locationmap.common.tools.AndroidTool;
+import com.xupu.locationmap.common.tools.Tool;
 import com.xupu.locationmap.projectmanager.page.MyItemRecyclerViewAdapter;
 
 @SuppressLint("ValidFragment")
@@ -32,6 +35,25 @@ public class TitleBarFragment extends android.app.Fragment {
     private Callback callback;
     private Integer icRid;
     private String rightTv;
+
+    private boolean confirm;
+    private String confirmMessage;
+    public TitleBarFragment(){
+
+    }
+    @SuppressLint("ValidFragment")
+    public TitleBarFragment(int leftIcRid, String title, Callback callback, String rightStr, String confirmMessage) {
+        this(leftIcRid,title,callback,rightStr);
+        if(!Tool.isEmpty(confirmMessage)){
+            this.confirm =true;
+            this.confirmMessage =confirmMessage;
+        }
+    }
+
+    public void setConfirm(boolean confirm, String confirmMessage) {
+        this.confirm = confirm;
+        this.confirmMessage = confirmMessage;
+    }
 
     @SuppressLint("ValidFragment")
     public TitleBarFragment(Integer icRid, String title, Callback callback, String rightTv) {
@@ -57,26 +79,30 @@ public class TitleBarFragment extends android.app.Fragment {
         //设置右边按钮
         if (icRid != null) {
             ImageButton ib = view.findViewById(R.id.title_right_ib);
-
             ib.setImageResource(icRid);
             ib.setVisibility(View.VISIBLE);
-            ib.setOnClickListener(new View.OnClickListener() {
+            view.findViewById(R.id.title_right).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    callback.call(view);
+                    if(confirm){
+                        AndroidTool.confirm(getActivity(), confirmMessage, new MyCallback() {
+                            @Override
+                            public void call(ResultData resultData) {
+                                if(resultData.getStatus() == 0){
+                                    callback.call(view);
+                                }
+                            }
+                        });
+                    }else{
+                        callback.call(view);
+                    }
                 }
             });
             TextView tv_right = view.findViewById(R.id.title_right_tv);
             tv_right.setVisibility(View.VISIBLE);
             tv_right.setText(rightTv);
             //点击右边文字也触犯事件
-            tv_right.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    callback.call(view);
-                }
-            });
-        }else{
+        } else {
             view.findViewById(R.id.title_right_ib).setVisibility(View.GONE);
             view.findViewById(R.id.title_right_tv).setVisibility(View.GONE);
 

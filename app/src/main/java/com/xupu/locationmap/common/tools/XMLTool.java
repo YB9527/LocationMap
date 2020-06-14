@@ -1,8 +1,7 @@
 package com.xupu.locationmap.common.tools;
 
-import com.xupu.locationmap.projectmanager.po.FiledCustom;
-import com.xupu.locationmap.projectmanager.po.ItemDataCustom;
-import com.xupu.locationmap.projectmanager.po.TableDataCustom_TableName;
+import com.xupu.locationmap.projectmanager.view.FieldCustom;
+import com.xupu.locationmap.projectmanager.view.TableDataCustom_TableName;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -15,8 +14,8 @@ public class XMLTool extends DefaultHandler {
 
     private List<TableDataCustom_TableName> pages = null;
     private TableDataCustom_TableName tt;
-    private FiledCustom fc = null;
-    private List<FiledCustom> fs;
+    private FieldCustom fc = null;
+    private List<FieldCustom> fs;
     private String tagName = null;//当前解析的元素标签
 
     public List<TableDataCustom_TableName> getPages() {
@@ -41,7 +40,7 @@ public class XMLTool extends DefaultHandler {
                 tt = new TableDataCustom_TableName();
                 fs = new ArrayList<>();
                 tt.setTableName(attributes.getValue("tablename"));
-                tt.setFiledCustoms(fs);
+                tt.setFieldCustoms(fs);
                 pages.add(tt);
                 break;
         }
@@ -57,7 +56,7 @@ public class XMLTool extends DefaultHandler {
             switch (tagName) {
 
                 case "fieldCustom":
-                    fc = new FiledCustom();
+                    fc = new FieldCustom();
 
                     break;
                 case "id":

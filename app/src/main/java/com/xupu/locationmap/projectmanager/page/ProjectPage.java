@@ -4,33 +4,27 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 
 import com.xupu.locationmap.R;
-import com.xupu.locationmap.common.page.SlidingDeleteView;
 import com.xupu.locationmap.common.po.Callback;
 import com.xupu.locationmap.common.po.MyCallback;
 import com.xupu.locationmap.common.po.ResultData;
 import com.xupu.locationmap.common.po.ViewHolderCallback;
 import com.xupu.locationmap.common.tools.AndroidTool;
 import com.xupu.locationmap.common.tools.RedisTool;
-import com.xupu.locationmap.common.tools.ScreenUtils;
-import com.xupu.locationmap.common.tools.TableTool;
 import com.xupu.locationmap.common.tools.Tool;
-import com.xupu.locationmap.projectmanager.po.BtuFiledCustom;
-import com.xupu.locationmap.projectmanager.po.EditFiledCusom;
-import com.xupu.locationmap.projectmanager.po.FiledCustom;
-import com.xupu.locationmap.projectmanager.po.ItemDataCustom;
+import com.xupu.locationmap.projectmanager.view.BtuFieldCustom;
+import com.xupu.locationmap.projectmanager.view.EditFieldCusom;
+import com.xupu.locationmap.projectmanager.view.FieldCustom;
+import com.xupu.locationmap.projectmanager.view.ItemDataCustom;
 import com.xupu.locationmap.projectmanager.po.MyJSONObject;
-import com.xupu.locationmap.projectmanager.po.SlidingFieldCustom;
-import com.xupu.locationmap.projectmanager.po.TableDataCustom;
-import com.xupu.locationmap.projectmanager.po.ViewFildCustom;
+import com.xupu.locationmap.projectmanager.view.SlidingFieldCustom;
+import com.xupu.locationmap.projectmanager.view.TableDataCustom;
+import com.xupu.locationmap.projectmanager.view.ViewFieldCustom;
 import com.xupu.locationmap.projectmanager.service.ProjectService;
 import com.xupu.locationmap.projectmanager.service.ZTService;
 
@@ -49,8 +43,8 @@ public class ProjectPage extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         AndroidTool.setFullWindow(this);
         getSupportActionBar().hide();
-        initTitle();
         setContentView(R.layout.activity_project);
+        initTitle();
         init();
     }
 
@@ -80,8 +74,8 @@ public class ProjectPage extends AppCompatActivity {
      *
      * @return
      */
-    /*private FiledCustom getBtuSelect() {
-        return new BtuFiledCustom() {
+    /*private FieldCustom getBtuSelect() {
+        return new BtuFieldCustom() {
             @Override
             public void OnClick(MyJSONObject myJSONObject) {
                 //确定选择此项目
@@ -122,13 +116,13 @@ public class ProjectPage extends AppCompatActivity {
                 }
             }
         }
-        List<FiledCustom> fs = new ArrayList<>();
+        List<FieldCustom> fs = new ArrayList<>();
         //项目名称
-        fs.add(new FiledCustom(R.id.tv_projectname, "name"));
+        fs.add(new FieldCustom(R.id.tv_projectname, "name"));
         //项目描述
-        fs.add(new FiledCustom(R.id.tv_descrip, "srs"));
+        fs.add(new FieldCustom(R.id.tv_descrip, "srs"));
         //项目选择
-        fs.add(new BtuFiledCustom(R.id.btu_select, "选择") {
+        fs.add(new BtuFieldCustom(R.id.btu_select, "选择") {
             @Override
             public void OnClick(MyJSONObject myJSONObject) {
                 ProjectService.setCurrentSugProject(myJSONObject);
@@ -138,17 +132,17 @@ public class ProjectPage extends AppCompatActivity {
         //侧滑功能
         fs.add(new SlidingFieldCustom(R.id.slidingview, R.id.first));
         //删除项目
-        fs.add(new ViewFildCustom(R.id.tv_delete1) {
+        fs.add(new ViewFieldCustom(R.id.tv_delete1) {
             @Override
-            public void OnClick(MyJSONObject myJSONObject) {
+            public void OnClick(View view, MyJSONObject myJSONObject) {
                 //以后增加此功能
                ProjectService.deleteProject(myJSONObject);
                myItemRecyclerViewAdapter.remove(myJSONObject);
             }
         }.setConfirm(true, "确认要删除项目吗？"));
-        fs.add(new ViewFildCustom(R.id.item) {
+        fs.add(new ViewFieldCustom(R.id.item) {
             @Override
-            public void OnClick(MyJSONObject myJSONObject) {
+            public void OnClick(View view, MyJSONObject myJSONObject) {
                 if (!myJSONObject.getId().equals(ProjectService.getCurrentSugProject().getId())) {
                     AndroidTool.confirm(ProjectPage.this, "确定要选择这个项目吗？", new MyCallback() {
                         @Override
@@ -168,7 +162,7 @@ public class ProjectPage extends AppCompatActivity {
                 toDownLoadProject();
             }
         });
-       /* fs.add(new BtuFiledCustom(R.id.btu_info, "详情") {
+       /* fs.add(new BtuFieldCustom(R.id.btu_info, "详情") {
             @Override
             public void OnClick(MyJSONObject myJSONObject) {
                 Intent intent = new Intent(ProjectPage.this, ObjectInfoActivty.class);
@@ -220,9 +214,9 @@ public class ProjectPage extends AppCompatActivity {
      */
     private void initAddItemFragment() {
 
-        List<FiledCustom> fs = new ArrayList<>();
-        fs.add(new EditFiledCusom(R.id.name, "name", true));
-        fs.add(new BtuFiledCustom(R.id.btu_submit, "添加") {
+        List<FieldCustom> fs = new ArrayList<>();
+        fs.add(new EditFieldCusom(R.id.name, "name", true));
+        fs.add(new BtuFieldCustom(R.id.btu_submit, "添加") {
             @Override
             public void OnClick(MyJSONObject myJSONObject) {
                 itemFragment.addItem(myJSONObject);
@@ -231,7 +225,7 @@ public class ProjectPage extends AppCompatActivity {
                 showMain(true);
             }
         }.setCheck(true).setReturn(true));
-        fs.add(new BtuFiledCustom(R.id.btu_cancel, "取消") {
+        fs.add(new BtuFieldCustom(R.id.btu_cancel, "取消") {
             @Override
             public void OnClick(MyJSONObject myJSONObject) {
                 showMain(true);

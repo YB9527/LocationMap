@@ -1,6 +1,4 @@
-package com.xupu.locationmap.projectmanager.po;
-
-import android.net.Uri;
+package com.xupu.locationmap.projectmanager.view;
 
 import org.json.JSONObject;
 
@@ -8,17 +6,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class RecyclerViewFiledCustom extends FiledCustom {
+public class RecyclerViewFieldCustom extends FieldCustom {
     private Integer rid;
     private List<JSONObject> jsonObjects;
-    private Map<Integer, FiledCustom> map;
+    private Map<Integer, FieldCustom> map;
 
 
-    public RecyclerViewFiledCustom() {
+    public RecyclerViewFieldCustom() {
 
     }
 
-    public RecyclerViewFiledCustom(Integer recyclerRid, Map<Integer, FiledCustom> map) {
+    public RecyclerViewFieldCustom(Integer recyclerRid, Map<Integer, FieldCustom> map) {
         this.rid = rid;
         this.jsonObjects = jsonObjects;
         this.map = map;
@@ -26,19 +24,19 @@ public class RecyclerViewFiledCustom extends FiledCustom {
 
     public static class Builder {
         private Integer recyclerRid;
-        private Map<Integer, FiledCustom> map ;
+        private Map<Integer, FieldCustom> map ;
 
         public Builder(Integer recyclerRid){
             map = new HashMap<>();
             this.recyclerRid =recyclerRid;
         }
-        public  Builder addFiledCustom(Integer rid, FiledCustom filedCustom) {
+        public  Builder addFieldCustom(Integer rid, FieldCustom filedCustom) {
             map.put(rid, filedCustom);
             return this;
         }
 
-        public RecyclerViewFiledCustom build() {
-            return new RecyclerViewFiledCustom(recyclerRid, map);
+        public RecyclerViewFieldCustom build() {
+            return new RecyclerViewFieldCustom(recyclerRid, map);
         }
     }
 
@@ -58,11 +56,11 @@ public class RecyclerViewFiledCustom extends FiledCustom {
         this.jsonObjects = jsonObjects;
     }
 
-    public Map<Integer, FiledCustom> getMap() {
+    public Map<Integer, FieldCustom> getMap() {
         return map;
     }
 
-    public void setMap(Map<Integer, FiledCustom> map) {
+    public void setMap(Map<Integer, FieldCustom> map) {
         this.map = map;
     }
 }

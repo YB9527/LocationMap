@@ -14,6 +14,8 @@ import java.util.List;
 import java.util.UUID;
 
 public class ProjectService {
+
+
     public static String CURRENT_PROJECT_MARK = "CURRENT_PROJECT_MARK";
     private static MyJSONObject currentSugProject;
     public static String PROJECT_RANDOM_MARK = "my_random";
@@ -64,6 +66,9 @@ public class ProjectService {
         return getName(project) + "_" + getProjectRandom(project);
     }
 
+    public static String getCurrentProjectDBName() {
+        return getName(getCurrentSugProject()) + "_" + getProjectRandom(getCurrentSugProject());
+    }
     public static ArrayList<MyJSONObject> findAll() {
         ArrayList<MyJSONObject> projects = RedisTool.findListRedis(ZTService.PROJECT_TABLE_NAME + "%", MyJSONObject.class);
         // ArrayList<MyJSONObject> projects = TableTool.findByTableName(ZTService.PROJECT_TABLE_NAME);

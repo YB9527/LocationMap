@@ -1,24 +1,14 @@
 package com.xupu.locationmap.projectmanager.page;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
-import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 
-import com.alibaba.fastjson.JSONObject;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.gson.Gson;
 import com.ogaclejapan.smarttablayout.SmartTabLayout;
 import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItemAdapter;
 import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItems;
@@ -27,21 +17,13 @@ import com.xupu.locationmap.common.po.Callback;
 import com.xupu.locationmap.common.tools.AndroidTool;
 
 import com.xupu.locationmap.common.tools.TableTool;
-import com.xupu.locationmap.common.tools.Tool;
-import com.xupu.locationmap.projectmanager.po.BtuFiledCustom;
-import com.xupu.locationmap.projectmanager.po.FiledCustom;
 import com.xupu.locationmap.projectmanager.po.MyJSONObject;
-import com.xupu.locationmap.projectmanager.po.PositionField;
-import com.xupu.locationmap.projectmanager.po.TableDataCustom;
-import com.xupu.locationmap.projectmanager.po.TableDataCustom_TableName;
-import com.xupu.locationmap.projectmanager.po.TableViewCustom;
-import com.xupu.locationmap.projectmanager.po.XZDM;
+import com.xupu.locationmap.projectmanager.view.TableDataCustom;
+import com.xupu.locationmap.projectmanager.view.TableViewCustom;
 import com.xupu.locationmap.projectmanager.service.ZTService;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 普通表格数据装载

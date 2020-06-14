@@ -14,19 +14,18 @@ import android.widget.Button;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.google.gson.Gson;
 import com.xupu.locationmap.R;
 import com.xupu.locationmap.common.po.Callback;
 import com.xupu.locationmap.common.tools.AndroidTool;
 import com.xupu.locationmap.common.tools.RedisTool;
 import com.xupu.locationmap.common.tools.TableTool;
-import com.xupu.locationmap.projectmanager.po.BtuFiledCustom;
-import com.xupu.locationmap.projectmanager.po.FiledCustom;
-import com.xupu.locationmap.projectmanager.po.ItemDataCustom;
+import com.xupu.locationmap.projectmanager.view.BtuFieldCustom;
+import com.xupu.locationmap.projectmanager.view.FieldCustom;
+import com.xupu.locationmap.projectmanager.view.ItemDataCustom;
 import com.xupu.locationmap.projectmanager.po.MyJSONObject;
-import com.xupu.locationmap.projectmanager.po.PositionField;
-import com.xupu.locationmap.projectmanager.po.ProgressFiledCusom;
-import com.xupu.locationmap.projectmanager.po.TableDataCustom;
+import com.xupu.locationmap.projectmanager.view.PositionField;
+import com.xupu.locationmap.projectmanager.view.ProgressFieldCusom;
+import com.xupu.locationmap.projectmanager.view.TableDataCustom;
 import com.xupu.locationmap.projectmanager.service.ProjectService;
 import com.xupu.locationmap.projectmanager.service.ZTService;
 
@@ -68,9 +67,9 @@ public class ProjectDownload extends AppCompatActivity {
 
         Integer rid = this.getTaskId();
         MyJSONObject jsonObject = project;
-        List<FiledCustom> filedCustoms = new ArrayList<>();
+        List<FieldCustom> filedCustoms = new ArrayList<>();
         //开始下载按钮
-        filedCustoms.add(new BtuFiledCustom(R.id.btn_down, "下载") {
+        filedCustoms.add(new BtuFieldCustom(R.id.btn_down, "下载") {
             //保存项目记录
             //RedisTool.saveRedis(ZTService.PROJECT_TABLE_NAME, project);
             //TableTool.createDB(ZTService.PROJECT_TABLE_NAME);
@@ -126,11 +125,11 @@ public class ProjectDownload extends AppCompatActivity {
     private void downProject(MyJSONObject project) {
         //2、创建下载表格的碎片
         //页面显示
-        List<FiledCustom> fs = new ArrayList<>();
+        List<FieldCustom> fs = new ArrayList<>();
         fs.add(new PositionField(R.id.index, "0"));
-        fs.add(new FiledCustom(R.id.tablename, "my_tablename"));
-        fs.add(new FiledCustom(R.id.state, "my_state"));
-        fs.add(new ProgressFiledCusom(R.id.pb, "my_value"));
+        fs.add(new FieldCustom(R.id.tablename, "my_tablename"));
+        fs.add(new FieldCustom(R.id.state, "my_state"));
+        fs.add(new ProgressFieldCusom(R.id.pb, "my_value"));
 
         int fragmentItem = R.layout.fragment_down_table_item;
 

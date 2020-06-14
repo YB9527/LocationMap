@@ -1,4 +1,4 @@
-package com.xupu.locationmap.projectmanager.po;
+package com.xupu.locationmap.projectmanager.view;
 
 import com.xupu.locationmap.common.tools.AndroidTool;
 
@@ -8,15 +8,15 @@ import java.lang.reflect.Method;
 /**
  * 表格字段的封装映射
  */
-public class FiledCustom implements Serializable {
+public class FieldCustom implements Serializable {
     private Integer id;
     private String idText;
     private String attribute;
 
-    public FiledCustom() {
+    public FieldCustom() {
 
     }
-    public FiledCustom(Integer id){
+    public FieldCustom(Integer id){
         this.id = id;
     }
     public Integer getId() {
@@ -28,13 +28,13 @@ public class FiledCustom implements Serializable {
     }
 
 
-    public FiledCustom(String idText, String attribute) {
+    public FieldCustom(String idText, String attribute) {
         this.idText = idText;
         this.id = AndroidTool.getCompentID("id", idText);
         this.attribute = attribute;
     }
 
-    public FiledCustom(Integer id, String attribute) {
+    public FieldCustom(Integer id, String attribute) {
         this.id = id;
         this.attribute = attribute;
     }

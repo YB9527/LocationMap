@@ -1,6 +1,6 @@
-package com.xupu.locationmap.projectmanager.po;
+package com.xupu.locationmap.projectmanager.view;
 
-public class SlidingFieldCustom extends FiledCustom {
+public class SlidingFieldCustom extends FieldCustom {
     private  Integer layoutid;
 
     /**

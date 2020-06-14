@@ -1,9 +1,10 @@
-package com.xupu.locationmap.projectmanager.po;
+package com.xupu.locationmap.projectmanager.view;
 
+
+import com.xupu.locationmap.projectmanager.po.MyJSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 根据表格要求 来显示那张表格的数据
@@ -30,7 +31,7 @@ public class TableDataCustom_TableName extends TableDataCustom {
      */
     private MyJSONObject tableItem;
 
-    public TableDataCustom_TableName(int fragmentItem,List<FiledCustom> fs, MyJSONObject tableItem) {
+    public TableDataCustom_TableName(int fragmentItem,List<FieldCustom> fs, MyJSONObject tableItem) {
         super(fragmentItem, fs, new ArrayList<MyJSONObject>());
         this.tableItem = tableItem;
     }

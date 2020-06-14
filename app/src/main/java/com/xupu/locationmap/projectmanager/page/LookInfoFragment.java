@@ -12,25 +12,23 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
 import com.xupu.locationmap.R;
 import com.xupu.locationmap.common.page.PhotoSingleActivty;
-import com.xupu.locationmap.common.po.SFZBack;
 import com.xupu.locationmap.common.tools.AndroidTool;
 import com.xupu.locationmap.common.tools.FileTool;
 import com.xupu.locationmap.common.tools.TableTool;
 import com.xupu.locationmap.common.tools.Tool;
-import com.xupu.locationmap.projectmanager.po.BtuFiledCustom;
+import com.xupu.locationmap.projectmanager.view.BtuFieldCustom;
 import com.xupu.locationmap.projectmanager.po.Customizing;
-import com.xupu.locationmap.projectmanager.po.EditFiledCusom;
-import com.xupu.locationmap.projectmanager.po.FiledCustom;
-import com.xupu.locationmap.projectmanager.po.ImgFiledCusom;
-import com.xupu.locationmap.projectmanager.po.ItemDataChildCustom;
-import com.xupu.locationmap.projectmanager.po.ItemDataCustom;
+import com.xupu.locationmap.projectmanager.view.EditFieldCusom;
+import com.xupu.locationmap.projectmanager.view.FieldCustom;
+import com.xupu.locationmap.projectmanager.view.ImgFieldCusom;
+import com.xupu.locationmap.projectmanager.view.ItemDataChildCustom;
+import com.xupu.locationmap.projectmanager.view.ItemDataCustom;
 import com.xupu.locationmap.projectmanager.po.MyJSONObject;
-import com.xupu.locationmap.projectmanager.po.TableDataCustom;
+import com.xupu.locationmap.projectmanager.view.TableDataCustom;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -53,15 +51,15 @@ public class LookInfoFragment extends Fragment {
      * 检查数据是否满足要求
      *
      * @param jsonObject
-     * @param filedCustoms
+     * @param FieldCustoms
      * @return
      */
-    private boolean checkData(JSONObject jsonObject, Collection<FiledCustom> filedCustoms) {
-        for (FiledCustom filedCustom : filedCustoms) {
-            if (filedCustom instanceof EditFiledCusom) {
-                EditFiledCusom editFiledCusom = (EditFiledCusom) filedCustom;
-                if (editFiledCusom.isMust()) {
-                    String result = jsonObject.getString(filedCustom.getAttribute());
+    private boolean checkData(JSONObject jsonObject, Collection<FieldCustom> FieldCustoms) {
+        for (FieldCustom FieldCustom : FieldCustoms) {
+            if (FieldCustom instanceof EditFieldCusom) {
+                EditFieldCusom editFieldCusom = (EditFieldCusom) FieldCustom;
+                if (editFieldCusom.isMust()) {
+                    String result = jsonObject.getString(FieldCustom.getAttribute());
                     if (Tool.isEmpty(result)) {
                         AndroidTool.showAnsyTost("数据没有填写完整", 1);
                         return false;
@@ -93,9 +91,9 @@ public class LookInfoFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        List<FiledCustom> fs = new ArrayList<>();
-        Map<Integer, FiledCustom> map = new HashMap<>();
-        fs.add(new ImgFiledCusom(R.id.img, "path") {
+        List<FieldCustom> fs = new ArrayList<>();
+        Map<Integer, FieldCustom> map = new HashMap<>();
+        fs.add(new ImgFieldCusom(R.id.img, "path") {
             @Override
             public void onClick(MyJSONObject mdeia) {
 
@@ -107,31 +105,31 @@ public class LookInfoFragment extends Fragment {
 
         List<ItemDataChildCustom> itemDataChildCustomList = new ArrayList<>();
         //身份证正面
-        List<FiledCustom> frontFs = new ArrayList<>();
-        frontFs.add(new EditFiledCusom(R.id.name, "name", false));
-        frontFs.add(new EditFiledCusom(R.id.address, "address", false));
-        frontFs.add(new EditFiledCusom(R.id.idNumber, "idNumber", false));
-        frontFs.add(new EditFiledCusom(R.id.sex, "sex", false));
-        frontFs.add(new EditFiledCusom(R.id.nation, "nation", false));
-        frontFs.add(new EditFiledCusom(R.id.birthday, "birthday", false));
+        List<FieldCustom> frontFs = new ArrayList<>();
+        frontFs.add(new EditFieldCusom(R.id.name, "name", false));
+        frontFs.add(new EditFieldCusom(R.id.address, "address", false));
+        frontFs.add(new EditFieldCusom(R.id.idNumber, "idNumber", false));
+        frontFs.add(new EditFieldCusom(R.id.sex, "sex", false));
+        frontFs.add(new EditFieldCusom(R.id.nation, "nation", false));
+        frontFs.add(new EditFieldCusom(R.id.birthday, "birthday", false));
 
 
         //ItemDataChildCustom sfzFrontItemDataChildCustom = new ItemDataChildCustom(null, frontFs);
 
         //身份证背面
-        List<FiledCustom> backFs = new ArrayList<>();
-        backFs.add(new EditFiledCusom(R.id.signDate, "signDate", false));
-        backFs.add(new EditFiledCusom(R.id.expiryDate, "expiryDate", false));
-        backFs.add(new EditFiledCusom(R.id.issueAuthority, "issueAuthority", false));
+        List<FieldCustom> backFs = new ArrayList<>();
+        backFs.add(new EditFieldCusom(R.id.signDate, "signDate", false));
+        backFs.add(new EditFieldCusom(R.id.expiryDate, "expiryDate", false));
+        backFs.add(new EditFieldCusom(R.id.issueAuthority, "issueAuthority", false));
 
 
-        List<List<FiledCustom>> childridMap = new ArrayList<>();
+        List<List<FieldCustom>> childridMap = new ArrayList<>();
         childridMap.add(frontFs);
         childridMap.add(backFs);
 
-        fs.add( new EditFiledCusom(R.id.bz,"bz", false));
-        fs.add( new EditFiledCusom(R.id.task,Customizing.MEDIA_task, false));
-        fs.add(new BtuFiledCustom(R.id.btu_delete, "删除") {
+        fs.add( new EditFieldCusom(R.id.bz,"bz", false));
+        fs.add( new EditFieldCusom(R.id.task,Customizing.MEDIA_task, false));
+        fs.add(new BtuFieldCustom(R.id.btu_delete, "删除") {
             @Override
             public void OnClick(MyJSONObject media) {
                 TableTool.delete(media);
