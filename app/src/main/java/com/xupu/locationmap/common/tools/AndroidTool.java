@@ -235,9 +235,9 @@ public class AndroidTool {
                         String str = jsonObject.getString(attribute);
                         if (str != null || temView instanceof EditText) {
                             tv.setText(str);
+                        }else if(!(fieldCustom instanceof  BtuFieldCustom || fieldCustom instanceof  ViewFieldCustom) ){
+                            tv.setText("");
                         }
-                        //tv.setText(str);
-
                     }
                 }
             }
@@ -286,7 +286,12 @@ public class AndroidTool {
             } else if (fieldCustom instanceof SlidingFieldCustom) {
                 SlidingFieldCustom slidingFieldCustom = (SlidingFieldCustom) fieldCustom;
                 View containerView = view.findViewById(slidingFieldCustom.getLayoutid());
-                containerView.getLayoutParams().width = ScreenUtils.getScreenWidth(AndroidTool.getMainActivity().getBaseContext());
+                if(slidingFieldCustom.getWidth() == 0){
+                    containerView.getLayoutParams().width = ScreenUtils.getScreenWidth(AndroidTool.getMainActivity().getBaseContext());
+                }else{
+                    containerView.getLayoutParams().width =slidingFieldCustom.getWidth();
+                }
+
                 SlidingDeleteView slidingview = view.findViewById(slidingFieldCustom.getId());
                 slidingview.setEnable(true);
                 if (oldSliding != null) {

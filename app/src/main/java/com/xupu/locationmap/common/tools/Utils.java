@@ -17,6 +17,11 @@ import java.util.Random;
  */
 public class Utils {
 
+    public static Integer[] getWidthAndHeight() {
+        Window window = AndroidTool.getMainActivity().getWindow();
+       return  getWidthAndHeight(window);
+    }
+
     public static Integer[] getWidthAndHeight(Window window) {
         if (window == null) {
             return null;

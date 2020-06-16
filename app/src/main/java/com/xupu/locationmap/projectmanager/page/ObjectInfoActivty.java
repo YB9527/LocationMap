@@ -44,6 +44,7 @@ public class ObjectInfoActivty extends AppCompatActivity {
 
         state = getIntent().getIntExtra("state", -1);
         String id = getIntent().getStringExtra("id");
+        String tablename = getIntent().getStringExtra("tablename");
         if (state == TableTool.STATE_INSERT) {
             //新增一个对象
             fileds = TableTool.findByTableNameAndParentId(ZTService.TABLE_Structure,id);
@@ -66,7 +67,7 @@ public class ObjectInfoActivty extends AppCompatActivity {
             initAddTitle();
         } else {
 
-            obj = TableTool.findById(id);
+            obj = TableTool.findByTableNameAndId(tablename,id);
             //根据tableid 查询 表格字段
             fileds = TableTool.findByTableNameAndParentId(ZTService.TABLE_Structure, obj.getTableid());
             initEditTitle();

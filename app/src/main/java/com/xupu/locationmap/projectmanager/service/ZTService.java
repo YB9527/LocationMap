@@ -10,10 +10,13 @@ import com.xupu.locationmap.common.tools.AndroidTool;
 import com.xupu.locationmap.common.tools.HttpRespon;
 import com.xupu.locationmap.common.tools.JSONObjectRespon;
 import com.xupu.locationmap.common.tools.OkHttpClientUtils;
+import com.xupu.locationmap.common.tools.TableTool;
 import com.xupu.locationmap.common.tools.Tool;
 import com.xupu.locationmap.common.tools.ZTRespon;
 import com.xupu.locationmap.projectmanager.po.MyJSONObject;
+import com.xupu.locationmap.projectmanager.po.TableType;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -102,6 +105,12 @@ public class ZTService {
                 tableIdMap.put("cef06e0e-3fd2-4cce-8451-f0ea1c36a5ca", "bccbd22d-b5b8-4eb3-8225-acce9cd676bf");//行政区
                 tableIdMap.put("aacd513d-e833-45cd-80c1-95dbec9ebaaa", "a43378a6-bf48-4023-95f3-b3378f27b951");//权属主体
                 tableIdMap.put("6646c538-8a85-43fe-b102-5619baad0947", "30b9f358-be11-41a3-aaa1-6f433e00ac34");//潜力图斑
+
+                tableIdMap.put("6a781e77-5f2d-4c71-bc59-2fd1d072d863", "90b42a43-b4a6-4ec2-b310-fc3251e7fe96");//村级区域
+                tableIdMap.put("ffd969bc-38cb-4a9b-8fac-e778f76f3acc", "c69de788-521c-4e4c-a3b1-56473b147614");//乡级区域
+                tableIdMap.put("fa4bed8e-7935-4511-a968-2aae5477e3bd", "1fe7ef50-dbae-497f-8d8e-777a30ab7fbe");//保护图斑
+
+
             }
         }
         return tableIdMap;
@@ -129,6 +138,33 @@ public class ZTService {
             }
         }*/
         return getTableIdMap().get(itemid);
+    }
+
+    /**
+     * 得到底图图层的 条目item
+     * @return
+     */
+    public static List<MyJSONObject> getLayerTableItems() {
+        List<MyJSONObject> tableItems = getTableItems();
+        List<MyJSONObject> layerTableItems = new ArrayList<>();
+        for (MyJSONObject myJSONObject :tableItems){
+            if(myJSONObject.getJsonobject().getString(TableType.TYPE_MARK).equals(TableType.LAYER_TYPE)){
+                layerTableItems.add(myJSONObject);
+            }
+        }
+        return  layerTableItems;
+    }
+
+    /**
+     *
+     * @return
+     */
+    private static List<MyJSONObject> getTableItems() {
+        return TableTool.findByTableName(ZTService.PROJECT_TABLE_LIST);
+    }
+
+    public static String getTableName(MyJSONObject tableitem) {
+        return  tableitem.getJsonobject().getString("aliasname");
     }
 
     /**

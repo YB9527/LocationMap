@@ -28,20 +28,7 @@
             <attribute>jtzz</attribute>
         </fieldCustom>
     </page>
-    <page tablename="行政区">
-        <fieldCustom>
-            <id>title</id>
-            <attribute>xzqmc</attribute>
-        </fieldCustom>
-        <fieldCustom>
-            <id>info1</id>
-            <attribute>xzqdm</attribute>
-        </fieldCustom>
- <fieldCustom>
-            <id>info2</id>
-            <attribute></attribute>
-        </fieldCustom>
-    </page>
+
     <page tablename="潜力图斑">
         <fieldCustom>
             <id>title</id>
@@ -56,4 +43,50 @@
             <attribute>tbmj</attribute>
         </fieldCustom>
     </page>
+
+    <page tablename="村级区域">
+        <fieldCustom>
+            <id>title</id>
+            <attribute>xzqmc</attribute>
+        </fieldCustom>
+        <fieldCustom>
+            <id>info1</id>
+            <attribute>xzqdm</attribute>
+        </fieldCustom>
+        <fieldCustom>
+            <id>info2</id>
+            <attribute>bz</attribute>
+        </fieldCustom>
+    </page>
+
+    <page tablename="乡级区域">
+        <fieldCustom>
+            <id>title</id>
+            <attribute>xzqmc</attribute>
+        </fieldCustom>
+        <fieldCustom>
+            <id>info1</id>
+            <attribute>xzqdm</attribute>
+        </fieldCustom>
+        <fieldCustom>
+            <id>info2</id>
+            <attribute>bz</attribute>
+        </fieldCustom>
+    </page>
+
+    <page tablename="保护图斑">
+        <fieldCustom>
+            <id>title</id>
+            <attribute>tbbh</attribute>
+        </fieldCustom>
+        <fieldCustom>
+            <id>info1</id>
+            <attribute>qsdwmc</attribute>
+        </fieldCustom>
+        <fieldCustom>
+            <id>info2</id>
+            <attribute>tbmj</attribute>
+        </fieldCustom>
+    </page>
+
 </pages>

@@ -1,10 +1,14 @@
 package com.xupu.locationmap.projectmanager.service;
 
+import android.content.Intent;
+
 import com.alibaba.fastjson.JSONObject;
+import com.tianditu.maps.Map.Project;
 import com.xupu.locationmap.common.tools.AndroidTool;
 import com.xupu.locationmap.common.tools.RedisTool;
 import com.xupu.locationmap.common.tools.TableTool;
 import com.xupu.locationmap.common.tools.Tool;
+import com.xupu.locationmap.projectmanager.page.ProjectPage;
 import com.xupu.locationmap.projectmanager.po.Customizing;
 import com.xupu.locationmap.projectmanager.po.MyJSONObject;
 
@@ -101,5 +105,11 @@ public class ProjectService {
         if(currentSugProject != null && deleteProject.getId().equals(currentSugProject.getId())){
             setCurrentSugProject(null);
         }
+    }
+
+
+    public static void toProjectPage() {
+        Intent intent = new Intent(AndroidTool.getMainActivity(), ProjectPage.class);
+        AndroidTool.getMainActivity().startActivity(intent);
     }
 }

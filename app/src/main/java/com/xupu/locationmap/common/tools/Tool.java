@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -209,5 +210,24 @@ public class Tool {
     }
 
 
+    public static <T> void swap(List<T> list, int oldPosition, int newPosition){
+        if(null == list){
+            throw new IllegalStateException("The list can not be empty...");
+        }
+
+        // 向前移动，前面的元素需要向后移动
+        if(oldPosition < newPosition){
+            for(int i = oldPosition; i < newPosition; i++){
+                Collections.swap(list, i, i + 1);
+            }
+        }
+
+        // 向后移动，后面的元素需要向前移动
+        if(oldPosition > newPosition){
+            for(int i = oldPosition; i > newPosition; i--){
+                Collections.swap(list, i, i - 1);
+            }
+        }
+    }
 
 }

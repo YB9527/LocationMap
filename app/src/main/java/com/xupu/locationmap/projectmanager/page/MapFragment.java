@@ -1,12 +1,10 @@
 package com.xupu.locationmap.projectmanager.page;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
-import android.location.Location;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
@@ -15,39 +13,38 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 
-import com.alibaba.fastjson.JSONObject;
 import com.esri.arcgisruntime.ArcGISRuntimeException;
 import com.esri.arcgisruntime.arcgisservices.TileInfo;
 import com.esri.arcgisruntime.data.TileCache;
 import com.esri.arcgisruntime.geometry.Envelope;
-import com.esri.arcgisruntime.geometry.GeometryBuilder;
+import com.esri.arcgisruntime.geometry.Geometry;
 import com.esri.arcgisruntime.geometry.GeometryEngine;
-import com.esri.arcgisruntime.geometry.GeometryType;
 import com.esri.arcgisruntime.geometry.Point;
 import com.esri.arcgisruntime.geometry.Polygon;
 import com.esri.arcgisruntime.geometry.PolygonBuilder;
-import com.esri.arcgisruntime.geometry.PolylineBuilder;
 import com.esri.arcgisruntime.geometry.SpatialReference;
-import com.esri.arcgisruntime.geometry.SpatialReferences;
 import com.esri.arcgisruntime.layers.ArcGISTiledLayer;
 import com.esri.arcgisruntime.loadable.LoadStatus;
 import com.esri.arcgisruntime.location.LocationDataSource;
 import com.esri.arcgisruntime.mapping.ArcGISMap;
-import com.esri.arcgisruntime.mapping.LayerList;
-import com.esri.arcgisruntime.mapping.Viewpoint;
 import com.esri.arcgisruntime.mapping.view.Graphic;
 import com.esri.arcgisruntime.mapping.view.GraphicsOverlay;
 import com.esri.arcgisruntime.mapping.view.LocationDisplay;
 import com.esri.arcgisruntime.mapping.view.MapView;
 import com.esri.arcgisruntime.symbology.PictureMarkerSymbol;
 import com.esri.arcgisruntime.symbology.SimpleFillSymbol;
-import com.esri.arcgisruntime.symbology.SimpleLineSymbol;
 import com.esri.arcgisruntime.symbology.SimpleMarkerSymbol;
 import com.esri.arcgisruntime.symbology.SimpleRenderer;
-import com.google.gson.JsonParser;
-import com.tianditu.android.maps.overlay.PolygonOverlay;
+import com.esri.arcgisruntime.symbology.TextSymbol;
+import com.esri.arcgisruntime.util.ListenableList;
+import com.google.gson.internal.LinkedHashTreeMap;
+import com.google.gson.internal.LinkedTreeMap;
+import com.google.gson.reflect.TypeToken;
+import com.tianditu.android.maps.overlay.MarkerOverlay;
 import com.xupu.locationmap.R;
+import com.xupu.locationmap.common.dialog.DialogCallback;
 import com.xupu.locationmap.common.dialog.RightDialogFragment;
 import com.xupu.locationmap.common.po.Callback;
 import com.xupu.locationmap.common.tdt.LayerInfoFactory;
@@ -58,25 +55,45 @@ import com.xupu.locationmap.common.tools.AndroidTool;
 import com.xupu.locationmap.common.tools.JSONTool;
 import com.xupu.locationmap.common.tools.MyLocationUtil;
 import com.xupu.locationmap.common.tools.RedisTool;
-import com.xupu.locationmap.common.tools.ReflectTool;
 import com.xupu.locationmap.common.tools.TableTool;
+import com.xupu.locationmap.common.tools.Tool;
+import com.xupu.locationmap.common.tools.Utils;
 import com.xupu.locationmap.projectmanager.po.CloseLog;
 import com.xupu.locationmap.projectmanager.po.LowImage;
 import com.xupu.locationmap.projectmanager.po.MapResult;
-import com.xupu.locationmap.projectmanager.po.MyGeometryType;
 import com.xupu.locationmap.projectmanager.po.MyJSONObject;
-import com.xupu.locationmap.projectmanager.po.Redis;
+import com.xupu.locationmap.projectmanager.service.MapService;
 import com.xupu.locationmap.projectmanager.service.ProjectService;
 import com.xupu.locationmap.projectmanager.service.XZQYService;
+import com.xupu.locationmap.projectmanager.service.ZTService;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 
 public class MapFragment extends Fragment {
+    /**
+     * 底图被改变
+     */
+    public final static int LOW_MAPLAYER_ChANGE = 1;
+    /**
+     * 图层被改变
+     */
+    public final static int MAPLAYER_ChANGE = 2;
+    /**
+     * 查看图层表格数据
+     */
+    public final static int LOOK_DATATABEL = 3;
+    /**
+     * 缩放至图层
+     */
+    public final static int SCALE_MAPLAYER = 4;
 
+    List<LowImageGraphicsLayer> lowImageGraphicsLayers = new ArrayList<>();
     View view;
 
     public MapFragment() {
@@ -100,70 +117,204 @@ public class MapFragment extends Fragment {
 
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == MapResult.layer && resultCode == MapResult.layer) {
-            List<LowImage> list = LowMapManager.getVisableLayers();
-            addLayers(mMapView,list);
-        }
-    }
 
     private MapView mMapView;
 
     private void initView() {
-        mMapView = view.findViewById(R.id.mv_tian_di_tu);
 
-        addLayers(mMapView);
-        //loadTpk();
-        //addTDT(mMapView); //添加天地图底图
-        /*//fun(mMapView);
-        //addTDT(mMapView);
-        Point centralPoint = new Point(104.04, 30.67);
-        //Point centralPoint = new Point(12765789.164,4033943.961);
-        //Point centralPoint = new Point(1160.41,39.902);
-        mMapView.setViewpointCenterAsync(centralPoint, 4000f); //设置地图中心点和初始放缩比*/
+        mMapView = view.findViewById(R.id.mv_tian_di_tu);
+        try {
+            addLowMaps(mMapView);
+        } catch (Exception e) {
+            ProjectService.toProjectPage();
+            return;
+        }
         mMapView.setAttributionTextVisible(false); //隐藏Esri logo
+
+
         initButton();
         addData();
+        addTextGraphics();
         try {
-            CloseLog log = RedisTool.findRedis(getCloseMapMark(),CloseLog.class);
-            Point lastClosePoint =new Point(log.getX(),log.getY());
-            mMapView.setViewpointCenterAsync(lastClosePoint,log.getScale());
-        }catch (Exception e){
+            CloseLog log = RedisTool.findRedis(getCloseMapMark(), CloseLog.class);
+            Point lastClosePoint = new Point(log.getX(), log.getY());
+            mMapView.setViewpointCenterAsync(lastClosePoint, log.getScale());
+        } catch (Exception e) {
 
         }
 
+
     }
 
+    private GraphicsOverlay textGraphics;
+
+    private void addTextGraphics() {
+
+
+        SimpleFillSymbol polygonSymbol = new SimpleFillSymbol(SimpleFillSymbol.Style.SOLID, Color.RED, null);
+        SimpleRenderer polygonRenderer = new SimpleRenderer(polygonSymbol);
+        textGraphics = new GraphicsOverlay();
+        textGraphics.setRenderer(polygonRenderer);
+        mMapView.getGraphicsOverlays().add(textGraphics);
+    }
+
+    /**
+     * 显示 图层 dialog
+     */
+    private void showLaerys() {
+
+        Integer[] widthAndHeight = Utils.getWidthAndHeight();
+        MapLayerDialog mapLayerDialog = new MapLayerDialog(widthAndHeight[0] / 3 * 2, widthAndHeight[1]);
+        mapLayerDialog.setDialogCallback(new DialogCallback<Object>() {
+            @Override
+            public void call(int code, Object obj) {
+                LowImage lowImage;
+                switch (code) {
+                    case MAPLAYER_ChANGE:
+                        List<LowImage> layers = (List<LowImage>) obj;
+                        changeMapLayerShow(layers);
+                        break;
+                    case LOOK_DATATABEL:
+                        lowImage = (LowImage) obj;
+                        lookLayerDataTable(lowImage);
+                        break;
+                    case SCALE_MAPLAYER:
+                        lowImage = (LowImage) obj;
+                        scaleMapLayer(lowImage);
+                        break;
+
+
+                }
+            }
+        });
+        //MyItemRecyclerViewAdapter layerAdapter = LowMapManager.getMapLayerAdapter()
+        //layerAdapter.addItemTouch();
+        mapLayerDialog.show(getActivity().getSupportFragmentManager(), RightDialogFragment.class.getSimpleName());
+
+
+    }
+
+    /**
+     * 所防止图层
+     *
+     * @param lowImage
+     */
+    private void scaleMapLayer(LowImage lowImage) {
+        for (LowImageGraphicsLayer lowImageGraphicsLayer : lowImageGraphicsLayers) {
+            if (lowImageGraphicsLayer.lowImage.equals(lowImage)) {
+                GraphicsOverlay graphicsOverlay =lowImageGraphicsLayer.getShapeGraphics();
+                ListenableList<Graphic> graphics = graphicsOverlay.getGraphics();
+                Envelope extent = graphicsOverlay.getExtent();
+                if (!extent.isEmpty()) {
+                    mMapView.setViewpointGeometryAsync(extent);
+                } else {
+                    AndroidTool.showAnsyTost(lowImage.getName() + " 没有数据", 1);
+                }
+
+            }
+        }
+    }
+
+    /**
+     * 查看表格数据
+     *
+     * @param lowImage
+     */
+    private void lookLayerDataTable(LowImage lowImage) {
+
+    }
+
+    /**
+     * 更新 MapLayer 1、是否显示，2显示顺序
+     *
+     * @param newlayers
+     */
+    private void changeMapLayerShow(List<LowImage> newlayers) {
+        for (int i = 0; i < newlayers.size(); i++) {
+            LowImage newImage = newlayers.get(i);
+            //找到以前的位置，现在的位置，进行交换
+            for (int j = 0; j < lowImageGraphicsLayers.size(); j++) {
+                if (newImage.equals(lowImageGraphicsLayers.get(j).getLowImage())) {
+                    if (i != j) {
+                        //list 交换位置
+                        LowImageGraphicsLayer lowImageGraphicsLayer1 = lowImageGraphicsLayers.get(i);
+                        LowImageGraphicsLayer lowImageGraphicsLayer2 = lowImageGraphicsLayers.get(j);
+
+                        Tool.swap(lowImageGraphicsLayers,i,j);
+
+                        //地图 list 交换位置
+                        int mapIndex1 = mMapView.getGraphicsOverlays().indexOf(lowImageGraphicsLayer1.getShapeGraphics());
+                        int mapIndex2 = mMapView.getGraphicsOverlays().indexOf(lowImageGraphicsLayer2.getShapeGraphics());
+
+                        mMapView.getGraphicsOverlays().remove(mapIndex1);
+                        mMapView.getGraphicsOverlays().remove(lowImageGraphicsLayer2.getShapeGraphics());
+
+                        mMapView.getGraphicsOverlays().add(mapIndex1,lowImageGraphicsLayer2.getShapeGraphics());
+                        mMapView.getGraphicsOverlays().add(mapIndex2,lowImageGraphicsLayer1.getShapeGraphics());
+
+
+                    }
+                    //设置是否显示 图层
+
+                }
+
+            }
+            lowImageGraphicsLayers.get(i).getShapeGraphics().setVisible(newImage.isSelect());
+        }
+    }
+
+    private List<MyJSONObject> mapDatas;
+
+    /**
+     * 添加数据
+     */
     private void addData() {
-        List<MyJSONObject> list = null;
+        mapDatas = null;
         try {
-            list = TableTool.findByParentId(XZQYService.getCurrentCode());
+            mapDatas = TableTool.findByParentId(XZQYService.getCurrentCode());
         } catch (Exception e) {
             return;
         }
 
-        for (int i = 0; i < list.size(); i++) {
-            if (!list.get(i).getJsonobject().containsKey("geometry")) {
-                list.remove(i);
+        for (int i = 0; i < mapDatas.size(); i++) {
+            if (!mapDatas.get(i).getJsonobject().containsKey("geometry")) {
+                mapDatas.remove(i);
                 i--;
             }
         }
-        Map<String, List<MyJSONObject>> map = JSONTool.getIDMap("table", list);
-        addGraphicsOverlay(map);
+        Map<String, List<MyJSONObject>> map = JSONTool.getIDMap("table", mapDatas);
+        //考虑图层没有数据的问题
+        List<LowImage> layerStatus = MapService.getLayerStatus();
+        Map<LowImage, List<MyJSONObject>> lowImageListMap = new LinkedHashMap<>();
+        for (LowImage lowImage : layerStatus) {
+            List<MyJSONObject> myJSONObjects = map.get(lowImage.getName());
+            if (myJSONObjects == null) {
+                lowImageListMap.put(lowImage, new ArrayList<>());
+            } else {
+                lowImageListMap.put(lowImage, myJSONObjects);
+            }
+        }
+        addGraphicsOverlay(lowImageListMap);
     }
 
-    private void addLayers(MapView mMapView) {
+    /**
+     * 添加底图
+     *
+     * @param mMapView
+     */
+    private void addLowMaps(MapView mMapView) {
         ArcGISMap map = new ArcGISMap();
         mMapView.setMap(map);
-        List<LowImage> layers = LowMapManager.getVisableLayers();
-        addLayers(mMapView,layers);
+        List<LowImage> layers = LowMapManager.getVisableLowMaps();
+        addLowMaps(mMapView, layers);
 
-       // mMapView.setViewpointCenterAsync(map.getBasemap().getBaseLayers().get().getFullExtent().getCenter(), 50000);
+        // mMapView.setViewpointCenterAsync(map.getBasemap().getBaseLayers().get().getFullExtent().getCenter(), 50000);
     }
-    private void addLayers(MapView mMapView, List<LowImage> lowImages) {
+
+    private void addLowMaps(MapView mMapView, List<LowImage> lowImages) {
         ArcGISMap map = mMapView.getMap();
+
+
         map.getBasemap().getBaseLayers().clear();
         for (LowImage lowImage : lowImages) {
             if (lowImage.getType() != 100) {
@@ -185,6 +336,7 @@ public class MapFragment extends Fragment {
                             arcGISTiledLayer.loadAsync();
                             if (arcGISTiledLayer.getLoadStatus() == LoadStatus.LOADED) {
                                 mMapView.getMap().getOperationalLayers().add(arcGISTiledLayer);
+
                                 //Point pt = arcGISTiledLayer.getFullExtent().getCenter();
                                 //mMapView.setViewpointCenterAsync(pt, 500);
                                 //mMapView.setViewpointCenterAsync(arcGISTiledLayer.getFullExtent().getCenter(), 50000);
@@ -206,7 +358,6 @@ public class MapFragment extends Fragment {
     }
 
     /**
-     * 123
      * 初始化按钮
      */
     private void initButton() {
@@ -217,17 +368,56 @@ public class MapFragment extends Fragment {
                 mapLocation();
             }
         });
-        //图层
+        //图层管理
         view.findViewById(R.id.btn_layers).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                RightDialogFragment fullDialogFragment = new RightDialogFragment();
-                fullDialogFragment.show(getActivity().getSupportFragmentManager(), RightDialogFragment.class.getSimpleName());
+                showLaerys();
 
             }
         });
+
+        //查询按钮
+        view.findViewById(R.id.btn_search).setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                EditText editText = MapFragment.this.view.findViewById(R.id.et_search);
+                String serachKey = editText.getText().toString();
+                if (!"".equals(serachKey.trim())) {
+                    List<MyJSONObject> serachResult = new ArrayList<>();
+                    for (MyJSONObject data : mapDatas) {
+                        if (data.getJson().contains(serachKey)) {
+                            serachResult.add(data);
+                        }
+                    }
+                    addSerachDataMark(serachResult);
+                }
+            }
+        });
     }
+
+    /**
+     * 查询出来的结果添加 标记， 方便再地图上分辨出来查询结果
+     *
+     * @param serachResult
+     */
+    private void addSerachDataMark(List<MyJSONObject> serachResult) {
+        textGraphics.getGraphics().clear();
+        TextSymbol textSymbol = new TextSymbol(10, "wo shi shui ", Color.RED, TextSymbol.HorizontalAlignment.CENTER, TextSymbol.VerticalAlignment.MIDDLE);
+
+        for (MyJSONObject myJSONObject : serachResult) {
+            Geometry geometry = getGeometry(myJSONObject);
+            if(geometry != null){
+                Graphic graphic = new Graphic(geometry.getExtent().getCenter(), textSymbol);
+                textGraphics.getGraphics().add(graphic);
+            }
+        }
+        //TextSymbol(float size, String text, int color, TextSymbol.
+        // com.esri.arcgisruntime.symbology.TextSymbol.HorizontalAlignment hAlign, TextSymbol.VerticalAlignment vAlign)
+    }
+
+
 
     /**
      * 加载天地图
@@ -328,102 +518,115 @@ public class MapFragment extends Fragment {
 
     private static String GEOMETRY_KEY = "geometry";
 
-    private void addGraphicsOverlay(Map<String, List<MyJSONObject>> map) {
+    /**
+     * 添加data数据到地图
+     *
+     * @param map
+     */
+    private void addGraphicsOverlay(Map<LowImage, List<MyJSONObject>> map) {
         Graphic pointGraphic;
-        SimpleFillSymbol polygonSymbol = new SimpleFillSymbol(SimpleFillSymbol.Style.SOLID, Color.YELLOW, null);
-        SimpleRenderer polygonRenderer = new SimpleRenderer(polygonSymbol);
-        GraphicsOverlay polygonGraphicOverlay = new GraphicsOverlay();
-        polygonGraphicOverlay.setRenderer(polygonRenderer);
-        for (String tablename : map.keySet()) {
+
+
+        for (LowImage lowImage : map.keySet()) {
             //按表格名称创建 图层
+            //点图层
             GraphicsOverlay pointGraphicOverlay = new GraphicsOverlay();
             SimpleMarkerSymbol pointSymbol = new SimpleMarkerSymbol(SimpleMarkerSymbol.Style.DIAMOND, Color.RED, 10);
             SimpleRenderer pointRenderer = new SimpleRenderer(pointSymbol);
             pointGraphicOverlay.setRenderer(pointRenderer);
-            mMapView.getGraphicsOverlays().add(pointGraphicOverlay);
+            //mMapView.getGraphicsOverlays().add(pointGraphicOverlay);
 
-            for (MyJSONObject geometryMyJson : map.get(tablename)) {
-                String jsonGeometry = geometryMyJson.getJsonobject().getString(GEOMETRY_KEY);
-                String type = jsonGeometry.substring(0, jsonGeometry.indexOf("("));
-                //原始坐标的point
-                List<Point> srcpoints = getPoints(jsonGeometry, SpatialReference.create(4526));
-                List<Point> descpoints = pointschangeSp(srcpoints, mMapView.getSpatialReference());
-                switch (type) {
-                    case "MULTIPOLYGON":
-                        PolygonBuilder polygonGeometry = new PolygonBuilder(mMapView.getSpatialReference());
-                        for (Point srcPoint : descpoints) {
-                            polygonGeometry.addPoint(srcPoint);
-                        }
-                        Polygon polygon = polygonGeometry.toGeometry();
-                        polygonGraphicOverlay.getGraphics().add(new Graphic(polygon));
-                        break;
-                    case "MULTIPOINT":
-                        for (Point srcPoint : descpoints) {
-                            //本图坐标系的point；
-                            Point descPoint = (Point) GeometryEngine.project(srcPoint, mMapView.getSpatialReference());
-                            pointGraphic = new Graphic(descPoint);
-                            pointGraphicOverlay.getGraphics().add(pointGraphic);
-                        }
-                        break;
+            //面图层
+            SimpleFillSymbol polygonSymbol = new SimpleFillSymbol(SimpleFillSymbol.Style.SOLID, Color.YELLOW, null);
+            SimpleRenderer polygonRenderer = new SimpleRenderer(polygonSymbol);
+            GraphicsOverlay polygonGraphicOverlay = new GraphicsOverlay();
+            polygonGraphicOverlay.setRenderer(polygonRenderer);
+            mMapView.getGraphicsOverlays().add(polygonGraphicOverlay);
 
-                }
+            polygonGraphicOverlay.setVisible(lowImage.isSelect());
 
 
+            GraphicsOverlay textGraphicOverlay = new GraphicsOverlay();
+            SimpleRenderer textRenderer = new SimpleRenderer(pointSymbol);
+            textGraphicOverlay.setRenderer(textRenderer);
+            mMapView.getGraphicsOverlays().add(textGraphicOverlay);
+
+
+            //添加到记录中，方便控制图层
+            lowImageGraphicsLayers.add(new LowImageGraphicsLayer(lowImage, polygonGraphicOverlay,textGraphicOverlay));
+
+
+            for (MyJSONObject geometryMyJson : map.get(lowImage)) {
+
+                Geometry geometry = getGeometry(geometryMyJson);
+                polygonGraphicOverlay.getGraphics().add(new Graphic(geometry));
             }
         }
 
+    }
 
-        // point graphic
-      /*  Point pointGeometry = new Point(40e5, 40e5, SpatialReferences.getWebMercator());
-        // red diamond point symbol
-        SimpleMarkerSymbol pointSymbol = new SimpleMarkerSymbol(SimpleMarkerSymbol.Style.DIAMOND, Color.RED, 10);
-        // create graphic for point
+    /**
+     *  转换为 图形数据
+     * @param geometryMyJson
+     * @return
+     */
+    private Geometry getGeometry(MyJSONObject geometryMyJson) {
 
-        // create a graphic overlay for the point
-        GraphicsOverlay pointGraphicOverlay = new GraphicsOverlay();
-        // create simple renderer
-        SimpleRenderer pointRenderer = new SimpleRenderer(pointSymbol);
-        pointGraphicOverlay.setRenderer(pointRenderer);
-        // add graphic to overlay
-        //pointGraphicOverlay.getGraphics().add(pointGraphic);
-        // add graphics overlay to the MapView
-        mMapView.getGraphicsOverlays().add(pointGraphicOverlay);
+        Geometry geometry = null;
+        String jsonGeometry = geometryMyJson.getJsonobject().getString(GEOMETRY_KEY);
+        String type = jsonGeometry.substring(0, jsonGeometry.indexOf("("));
+        //原始坐标的point
+        List<Point> srcpoints = getPoints(jsonGeometry, SpatialReference.create(4526));
+        List<Point> descpoints = pointschangeSp(srcpoints, getSpatialReference());
+        switch (type) {
+            case "MULTIPOLYGON":
+                PolygonBuilder polygonGeometry = new PolygonBuilder(getSpatialReference());
+                for (Point descPoint : descpoints) {
+                    polygonGeometry.addPoint(descPoint);
+                }
+                Point start = descpoints.get(0);
+                Point end = descpoints.get(descpoints.size() - 1);
+                //必须要首尾相连才能形成面
+                //polygonGeometry.addPoint(descpoints.get(0));
+                geometry = polygonGeometry.toGeometry();
 
-        // line graphic
-        PolylineBuilder lineGeometry = new PolylineBuilder(SpatialReferences.getWebMercator());
-        lineGeometry.addPoint(-10e5, 40e5);
-        lineGeometry.addPoint(20e5, 50e5);
-        // solid blue line symbol
-        SimpleLineSymbol lineSymbol = new SimpleLineSymbol(SimpleLineSymbol.Style.SOLID, Color.BLUE, 5);
-        // create graphic for polyline
-        Graphic lineGraphic = new Graphic(lineGeometry.toGeometry());
-        // create graphic overlay for polyline
-        GraphicsOverlay lineGraphicOverlay = new GraphicsOverlay();
-        // create simple renderer
-        SimpleRenderer lineRenderer = new SimpleRenderer(lineSymbol);
-        // add graphic to overlay
-        lineGraphicOverlay.setRenderer(lineRenderer);
-        // add graphic to overlay
-        lineGraphicOverlay.getGraphics().add(lineGraphic);
-        // add graphics overlay to the MapView
-        mMapView.getGraphicsOverlays().add(lineGraphicOverlay);
+                break;
+            case "MULTIPOINT":
+                for (Point srcPoint : descpoints) {
+                    //本图坐标系的point；
+                    geometry = GeometryEngine.project(srcPoint, getSpatialReference());
 
-        //polygon graphic
-        PolygonBuilder polygonGeometry = new PolygonBuilder(SpatialReferences.getWebMercator());
-        polygonGeometry.addPoint(-20e5, 20e5);
-        polygonGeometry.addPoint(20e5, 20e5);
-        polygonGeometry.addPoint(20e5, -20e5);
-        polygonGeometry.addPoint(-20e5, -20e5);
-        // solid yellow polygon symbol
+                }
+                break;
+        }
+        return geometry;
+    }
 
-        // create graphic for polygon
-        Graphic polygonGraphic = new Graphic(polygonGeometry.toGeometry());
-        // create graphic overlay for polygon
+    private static SpatialReference spatialReference;
 
-        polygonGraphicOverlay.getGraphics().add(polygonGraphic);
-        // add graphics overlay to MapView
-        mMapView.getGraphicsOverlays().add(polygonGraphicOverlay);
-*/
+    private SpatialReference getSpatialReference() {
+        if (spatialReference == null) {
+            spatialReference = mMapView.getSpatialReference();
+            if (spatialReference == null) {
+
+                TianDiTuLayerInfo layerInfo = LayerInfoFactory.getLayerInfo(0); //这个参数就是地图类型
+                TileInfo info = layerInfo.getTileInfo();
+                Envelope fullExtent = layerInfo.getFullExtent();
+                TianDiTuLayer layer =
+                        new TianDiTuLayer(info, fullExtent);
+                layer.setLayerInfo(layerInfo);
+                mMapView.getMap().getBasemap().getBaseLayers().add(layer);
+                new Runnable() {
+                    @Override
+                    public void run() {
+
+                        mMapView.getMap().getBasemap().getBaseLayers().clear();
+                    }
+                }.run();
+            }
+
+        }
+        return spatialReference;
     }
 
     /**
@@ -436,7 +639,8 @@ public class MapFragment extends Fragment {
     private List<Point> pointschangeSp(List<Point> srcpoints, SpatialReference spatialReference) {
         List<Point> descPoints = new ArrayList<>();
         for (Point srcPoint : srcpoints) {
-            Point descPoint = (Point) GeometryEngine.project(srcPoint, mMapView.getSpatialReference());
+            Point descPoint = (Point) GeometryEngine.project(srcPoint, getSpatialReference());
+
             descPoints.add(descPoint);
         }
         return descPoints;
@@ -454,13 +658,18 @@ public class MapFragment extends Fragment {
         return list;
     }
 
-    private  static  String  getCloseMapMark(){
-        String CLOSE_MAP_MARK="CLOSE_MAP_MARK";
-        return ProjectService.getCurrentProjectDBName()+CLOSE_MAP_MARK;
+
+    private static String getCloseMapMark() {
+        String CLOSE_MAP_MARK = "CLOSE_MAP_MARK";
+        return ProjectService.getCurrentProjectDBName() + CLOSE_MAP_MARK;
     }
+
+    /**
+     * 地图关闭时的操作
+     */
     public void close() {
-        double  scale = mMapView.getMapScale();
-        Point point = mMapView.screenToLocation(new android.graphics.Point((int)mMapView.getPivotX(),(int)mMapView.getPivotY()));
+        double scale = mMapView.getMapScale();
+        Point point = mMapView.screenToLocation(new android.graphics.Point((int) mMapView.getPivotX(), (int) mMapView.getPivotY()));
         double xx = point.getX();
         double yy = point.getY();
         CloseLog log = new CloseLog();
@@ -469,9 +678,68 @@ public class MapFragment extends Fragment {
         log.setY(yy);
         try {
             String mark = getCloseMapMark();
-            RedisTool.updateRedis(getCloseMapMark(),log);
-        }catch (Exception e){
+            RedisTool.updateRedis(getCloseMapMark(), log);
+        } catch (Exception e) {
 
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == MapResult.layer && resultCode == MapResult.layer) {
+            List<LowImage> list = LowMapManager.getVisableLowMaps();
+            addLowMaps(mMapView, list);
+        }
+    }
+
+    class LowImageGraphicsLayer {
+        private LowImage lowImage;
+        private GraphicsOverlay shapeGraphics;
+        private GraphicsOverlay textGraphics;
+
+        public LowImageGraphicsLayer(LowImage lowImage, GraphicsOverlay shapeGraphics,GraphicsOverlay textGraphics) {
+            this.lowImage = lowImage;
+            this.shapeGraphics = shapeGraphics;
+            this.textGraphics = textGraphics;
+
+        }
+
+        public LowImage getLowImage() {
+            return lowImage;
+        }
+
+        public void setLowImage(LowImage lowImage) {
+            this.lowImage = lowImage;
+        }
+
+        public GraphicsOverlay getShapeGraphics() {
+            return shapeGraphics;
+        }
+
+        public void setShapeGraphics(GraphicsOverlay shapeGraphics) {
+            this.shapeGraphics = shapeGraphics;
+        }
+
+        public GraphicsOverlay getTextGraphics() {
+            return textGraphics;
+        }
+
+        public void setTextGraphics(GraphicsOverlay textGraphics) {
+            this.textGraphics = textGraphics;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            LowImageGraphicsLayer that = (LowImageGraphicsLayer) o;
+            return Objects.equals(lowImage, that.lowImage);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(lowImage);
         }
     }
 }

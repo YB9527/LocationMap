@@ -3,6 +3,7 @@ package com.xupu.locationmap.common.dialog;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.res.Configuration;
 import android.os.Bundle;
 
@@ -20,6 +21,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.gyf.immersionbar.ImmersionBar;
 import com.xupu.locationmap.AppManager;
+import com.xupu.locationmap.common.po.Callback;
 import com.xupu.locationmap.common.tools.Utils;
 import com.xupu.locationmap.R;
 
@@ -42,9 +44,10 @@ public abstract class BaseDialogFragment extends DialogFragment {
     protected Activity mActivity;
     protected View mRootView;
     protected Window mWindow;
-    private Unbinder unbinder;
+    //private Unbinder unbinder;
     public Integer[] mWidthAndHeight;
 
+    private DialogCallback dialogCallback;
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -64,8 +67,10 @@ public abstract class BaseDialogFragment extends DialogFragment {
         Dialog dialog = getDialog();
         //点击外部消失
         dialog.setCanceledOnTouchOutside(true);
+
         mWindow = dialog.getWindow();
         mWidthAndHeight = Utils.getWidthAndHeight(mWindow);
+
     }
 
     @Nullable
@@ -79,10 +84,10 @@ public abstract class BaseDialogFragment extends DialogFragment {
     @Override
     public void onViewCreated(@NotNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        unbinder = ButterKnife.bind(this, view);
+       /* unbinder = ButterKnife.bind(this, view);
         if (isImmersionBarEnabled()) {
             initImmersionBar();
-        }
+        }*/
         initData();
         initView();
         setListener();
@@ -97,7 +102,7 @@ public abstract class BaseDialogFragment extends DialogFragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        unbinder.unbind();
+        //unbinder.unbind();
     }
 
     @Override
@@ -154,5 +159,13 @@ public abstract class BaseDialogFragment extends DialogFragment {
      */
     protected void setListener() {
 
+    }
+
+    public DialogCallback getDialogCallback() {
+        return dialogCallback;
+    }
+
+    public void setDialogCallback(DialogCallback dialogCallback) {
+        this.dialogCallback = dialogCallback;
     }
 }

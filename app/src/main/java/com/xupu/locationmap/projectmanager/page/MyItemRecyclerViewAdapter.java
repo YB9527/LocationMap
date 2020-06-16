@@ -3,6 +3,7 @@ package com.xupu.locationmap.projectmanager.page;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.graphics.Color;
@@ -24,6 +25,7 @@ import com.xupu.locationmap.projectmanager.view.ItemDataCustom;
 
 import com.xupu.locationmap.projectmanager.po.MyJSONObject;
 import com.xupu.locationmap.projectmanager.view.ItemTouchHelperAdapter;
+import com.xupu.locationmap.projectmanager.view.SimpleItemTouchHelperCallback;
 import com.xupu.locationmap.projectmanager.view.TableDataCustom;
 
 
@@ -61,7 +63,18 @@ public class MyItemRecyclerViewAdapter  extends BaseQuickAdapter<MyJSONObject,My
         return mValues;
     }
 
+    /**
+     * 添加条目移动
+     */
+    public void  addItemTouch(){
 
+        //创建SimpleItemTouchHelperCallback
+        ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(this);
+        //用Callback构造ItemtouchHelper
+        ItemTouchHelper touchHelper = new ItemTouchHelper(callback);
+        //调用ItemTouchHelper的attachToRecyclerView方法建立联系
+        touchHelper.attachToRecyclerView(recyclerView);
+    }
 
     @Override
     protected void convert(MyItemRecyclerViewAdapter.ViewHolder helper, MyJSONObject item) {

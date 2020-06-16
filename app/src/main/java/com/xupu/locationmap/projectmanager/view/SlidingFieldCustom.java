@@ -20,4 +20,14 @@ public class SlidingFieldCustom extends FieldCustom {
     public void setLayoutid(Integer layoutid) {
         this.layoutid = layoutid;
     }
+
+    private int width;
+    public FieldCustom setWidth(int width) {
+        this.width =width;
+        return  this;
+    }
+
+    public int getWidth() {
+        return width;
+    }
 }

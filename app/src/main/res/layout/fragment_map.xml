@@ -19,8 +19,21 @@
             android:id="@+id/btn_layers"
             android:text="图层"
             android:layout_marginTop="20dp"
-            android:layout_marginRight="30dp"
             android:layout_alignParentRight="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <EditText
+            android:id="@+id/et_search"
+            android:layout_toLeftOf="@+id/btn_search"
+            android:layout_alignBottom="@+id/btn_layers"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="200dp" />
+        <Button
+            android:id="@+id/btn_search"
+            android:text="查询"
+            android:layout_toLeftOf="@+id/btn_layers"
+            android:layout_alignBottom="@+id/btn_layers"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
         <Button

@@ -108,8 +108,10 @@ public class ProjectDownload extends AppCompatActivity {
                             //开始下载表结构
                             downFiledTable(project, i);
                             break;
+
                         default:
                             //开始下载各种业务表格
+
                             downLoadTable(tasks.get(i).getJsonobject());
                             break;
                     }
@@ -152,16 +154,16 @@ public class ProjectDownload extends AppCompatActivity {
             public void call(JSONArray tableitems) {
                 //项目中表格条目，
 
-                for (int i = 0; i < tableitems.size(); i++) {
-                    JSONObject tableItem = tableitems.getJSONObject(i);
-                    tasks.add(newDownLoadPo(tableItem.getString("aliasname"), tableItem));
-                }
-                recyclerView.setAdapter(myItemRecyclerViewAdapter);
-                ProjectDownload.this.tableitems = tableitems;
                 //显示下载按钮
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        for (int i = 0; i < tableitems.size(); i++) {
+                            JSONObject tableItem = tableitems.getJSONObject(i);
+                            tasks.add(newDownLoadPo(tableItem.getString("aliasname"), tableItem));
+                        }
+                        recyclerView.setAdapter(myItemRecyclerViewAdapter);
+                        ProjectDownload.this.tableitems = tableitems;
                         Button btn_down = findViewById(R.id.btn_down);
                         btn_down.setVisibility(View.VISIBLE);
                     }
@@ -417,6 +419,9 @@ public class ProjectDownload extends AppCompatActivity {
             JSONObject jsonObject = objects.getJSONObject(i);
             if( jsonObject.containsKey("geom") ){
                 jsonObject.remove("geom");
+            }
+            if( jsonObject.containsKey("shape") ){
+                jsonObject.remove("shape");
             }
             MyJSONObject myJSONObject = new MyJSONObject(jsonObject.getString("gid"), tablename, jsonObject.getString("gdomain"), jsonObject);
             myJSONObject.setTableid(tableid);

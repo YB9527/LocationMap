@@ -32,7 +32,7 @@ public abstract class ZTRespon extends JSONObjectRespon {
         if (jsonObject.getIntValue("code") == 1000) {
             onSuccess(jsonObject.getJSONArray("data"));
         } else {
-            onError(jsonObject.getString("msg"));
+            onError("服务器响应问题："+ jsonObject.getString("msg"));
             return;
         }
     }

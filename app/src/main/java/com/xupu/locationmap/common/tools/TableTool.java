@@ -173,6 +173,29 @@ public class TableTool {
         return jsons;
     }
 
+    /**
+     *
+     * @param tablename 表格名称
+     * @param id 表格id
+     * @return
+     */
+    public static MyJSONObject findByTableNameAndId(String tablename, String id) {
+        return findByParentIdAndSmybol(tablename,id, "!=", STATE_DELETE);
+    }
+
+    private static MyJSONObject findByParentIdAndSmybol(String tablename, String id, String smybol, int state) {
+
+        String sql = "select " + FIELD + "  from " + Table_Name + " where  tablename =  '" + tablename + "' AND id =  '" + id + "'AND state " + smybol + "'" + state + "'";
+
+        Cursor cursor = db.rawQuery(sql, null);
+        while (cursor.moveToNext()) {
+            MyJSONObject jsonObject = cursorToMyJSONObject(cursor);
+           return jsonObject;
+        }
+        return null;
+
+    }
+
     public static List<MyJSONObject> findByParentId(String parentid) {
         return findByParentIdAndSmybol(parentid, "!=", STATE_DELETE);
       /*  String sql = "select " +FIELD+" from  " + Table_Name + " where  parentid =  '" + parentid + "'";
@@ -353,4 +376,6 @@ public class TableTool {
         PetDbHelper mDbHelper = new PetDbHelper(AndroidTool.getMainActivity(), projectTableName + ".db");
         db = mDbHelper.getReadableDatabase();
     }
+
+
 }

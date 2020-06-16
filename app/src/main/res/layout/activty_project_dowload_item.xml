@@ -3,22 +3,14 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="horizontal" >
+    android:orientation="horizontal"
+    android:id="@+id/item"
+    >
     <TextView
         android:id="@+id/name"
-        android:layout_alignParentLeft="true"
-        android:layout_alignBottom="@+id/btu_dowload"
         android:minWidth="100dp"
         android:minHeight="40dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
     </TextView>
-    <Button
-        android:id="@+id/btu_dowload"
-        style="@style/Btu"
-        android:text="下载"
-        android:layout_alignParentRight="true"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-    </Button>
 </RelativeLayout>

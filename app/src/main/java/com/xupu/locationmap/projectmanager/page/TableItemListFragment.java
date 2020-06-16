@@ -12,11 +12,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.ogaclejapan.smarttablayout.SmartTabLayout;
 import com.xupu.locationmap.R;
 
 import com.xupu.locationmap.common.po.ViewHolderCallback;
+import com.xupu.locationmap.common.tools.AndroidTool;
 import com.xupu.locationmap.common.tools.TableTool;
 import com.xupu.locationmap.common.tools.Tool;
 import com.xupu.locationmap.projectmanager.view.FieldCustom;
@@ -90,6 +92,10 @@ public class TableItemListFragment extends Fragment {
             //int a = R.id.title;
             //a = R.id.info1;
             //a = R.id.info2;
+            if(tableDataCustom == null){
+                AndroidTool.showAnsyTost("表格xml配置中，没有添加这个表格："+tablename,1);
+                return;
+            }
             tableDataCustom.setFragmentItem(R.layout.fragment_item);
             List<FieldCustom> fs = tableDataCustom.getFieldCustoms();
             fs.add(new PositionField(R.id.index, "PositionField"));
@@ -110,6 +116,13 @@ public class TableItemListFragment extends Fragment {
                     toInfoPage(myJSONObject);
                 }
             });
+            fs.add(new ViewFieldCustom(R.id.v_location) {
+                @Override
+                public void OnClick(View view, MyJSONObject myJSONObject) {
+                    AndroidTool.showAnsyTost(myJSONObject.getTablename(),0);
+                }
+            });
+
             if (haseTask) {
                 //到多媒体
                 filedCustom = new ViewFieldCustom(R.id.v_tomedia) {
@@ -137,6 +150,7 @@ public class TableItemListFragment extends Fragment {
         //AndroidTool.showAnsyTost("详请", 1);
         Intent intent = new Intent(getActivity(), ObjectInfoActivty.class);
         intent.putExtra("id", obj.getId());
+        intent.putExtra("tablename", obj.getTablename());
         startActivityForResult(intent, 1);
     }
     @Override

@@ -172,6 +172,7 @@ public class ProjectPage extends AppCompatActivity {
             }
         });*/
         TableDataCustom tableDataCustom = new TableDataCustom(R.layout.fragment_project_item, fs, projects);
+        //TableDataCustom tableDataCustom = new TableDataCustom(R.layout.item_layer_map, fs, projects);
 
         RecyclerView recyclerView = findViewById(R.id.recy);
         myItemRecyclerViewAdapter = new MyItemRecyclerViewAdapter(tableDataCustom,recyclerView);

@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -16,6 +17,7 @@ import com.xupu.locationmap.projectmanager.view.FieldCustom;
 import com.xupu.locationmap.projectmanager.po.MyJSONObject;
 import com.xupu.locationmap.projectmanager.view.TableDataCustom;
 import com.xupu.locationmap.projectmanager.service.ZTService;
+import com.xupu.locationmap.projectmanager.view.ViewFieldCustom;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -93,16 +95,16 @@ public class SelectProjectDowload extends AppCompatActivity {
             }
             List<FieldCustom> fs = new ArrayList<>();
             fs.add(new FieldCustom(R.id.name,"name"));
-            fs.add(new BtuFieldCustom(R.id.btu_dowload, "下载") {
+            //, "下载"
+            fs.add(new ViewFieldCustom(R.id.item) {
                 @Override
-                public void OnClick(MyJSONObject newproject) {
+                public void OnClick(View view, MyJSONObject project) {
                     Intent intent = new Intent(SelectProjectDowload.this,ProjectDownload.class);
-                    intent.putExtra("project",newproject);
+                    intent.putExtra("project",project);
                     SelectProjectDowload.this.startActivity(intent);
                     SelectProjectDowload.this.finish();
-                    //downLoadTask(newproject);
                 }
-            }.setConfirm(true, "确定要下载吗？"));
+            });
 
             TableDataCustom tableDataCustom = new TableDataCustom(R.layout.activty_project_dowload_item, fs, newProjects);
             ItemFragment itemFragment = new ItemFragment(tableDataCustom);

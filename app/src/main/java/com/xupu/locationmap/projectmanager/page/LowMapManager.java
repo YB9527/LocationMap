@@ -1,6 +1,5 @@
 package com.xupu.locationmap.projectmanager.page;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
@@ -8,7 +7,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 
 import com.google.gson.reflect.TypeToken;
 import com.xupu.locationmap.R;
@@ -25,7 +23,6 @@ import com.xupu.locationmap.projectmanager.po.LowImage;
 import com.xupu.locationmap.projectmanager.po.MyJSONObject;
 import com.xupu.locationmap.projectmanager.view.SimpleItemTouchHelperCallback;
 import com.xupu.locationmap.projectmanager.view.TableDataCustom;
-import com.xupu.locationmap.projectmanager.view.ViewFieldCustom;
 import com.xupu.locationmap.projectmanager.service.ProjectService;
 
 import java.io.File;
@@ -36,7 +33,7 @@ import java.util.List;
 
 public class LowMapManager extends AppCompatActivity {
 
-    private final static String LOWIMAGE_SelectMark = "select";
+    public final static String LOWIMAGE_SelectMark = "select";
     private static String Laerys_REDIS_Mark;
     MyItemRecyclerViewAdapter myItemRecyclerViewAdapter;
 
@@ -67,36 +64,27 @@ public class LowMapManager extends AppCompatActivity {
 
     private void inintView() {
 
+        List<LowImage> extiLayers = getExitLowMaps();
+        List<MyJSONObject> myShowLayers = JSONTool.toMyJSONObject(extiLayers);
+        RecyclerView recyclerView = findViewById(R.id.recy);
+        myItemRecyclerViewAdapter = getMapLayerAdapter(recyclerView,R.layout.item_low_map,myShowLayers);
+        myItemRecyclerViewAdapter.addItemTouch();
 
+    }
+
+    public static MyItemRecyclerViewAdapter getMapLayerAdapter( RecyclerView recyclerView,Integer itemRid, List<MyJSONObject> myShowLayers) {
         List<FieldCustom> fs = new ArrayList<>();
         //项目名称
         fs.add(new FieldCustom(R.id.tv_name, "name"));
         fs.add(new CheckBoxFieldCustom(R.id.cb_isslect, LOWIMAGE_SelectMark, R.id.item));
         fs.add(new FieldCustom(R.id.tv_descrip, "size"));
 
-        List<LowImage> extiLayers = getExitLayers();
-        List<MyJSONObject> myShowLayers = JSONTool.toMyJSONObject(extiLayers);
-        TableDataCustom tableDataCustom = new TableDataCustom(R.layout.item_low_map, fs, myShowLayers).setEdit(true);
 
-        RecyclerView recyclerView = findViewById(R.id.recy);
-        myItemRecyclerViewAdapter = new MyItemRecyclerViewAdapter(tableDataCustom, recyclerView);
-        myItemRecyclerViewAdapter.setLoadViewCallback(new ViewHolderCallback() {
-            @Override
-            public void call(MyItemRecyclerViewAdapter.ViewHolder holder, int position) {
-
-
-            }
-        });
+        TableDataCustom tableDataCustom = new TableDataCustom(itemRid, fs, myShowLayers).setEdit(true);
+        MyItemRecyclerViewAdapter myItemRecyclerViewAdapter = new MyItemRecyclerViewAdapter(tableDataCustom, recyclerView);
         recyclerView.setAdapter(myItemRecyclerViewAdapter);
 
-
-
-        //创建SimpleItemTouchHelperCallback
-        ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(myItemRecyclerViewAdapter);
-        //用Callback构造ItemtouchHelper
-        ItemTouchHelper touchHelper = new ItemTouchHelper(callback);
-        //调用ItemTouchHelper的attachToRecyclerView方法建立联系
-        touchHelper.attachToRecyclerView(recyclerView);
+        return  myItemRecyclerViewAdapter;
     }
 
     /**
@@ -104,15 +92,20 @@ public class LowMapManager extends AppCompatActivity {
      *
      * @return
      */
-    public static List<LowImage> getVisableLayers() {
-        List<LowImage> extiLayers = getExitLayers();
-        List<LowImage> visableLyaers = new ArrayList<>();
-        for (LowImage lowImage : extiLayers) {
-            if (lowImage.isSelect()) {
-                visableLyaers.add(lowImage);
+    public static List<LowImage> getVisableLowMaps() {
+        try {
+            List<LowImage> extiLayers = getExitLowMaps();
+            List<LowImage> visableLyaers = new ArrayList<>();
+            for (LowImage lowImage : extiLayers) {
+                if (lowImage.isSelect()) {
+                    visableLyaers.add(lowImage);
+                }
             }
+            return visableLyaers;
+        }catch (Exception e){
+
         }
-        return visableLyaers;
+        return  null;
     }
 
     /**
@@ -120,17 +113,17 @@ public class LowMapManager extends AppCompatActivity {
      *
      * @return
      */
-    public static List<LowImage> getExitLayers() {
+    public static List<LowImage> getExitLowMaps() {
         Laerys_REDIS_Mark = ProjectService.getCurrentProjectDBName() + "_" + "lowlayers";
         List<LowImage> layerStatus = RedisTool.findRedis(Laerys_REDIS_Mark, new TypeToken<List<LowImage>>() {
         }.getType());
 
         List<LowImage> haseLayers = new ArrayList<>();
         //添加天地图
-        haseLayers.addAll(getTDTLayers());
+        haseLayers.addAll(getTDTLowMaps());
         //查找本地tpk 文件
         haseLayers.addAll(getLativeTPK());
-        List<LowImage> extiLayers = getExitLayers(layerStatus, haseLayers);
+        List<LowImage> extiLayers = getExitLowMaps(layerStatus, haseLayers);
         return extiLayers;
     }
 
@@ -141,7 +134,7 @@ public class LowMapManager extends AppCompatActivity {
      * @param haseLayers
      */
     @SuppressLint("NewApi")
-    private static List<LowImage> getExitLayers(List<LowImage> layerStatus, List<LowImage> haseLayers) {
+    public static List<LowImage> getExitLowMaps(List<LowImage> layerStatus, List<LowImage> haseLayers) {
         List<LowImage> layers = new ArrayList<>();
         if (layerStatus != null) {
             for (int i = 0; i < layerStatus.size(); i++) {
@@ -190,7 +183,7 @@ public class LowMapManager extends AppCompatActivity {
         return list;
     }
 
-    private static List<LowImage> getTDTLayers() {
+    private static List<LowImage> getTDTLowMaps() {
         List<LowImage> list = new ArrayList<>();
         //天地图矢量墨卡托投影地图服务
         LowImage lowImage = new LowImage("天地图矢量投影地图服务", null, TianDiTuLayerTypes.TIANDITU_VECTOR_MERCATOR);
