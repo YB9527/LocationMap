@@ -19,18 +19,18 @@
             android:id="@+id/m_lowmapmanager"
             android:icon="@mipmap/leftnav_icon_basemap_gray"
             android:title="底图管理" />
-        <item
-            android:id="@+id/m_nfmanager"
-            android:visible="false"
-            android:icon="@drawable/ic_menu_gallery"
-            android:title="农户管理"/>
+
         <item
             android:id="@+id/m_tablelist"
             android:icon="@mipmap/leftnav_icon_data_gray"
             android:title="调查数据">
         </item>
 
-
+        <item
+            android:id="@+id/m_nfmanager"
+            android:visible="false"
+            android:icon="@drawable/ic_menu_gallery"
+            android:title="农户管理"/>
     </group>
 
     <item android:title="">

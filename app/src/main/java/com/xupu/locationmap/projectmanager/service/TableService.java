@@ -40,6 +40,19 @@ public class TableService {
         return null;
     }
 
+    /**
+     * 得到所有的表格
+     *
+     * @return
+     */
+    public static  List<TableDataCustom_TableName> getTableAll() {
+        //String tableXmlPath = AndroidTool.getRootDir()+"表格.xml";
+        //String tableXmlPath = AndroidTool.getMainActivity().getFilesDir()+"/"+"表格.xml";
+        List<TableDataCustom_TableName> tts = getPages("表格.xml");
+
+        return tts;
+    }
+
     private static Map<String, List<TableDataCustom_TableName>> tableMap = new HashMap<>();
 
     /**

@@ -2,17 +2,19 @@ package com.xupu.locationmap.usermanager.page;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputType;
+import android.util.Log;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import com.xupu.locationmap.MainActivity;
 import com.xupu.locationmap.R;
-import com.xupu.locationmap.common.page.AskUser;
+import com.xupu.locationmap.common.page.PermissionUtils;
 import com.xupu.locationmap.common.tools.AndroidTool;
 import com.xupu.locationmap.common.tools.RedisTool;
 import com.xupu.locationmap.projectmanager.view.BtuFieldCustom;
@@ -27,6 +29,7 @@ import com.xupu.locationmap.usermanager.service.UserService;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class Login extends AppCompatActivity {
 
     private static String USERREDISMark = "user";
@@ -39,10 +42,21 @@ public class Login extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         AndroidTool.setMainActivity(this);
         init();
-        AskUser.ask(this);
+        String[] permis = new String[]{
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.MOUNT_UNMOUNT_FILESYSTEMS,
+                Manifest.permission.READ_EXTERNAL_STORAGE,
+                //定位权限
+                Manifest.permission.ACCESS_COARSE_LOCATION,
+                Manifest.permission.ACCESS_FINE_LOCATION
+        };
+        PermissionUtils.requestPermissions(this,1,permis);
+
 
     }
-   private User user;
+
+    private User user;
+
     private void init() {
         user = RedisTool.findRedis(USERREDISMark, User.class);
         if (user == null) {

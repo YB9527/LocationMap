@@ -6,6 +6,7 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -80,6 +81,7 @@ public class MyItemRecyclerViewAdapter  extends BaseQuickAdapter<MyJSONObject,My
     protected void convert(MyItemRecyclerViewAdapter.ViewHolder helper, MyJSONObject item) {
 
     }
+    @SuppressLint("WrongConstant")
     public MyItemRecyclerViewAdapter(TableDataCustom tableDataCustom, RecyclerView recyclerView) {
         super(tableDataCustom.getList());
         this.mValues = tableDataCustom.getList();
@@ -88,6 +90,12 @@ public class MyItemRecyclerViewAdapter  extends BaseQuickAdapter<MyJSONObject,My
         this.recyclerView = recyclerView;
         openLoadAnimation(BaseQuickAdapter.SCALEIN);
         isFirstOnly(false);
+    }
+    public RecyclerView getRecyclerView(){
+            return  this.recyclerView;
+    }
+    public void setAnimation(int animation) {
+        openLoadAnimation(animation);
     }
 
     public void setChilds(List<List<MyJSONObject>> childs) {
@@ -106,8 +114,6 @@ public class MyItemRecyclerViewAdapter  extends BaseQuickAdapter<MyJSONObject,My
 
     @Override
     public void onBindViewHolder(final MyItemRecyclerViewAdapter.ViewHolder holder, int position) {
-
-
         MyJSONObject json = mValues.get(position);
         holder.itemView.setBackgroundColor(Color.WHITE);
         ItemDataCustom itemDataCustom = new ItemDataCustom(null, json, tableDataCustom.getFieldCustoms());
@@ -169,8 +175,7 @@ public class MyItemRecyclerViewAdapter  extends BaseQuickAdapter<MyJSONObject,My
         return mValues.size();
     }
 
-    public void setDatas(List<MyJSONObject> medias) {
-        this.mValues.clear();
+    public void setDatas(List<MyJSONObject> medias) { this.mValues.clear();
         this.mValues.addAll(medias);
         this.notifyDataSetChanged();
     }

@@ -7,6 +7,8 @@ import com.xupu.locationmap.common.tools.Tool;
 import java.io.Serializable;
 
 public class MyJSONObject implements Serializable {
+
+    public final static  String  JSON_TABLENAME="tablename";
     /**
      * 数据库中tableid的字段
      */

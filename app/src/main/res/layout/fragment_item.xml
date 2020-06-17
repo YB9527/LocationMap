@@ -135,7 +135,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="match_parent"/>
                             <TextView
-                                android:text="多媒体"
+                                android:text="附件"
                                 style="@style/itemtext2style"
                                 android:layout_marginTop="0dp"
                                 />

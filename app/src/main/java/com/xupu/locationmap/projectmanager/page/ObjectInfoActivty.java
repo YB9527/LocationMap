@@ -46,6 +46,8 @@ public class ObjectInfoActivty extends AppCompatActivity {
         String id = getIntent().getStringExtra("id");
         String tablename = getIntent().getStringExtra("tablename");
         if (state == TableTool.STATE_INSERT) {
+            //隐藏删除按钮
+
             //新增一个对象
             fileds = TableTool.findByTableNameAndParentId(ZTService.TABLE_Structure,id);
             if(fileds.size() ==0){
@@ -194,7 +196,7 @@ public class ObjectInfoActivty extends AppCompatActivity {
             }
         });*/
 
-        filedCustoms.add(new BtuFieldCustom(R.id.btn_delete, "删除") {
+        BtuFieldCustom btn_delete = new BtuFieldCustom(R.id.btn_delete, "删除") {
             public void OnClick(MyJSONObject project) {
 
                 Intent intent = new Intent();
@@ -203,7 +205,12 @@ public class ObjectInfoActivty extends AppCompatActivity {
                 TableTool.delete(obj);
                 finish();
             }
-        }.setConfirm(true, "确认要删除吗？"));
+        }.setConfirm(true, "确认要删除吗？");
+        filedCustoms.add(btn_delete);
+        if (state == TableTool.STATE_INSERT){
+            btn_delete.setVisable(View.GONE);
+        }
+
         ItemDataCustom itemDataCustom = new ItemDataCustom(rid, jsonObject, filedCustoms);
         AndroidTool.setView(findViewById(R.id.page), itemDataCustom, false, 0);
     }

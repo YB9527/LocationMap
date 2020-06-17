@@ -153,6 +153,7 @@ public class TableTool {
 
         jsonObject.setDeletechild(cursor.getInt(4));
         jsonObject.setTableid(cursor.getString(5));
+        jsonObject.setState(cursor.getInt(6));
         return jsonObject;
     }
 
@@ -222,7 +223,9 @@ public class TableTool {
         values.put("json", myJSONObject.getJson());
         values.put("deletechild", myJSONObject.getDeletechild());
         values.put("tableid", myJSONObject.getTableid());
-        values.put("state", STATE_UPDATE);
+        if(myJSONObject.getState() != STATE_INSERT){
+            values.put("state", STATE_UPDATE);
+        }
         return db
                 .update(Table_Name, values, "id" + " = ?", new String[]{myJSONObject.getId()});
     }
@@ -283,6 +286,8 @@ public class TableTool {
     /**
      * 先检查有没有子节点，如果没有才能删除
      * 只是改变了对象的状态，并没有删除
+     *
+     * 如果以前的状态时新增状态那么就直接删除
      * @param myJSONObject
      */
     public static boolean delete(MyJSONObject myJSONObject) {
@@ -291,16 +296,26 @@ public class TableTool {
         if (Tool.isEmpty(childs)) {
             flag = true;
             //deleteById(myJSONObject.getId());
-            myJSONObject.setState(STATE_DELETE);
-            updateById(myJSONObject,STATE_DELETE);
+            if(myJSONObject.getState() == STATE_INSERT){
+               deletefinal(myJSONObject);
+            }else{
+                myJSONObject.setState(STATE_DELETE);
+                updateById(myJSONObject,STATE_DELETE);
+            }
+
         } else {
             for (MyJSONObject js : childs) {
                 if (js.getDeletechild() == 0) {
                     //删除地块改为修改状态
-                    myJSONObject.setState(STATE_DELETE);
-                    js.setState(STATE_DELETE);
-                    updateById(myJSONObject,STATE_DELETE);
-                    updateById(js,STATE_DELETE);
+                    if(myJSONObject.getState() == STATE_INSERT){
+                        deletefinal(myJSONObject);
+                        deletefinal(js);
+                    }else{
+                        myJSONObject.setState(STATE_DELETE);
+                        js.setState(STATE_DELETE);
+                        updateById(myJSONObject,STATE_DELETE);
+                        updateById(js,STATE_DELETE);
+                    }
                     //deleteByParentId(myJSONObject.getId());
                     //deleteById(myJSONObject.getId());
                     return true;
@@ -327,7 +342,6 @@ public class TableTool {
         } else {
             for (MyJSONObject js : childs) {
                 if (js.getDeletechild() == 0) {
-                    //删除地块改为修改状态
                     deleteByParentId(myJSONObject.getId());
                     deleteById(myJSONObject.getId());
                     return true;

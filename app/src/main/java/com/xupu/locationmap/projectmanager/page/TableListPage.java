@@ -18,7 +18,11 @@ import com.xupu.locationmap.common.tools.AndroidTool;
 
 import com.xupu.locationmap.common.tools.TableTool;
 import com.xupu.locationmap.projectmanager.po.MyJSONObject;
+import com.xupu.locationmap.projectmanager.po.TableItem;
+import com.xupu.locationmap.projectmanager.po.TableType;
+import com.xupu.locationmap.projectmanager.service.TableService;
 import com.xupu.locationmap.projectmanager.view.TableDataCustom;
+import com.xupu.locationmap.projectmanager.view.TableDataCustom_TableName;
 import com.xupu.locationmap.projectmanager.view.TableViewCustom;
 import com.xupu.locationmap.projectmanager.service.ZTService;
 
@@ -32,7 +36,7 @@ public class TableListPage extends AppCompatActivity {
 
 
     List<MyJSONObject> tables;
-   public List<String> tableids = new ArrayList<>();
+    public List<String> tableids = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,8 +49,23 @@ public class TableListPage extends AppCompatActivity {
         //得到要详细的表格
         //找到所有表
         //找到表的 对应的表id
-        tables = TableTool.findByTableName(ZTService.PROJECT_TABLE_LIST);
-        for (MyJSONObject table : tables) {
+        tables = ZTService.getTableItemAll();
+        List<TableDataCustom_TableName> xmlTableAll = TableService.getTableAll();
+        List<MyJSONObject> orderTables = new ArrayList<>();
+        for (TableDataCustom_TableName tableDataCustom_tableName : xmlTableAll) {
+            for (int i = 0; i < tables.size(); i++) {
+                MyJSONObject table = tables.get(i);
+                if (tableDataCustom_tableName.getTableName().equals(table.getJsonobject().getString(TableItem.aliasname))) {
+                    orderTables.add(table);
+                    tables.remove(i);
+                    break;
+                }
+            }
+        }
+        tables.addAll(0, orderTables);
+
+        for (
+                MyJSONObject table : tables) {
             //TableDataCustom tableDataCustom2 = new TableDataCustom_TableName(R.layout.fragment_item, null, table);
             TableViewCustom tc = new TableViewCustom(table.getJsonobject().getString("aliasname"), TableItemListFragment.class, TableDataCustom.class);
             //tc.setTableDataCustom(tableDataCustom2);
@@ -54,9 +73,12 @@ public class TableListPage extends AppCompatActivity {
             tableids.add(ZTService.getItemIdByTableId(table.getId()));
             tableViewCustomList.add(tc);
         }
+
         //init2();
         init(tableViewCustomList);
+
     }
+
     private void initTitle() {
         AndroidTool.addTitleFragment(this, "调查数据", R.mipmap.topnav_icon_new, "添加", new Callback() {
             @Override
@@ -67,7 +89,7 @@ public class TableListPage extends AppCompatActivity {
         });
     }
 
-   public int position = 0;
+    public int position = 0;
 
     private void init(List<TableViewCustom> tableViewCustomList) {
 

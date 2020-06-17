@@ -26,11 +26,11 @@
     </style>
 
     <style name="EditScreenTextInputLayoutStyle2" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="colorControlNormal">#8B8B83</item>
-        <item name="colorControlActivated">#8B8B83</item>
-        <item name="colorControlHighlight">#8B8B83</item>
-        <item name="colorAccent">#8B8B83</item>
-        <item name="android:textColorHint">#8B8B83</item>
+        <item name="colorControlNormal">#f00</item>
+        <item name="colorControlActivated">#f00</item>
+        <item name="colorControlHighlight">#f00</item>
+        <item name="colorAccent">#f00</item>
+        <item name="android:textColorHint">#f00</item>
     </style>
     <style name="Tabtext">
 
@@ -59,15 +59,23 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginTop">4dp</item>
     </style>
+    <style name="itemsylte" >
+        <item name="android:paddingLeft">10dp</item>
+        <item name="android:paddingRight">10dp</item>
+        <item name="android:paddingTop">2dp</item>
+        <item name="android:paddingBottom">2dp</item>
+        <item name="android:background">@color/itemback</item>
+        <item name="android:layout_marginTop">5dp</item>
+    </style>
+
     <style name="text2" >
         <item name="android:windowTitleSize">318dp</item>
     </style>
 
     <style name="itemmargin">
-        <item name="android:layout_marginTop">10dp</item>
         <item name="android:paddingTop">5dp</item>
-        <item name="android:paddingRight">5dp</item>
-        <item name="android:paddingLeft">5dp</item>
+        <item name="android:paddingRight">10dp</item>
+        <item name="android:paddingLeft">10dp</item>
         <item name="android:paddingBottom">5dp</item>
     </style>
 
@@ -102,4 +110,8 @@
         <item name="android:windowEnterAnimation">@anim/anim_right_in</item>
         <item name="android:windowExitAnimation">@anim/anim_right_out</item>
     </style>
+
+    <declare-styleable name="MaxHeightRecyclerView">
+        <attr name="maxHeight" format="dimension" />
+    </declare-styleable>
 </resources>

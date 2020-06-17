@@ -31,9 +31,9 @@ public class OkHttpClientUtils {
 
     private OkHttpClientUtils() {
         client = new OkHttpClient.Builder()
-                .connectTimeout(30, TimeUnit.SECONDS)
-                .writeTimeout(30, TimeUnit.SECONDS)
-                .readTimeout(30, TimeUnit.SECONDS)
+                .connectTimeout(200, TimeUnit.SECONDS)
+                .writeTimeout(200, TimeUnit.SECONDS)
+                .readTimeout(200, TimeUnit.SECONDS)
                 .build();
     }
 
@@ -206,7 +206,7 @@ public class OkHttpClientUtils {
             }
             for (String key : fileMap.keySet()) {
                 File file = fileMap.get(key);
-                build.addFormDataPart("file", file.getName(), RequestBody.create(MEDIA_TYPE_MARKDOWN, file));
+                build.addFormDataPart("path", file.getAbsolutePath(), RequestBody.create(MEDIA_TYPE_MARKDOWN, file));
             }
         }
     }

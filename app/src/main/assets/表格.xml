@@ -1,19 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <pages>
-    <page tablename="地块">
-        <fieldCustom>
-            <id>title</id>
-            <attribute>dkbh</attribute>
-        </fieldCustom>
-        <fieldCustom>
-            <id>info1</id>
-            <attribute>zldwmc</attribute>
-        </fieldCustom>
-        <fieldCustom>
-            <id>info2</id>
-            <attribute>dlmc</attribute>
-        </fieldCustom>
-    </page>
     <page  tablename="权属主体">
         <fieldCustom>
             <id>title</id>
@@ -28,7 +14,20 @@
             <attribute>jtzz</attribute>
         </fieldCustom>
     </page>
-
+    <page tablename="地块">
+        <fieldCustom>
+            <id>title</id>
+            <attribute>dkbh</attribute>
+        </fieldCustom>
+        <fieldCustom>
+            <id>info1</id>
+            <attribute>zldwmc</attribute>
+        </fieldCustom>
+        <fieldCustom>
+            <id>info2</id>
+            <attribute>dlmc</attribute>
+        </fieldCustom>
+    </page>
     <page tablename="潜力图斑">
         <fieldCustom>
             <id>title</id>
@@ -43,6 +42,21 @@
             <attribute>tbmj</attribute>
         </fieldCustom>
     </page>
+    <page tablename="保护图斑">
+        <fieldCustom>
+            <id>title</id>
+            <attribute>tbbh</attribute>
+        </fieldCustom>
+        <fieldCustom>
+            <id>info1</id>
+            <attribute>qsdwmc</attribute>
+        </fieldCustom>
+        <fieldCustom>
+            <id>info2</id>
+            <attribute>tbmj</attribute>
+        </fieldCustom>
+    </page>
+
 
     <page tablename="村级区域">
         <fieldCustom>
@@ -74,19 +88,6 @@
         </fieldCustom>
     </page>
 
-    <page tablename="保护图斑">
-        <fieldCustom>
-            <id>title</id>
-            <attribute>tbbh</attribute>
-        </fieldCustom>
-        <fieldCustom>
-            <id>info1</id>
-            <attribute>qsdwmc</attribute>
-        </fieldCustom>
-        <fieldCustom>
-            <id>info2</id>
-            <attribute>tbmj</attribute>
-        </fieldCustom>
-    </page>
+
 
 </pages>

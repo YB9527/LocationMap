@@ -89,4 +89,8 @@ public class JSONTool {
         }
         return  myShowLayers;
     }
+
+    public static String getString(MyJSONObject myJSONObject, String key) {
+        return myJSONObject.getJsonobject().getString(key);
+    }
 }

@@ -32,29 +32,50 @@ public class TaskActivty extends AppCompatActivity {
         String tableid = parent.getTableid();
         //表格所有的任务
         List<MyJSONObject> tableTasks = TableTool.findByTableNameAndParentId(ZTService.TASK_LIST, tableid);
+        //根据seq调整顺序
+        orderBySeq(tableTasks);
+
         //得到改对象所有的的多媒体
         List<MyJSONObject> medias = TableTool.findByTableNameAndParentId(Customizing.MEDIA, parent.getId());
-        init(tableTasks,parent, medias);
+        init(tableTasks, parent, medias);
         initTitle();
     }
 
+    /**
+     * 任务根据 seq 排序
+     *
+     * @param tableTasks
+     */
+    private void orderBySeq(List<MyJSONObject> tableTasks) {
+        for (int i = 0; i < tableTasks.size() - 1; i++) {
+            for (int j = 0; j < tableTasks.size() - 1 - i; j++) {
+                if (tableTasks.get(j).getJsonobject().getIntValue("taskseq") > tableTasks.get(j + 1).getJsonobject().getIntValue("taskseq")) {
+                    MyJSONObject temp = tableTasks.get(j);
+                    tableTasks.set(j, tableTasks.get(j + 1));
+                    tableTasks.set(j + 1, temp);
+                }
+            }
+        }
+
+    }
+
     private void initTitle() {
-        AndroidTool.addTitleFragment(this, "多媒体数据" );
+        AndroidTool.addTitleFragment(this, "附件");
     }
 
     /**
      * @param tableTasks 表格任务
      * @param medias     当前对象的所有 多媒体
      */
-    private void init(List<MyJSONObject> tableTasks, MyJSONObject parent,List<MyJSONObject> medias) {
+    private void init(List<MyJSONObject> tableTasks, MyJSONObject parent, List<MyJSONObject> medias) {
        /* RecyclerView recyclerView = findViewById(R.id.list);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));*/
-        FragmentTransaction transaction= getSupportFragmentManager().beginTransaction();
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         List<TaskFragment> taskFragments = new ArrayList<>();
         for (MyJSONObject task : tableTasks) {
-            TaskFragment taskFragment = new TaskFragment(task,parent,medias);
+            TaskFragment taskFragment = new TaskFragment(task, parent, medias);
             taskFragments.add(taskFragment);
-            transaction.add(R.id.ll,taskFragment);
+            transaction.add(R.id.ll, taskFragment);
         }
       /*  TaskFragment taskFragment = new TaskFragment(tableTasks.get(0),parent,medias);
         taskFragments.add(taskFragment);

@@ -92,6 +92,7 @@ public class MapLayerDialog extends RightDialogFragment {
 
         RecyclerView recyclerView = view.findViewById(R.id.recy);
         TableDataCustom tableDataCustom = new TableDataCustom(R.layout.item_layer_map, fs, myShowLayers).setEdit(true);
+       // TableDataCustom tableDataCustom = new TableDataCustom(R.layout.map_item_searhhistorytext, fs, myShowLayers).setEdit(true);
         myItemRecyclerViewAdapter = new MyItemRecyclerViewAdapter(tableDataCustom, recyclerView);
         recyclerView.setAdapter(myItemRecyclerViewAdapter);
         myItemRecyclerViewAdapter.addItemTouch();

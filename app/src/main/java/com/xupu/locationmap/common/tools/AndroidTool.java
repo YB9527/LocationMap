@@ -3,7 +3,13 @@ package com.xupu.locationmap.common.tools;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Matrix;
+import android.graphics.Paint;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.os.Environment;
 import android.text.Editable;
@@ -46,6 +52,8 @@ import com.xupu.locationmap.projectmanager.view.PositionField;
 import com.xupu.locationmap.projectmanager.view.ProgressFieldCusom;
 import com.xupu.locationmap.projectmanager.view.SlidingFieldCustom;
 import com.xupu.locationmap.projectmanager.view.ViewFieldCustom;
+
+import org.w3c.dom.Text;
 
 import java.io.File;
 import java.util.Collection;
@@ -222,8 +230,10 @@ public class AndroidTool {
 
         for (FieldCustom fieldCustom : fs) {
             View temView = view.findViewById(fieldCustom.getId());
+
             if (temView instanceof TextView) {
                 TextView tv = (TextView) temView;
+                temView.setVisibility(fieldCustom.isVisable());
                 if (fieldCustom instanceof PositionField) {
                     PositionField positionField = (PositionField) fieldCustom;
                     tv.setText(positionField.getStartIndex() + postion + 1 + "");
@@ -487,5 +497,47 @@ public class AndroidTool {
         TitleBarFragment titleBarFragment = new TitleBarFragment(title);
         activity.getFragmentManager().beginTransaction().replace(R.id.title, new TitleBarFragment(leftIcRid, title, callback, rightStr, confirmMessage)).commit();
         return titleBarFragment;
+    }
+
+    public static   Bitmap setTextToImg(int rid, String text, float textsize, int color) {
+        BitmapDrawable icon = (BitmapDrawable) getMainActivity().getResources().getDrawable(rid);
+
+        Bitmap bitmap = icon.getBitmap().copy(Bitmap.Config.ARGB_8888, true);
+        //bitmap = getNewBitmap(bitmap,100,100);
+
+        Canvas canvas = new Canvas(bitmap);
+        Paint paint = new Paint();
+        // 抗锯齿
+        paint.setAntiAlias(true);
+        // 防抖动
+        paint.setDither(true);
+        paint.setTextSize(textsize);
+        paint.setTextAlign(Paint.Align.CENTER);
+
+        paint.setColor(color);
+        canvas.drawText(text,(bitmap.getWidth() / 2),(bitmap.getHeight() / 2), paint);
+        return bitmap;
+    }
+    public static   Bitmap setTextToImg(Bitmap bitmap,Paint paint,String text) {
+
+        Canvas canvas = new Canvas(bitmap);
+        canvas.drawText(text,(bitmap.getWidth() / 2),(bitmap.getHeight() / 2), paint);
+        return bitmap;
+    }
+
+
+    public  static Bitmap getNewBitmap(Bitmap bitmap, int newWidth ,int newHeight){
+        // 获得图片的宽高.
+        int width = bitmap.getWidth();
+        int height = bitmap.getHeight();
+        // 计算缩放比例.
+        float scaleWidth = ((float) newWidth) / width;
+        float scaleHeight = ((float) newHeight) / height;
+        // 取得想要缩放的matrix参数.
+        Matrix matrix = new Matrix();
+        matrix.postScale(scaleWidth, scaleHeight);
+        // 得到新的图片.
+        Bitmap newBitmap = Bitmap.createBitmap(bitmap, 0, 0, width, height, matrix, true);
+        return newBitmap;
     }
 }

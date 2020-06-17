@@ -1,5 +1,7 @@
 package com.xupu.locationmap.projectmanager.view;
 
+import android.view.View;
+
 import com.xupu.locationmap.common.tools.AndroidTool;
 
 import java.io.Serializable;
@@ -12,7 +14,7 @@ public class FieldCustom implements Serializable {
     private Integer id;
     private String idText;
     private String attribute;
-
+    private int visable=View.VISIBLE;
     public FieldCustom() {
 
     }
@@ -55,5 +57,14 @@ public class FieldCustom implements Serializable {
     public void setIdText(String idText) {
         this.id = AndroidTool.getCompentID("id", idText);
         this.idText = idText;
+    }
+
+    public FieldCustom setVisable(int visable) {
+        this.visable = visable;
+        return  this;
+    }
+
+    public int isVisable() {
+        return visable;
     }
 }

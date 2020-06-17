@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 
+import com.alibaba.fastjson.JSONObject;
 import com.google.gson.Gson;
 
 import java.lang.reflect.Type;
@@ -153,6 +154,7 @@ public class RedisTool {
         List<String> jsons = findListRedis(beginMark);
         for (String json : jsons
         ) {
+
             T t = Tool.JsonToObject(json, type);
             list.add(t);
         }

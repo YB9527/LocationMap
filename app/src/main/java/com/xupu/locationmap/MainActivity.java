@@ -7,24 +7,14 @@ import android.view.KeyEvent;
 import android.view.MenuInflater;
 import android.view.View;
 
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.ActionBar;
 import androidx.core.view.GravityCompat;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 
 import android.view.MenuItem;
 
 import com.esri.arcgisruntime.ArcGISRuntimeEnvironment;
-import com.esri.arcgisruntime.ArcGISRuntimeException;
-import com.esri.arcgisruntime.data.TileCache;
-import com.esri.arcgisruntime.geometry.Point;
-import com.esri.arcgisruntime.layers.ArcGISTiledLayer;
-import com.esri.arcgisruntime.loadable.LoadStatus;
-import com.esri.arcgisruntime.mapping.ArcGISMap;
 import com.esri.arcgisruntime.mapping.view.MapView;
 import com.google.android.material.navigation.NavigationView;
-import com.xupu.locationmap.common.page.AskUser;
-import com.xupu.locationmap.common.page.ZQImageViewRoundOval;
 import com.xupu.locationmap.common.tools.AndroidTool;
 import com.xupu.locationmap.projectmanager.page.HelpActivty;
 import com.xupu.locationmap.projectmanager.page.LowMapManager;
@@ -142,7 +132,7 @@ public class MainActivity extends AppCompatActivity
                     AndroidTool.showAnsyTost("请先选择区域",1);
                 }else{
                     intent = new Intent(this, TableListPage.class);
-                    startActivity(intent);
+                    mapFragment.startActivityForResult(intent, MapResult.datalocation);
                 }
 
 

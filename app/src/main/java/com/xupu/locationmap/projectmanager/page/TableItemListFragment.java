@@ -1,11 +1,13 @@
 package com.xupu.locationmap.projectmanager.page;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -21,6 +23,10 @@ import com.xupu.locationmap.common.po.ViewHolderCallback;
 import com.xupu.locationmap.common.tools.AndroidTool;
 import com.xupu.locationmap.common.tools.TableTool;
 import com.xupu.locationmap.common.tools.Tool;
+import com.xupu.locationmap.projectmanager.po.MapResult;
+import com.xupu.locationmap.projectmanager.po.TableItem;
+import com.xupu.locationmap.projectmanager.po.TableType;
+import com.xupu.locationmap.projectmanager.service.ZTService;
 import com.xupu.locationmap.projectmanager.view.FieldCustom;
 import com.xupu.locationmap.projectmanager.po.MyJSONObject;
 import com.xupu.locationmap.projectmanager.view.PositionField;
@@ -102,26 +108,39 @@ public class TableItemListFragment extends Fragment {
 
 
             FieldCustom filedCustom;
-            //到详情
+            //按钮 点击 的详情
             filedCustom = new ViewFieldCustom(R.id.v_toinfo) {
                 @Override
                 public void OnClick(View view, MyJSONObject myJSONObject) {
-                    toInfoPage(myJSONObject);
+                    toInfoPage(TableItemListFragment.this, myJSONObject);
                 }
             };
             fs.add(filedCustom);
+            //item 点击的 详情
             fs.add(new ViewFieldCustom(R.id.item_info) {
                 @Override
                 public void OnClick(View view, MyJSONObject myJSONObject) {
-                    toInfoPage(myJSONObject);
+                    toInfoPage(TableItemListFragment.this,myJSONObject);
                 }
             });
-            fs.add(new ViewFieldCustom(R.id.v_location) {
+            //定位
+            filedCustom = new ViewFieldCustom(R.id.v_location) {
                 @Override
                 public void OnClick(View view, MyJSONObject myJSONObject) {
-                    AndroidTool.showAnsyTost(myJSONObject.getTablename(),0);
+                    Intent intent = new Intent();
+                    intent.putExtra("data",myJSONObject);
+                    getActivity().setResult(MapResult.datalocation,intent);
+                    getActivity().finish();
                 }
-            });
+            };
+            //检查类型，如果是图形才有地位
+            MyJSONObject tableItem = ZTService.getTableItemByTablename(tablename);
+            if(! tableItem.getJsonobject().getString(TableItem.type).equals(TableType.LAYER_TYPE) ){
+                filedCustom.setVisable(View.GONE);
+            }
+            fs.add(filedCustom);
+
+
 
             if (haseTask) {
                 //到多媒体
@@ -129,9 +148,8 @@ public class TableItemListFragment extends Fragment {
                     @Override
                     public void OnClick(View view,MyJSONObject myJSONObject) {
                         //跳到任务界面
-                        Intent intent = new Intent(getActivity(), TaskActivty.class);
-                        intent.putExtra("parent", myJSONObject);
-                        startActivity(intent);
+                        toMediaPage(TableItemListFragment.this,myJSONObject);
+
                     }
                 };
                 fs.add(filedCustom);
@@ -146,15 +164,50 @@ public class TableItemListFragment extends Fragment {
             mColumnCount = tableDataCustom.getList().size();
         }
     }
-    public void toInfoPage(MyJSONObject obj){
+
+    @Override
+    public void onDestroyView() {
+
+        super.onDestroyView();
+    }
+
+
+    public static void toMediaPage(Activity activity, MyJSONObject myJSONObject) {
+        Intent intent = new Intent(activity, TaskActivty.class);
+        intent.putExtra("parent", myJSONObject);
+        activity.startActivity(intent);
+    }
+
+    public static void toInfoPage(Activity activity, MyJSONObject obj){
         //AndroidTool.showAnsyTost("详请", 1);
-        Intent intent = new Intent(getActivity(), ObjectInfoActivty.class);
+        Intent intent = new Intent(activity, ObjectInfoActivty.class);
         intent.putExtra("id", obj.getId());
         intent.putExtra("tablename", obj.getTablename());
-        startActivityForResult(intent, 1);
+        activity.startActivityForResult(intent, 1);
     }
+
+    public static void toMediaPage(Fragment fragment, MyJSONObject myJSONObject) {
+        Intent intent = new Intent(fragment.getActivity(), TaskActivty.class);
+        intent.putExtra("parent", myJSONObject);
+        fragment.startActivity(intent);
+    }
+
+    public static void toInfoPage(Fragment fragment, MyJSONObject obj){
+        //AndroidTool.showAnsyTost("详请", 1);
+        Intent intent = new Intent(fragment.getActivity(), ObjectInfoActivty.class);
+        intent.putExtra("id", obj.getId());
+        intent.putExtra("tablename", obj.getTablename());
+        fragment.startActivityForResult(intent, 1);
+    }
+
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        myOnActivityResult(requestCode,resultCode,data);
+    }
+
+
+    public  void myOnActivityResult(int requestCode, int resultCode, @Nullable Intent data){
         switch (requestCode) {
             case 1:
                 //详情页面返回
@@ -188,6 +241,7 @@ public class TableItemListFragment extends Fragment {
                 break;
         }
     }
+
 
 
     /**
@@ -295,10 +349,12 @@ public class TableItemListFragment extends Fragment {
     public void remove(MyJSONObject jsonObject) {
         myItemRecyclerViewAdapter.remove(jsonObject);
         checkHasDataAndShow();
+        getActivity().setResult(MapResult.datachange,null);
     }
 
-    public void update(MyJSONObject jsonObject) {
+    public  void update(MyJSONObject jsonObject) {
         myItemRecyclerViewAdapter.update(jsonObject);
+        getActivity().setResult(MapResult.datachange,null);
     }
 
     @Override
@@ -328,7 +384,6 @@ public class TableItemListFragment extends Fragment {
     //跳到添加对象也米娜
     public void toAddDataPage() {
         SmartTabLayout smartTabLayout = null;
-
         //添加对象
         TableListPage parent = (TableListPage) getActivity();
         Intent intent = new Intent(this.getActivity(), ObjectInfoActivty.class);

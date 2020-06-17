@@ -14,6 +14,7 @@ import com.xupu.locationmap.common.tools.TableTool;
 import com.xupu.locationmap.common.tools.Tool;
 import com.xupu.locationmap.common.tools.ZTRespon;
 import com.xupu.locationmap.projectmanager.po.MyJSONObject;
+import com.xupu.locationmap.projectmanager.po.TableItem;
 import com.xupu.locationmap.projectmanager.po.TableType;
 
 import java.util.ArrayList;
@@ -109,8 +110,6 @@ public class ZTService {
                 tableIdMap.put("6a781e77-5f2d-4c71-bc59-2fd1d072d863", "90b42a43-b4a6-4ec2-b310-fc3251e7fe96");//村级区域
                 tableIdMap.put("ffd969bc-38cb-4a9b-8fac-e778f76f3acc", "c69de788-521c-4e4c-a3b1-56473b147614");//乡级区域
                 tableIdMap.put("fa4bed8e-7935-4511-a968-2aae5477e3bd", "1fe7ef50-dbae-497f-8d8e-777a30ab7fbe");//保护图斑
-
-
             }
         }
         return tableIdMap;
@@ -165,6 +164,44 @@ public class ZTService {
 
     public static String getTableName(MyJSONObject tableitem) {
         return  tableitem.getJsonobject().getString("aliasname");
+    }
+
+    /**
+     * 得到表格item 对象
+     * @param tableid
+     * @return
+     */
+    public static MyJSONObject getTableItem(String tableid) {
+       return TableTool.findByTableNameAndId(PROJECT_TABLE_LIST,tableid);
+    }
+
+    /**
+     * 根据表格名字获取 tableitem
+     * @param tablename
+     * @return
+     */
+    public static MyJSONObject getTableItemByTablename(String tablename) {
+
+        List<MyJSONObject> tableItemall = getTableItemAll();
+        for(MyJSONObject tableItem : tableItemall){
+            if(tableItem.getJsonobject().getString(TableItem.aliasname).equals(tablename)){
+                return  tableItem;
+            }
+        }
+        return  null;
+    }
+    private static   List<MyJSONObject> tableItemall;
+    /**
+     * 获取项目所有的关系列表
+     * @return
+     */
+    public static List<MyJSONObject> getTableItemAll() {
+        synchronized (ZTService.class){
+            if(tableItemall == null){
+                tableItemall = TableTool.findByTableName(ZTService.PROJECT_TABLE_LIST);
+            }
+        }
+       return tableItemall;
     }
 
     /**

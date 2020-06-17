@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/itemback"
+    android:paddingLeft="@dimen/item_height_20"
+    android:layout_marginTop="3dp"
+
+    >
+    <LinearLayout
+        android:id="@+id/item"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:id="@+id/tv_searchhistroytext"
+            android:text="123"
+            style="@style/itemtext2style"
+            android:layout_centerVertical="true"
+            android:gravity="center_vertical"
+            android:textAlignment="gravity"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"/>
+    </LinearLayout>
+
+</RelativeLayout>

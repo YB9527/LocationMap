@@ -1,6 +1,9 @@
 package com.xupu.locationmap;
 
 import android.content.Context;
+import android.graphics.Paint;
+import android.graphics.Rect;
+import android.text.TextPaint;
 
 import androidx.test.InstrumentationRegistry;
 import androidx.test.runner.AndroidJUnit4;
@@ -25,17 +28,14 @@ import static org.junit.Assert.*;
 public class ExampleInstrumentedTest {
     @Test
     public void useAppContext() {
-        // Context of the app under test.
-        //Context appContext = InstrumentationRegistry.getTargetContext();
-
-        //assertEquals("com.xupu.locationmap", appContext.getPackageName());
-
-       /* ZTService.getProjectTableId(new MyCallback() {
-            @Override
-            public void call(ResultData resultData) {
-
-            }
-        });*/
+        Paint mPaint=new TextPaint();
+        mPaint.setTextSize(20);
+        mPaint.setAntiAlias(true);
+        Rect mRect=new Rect();
+        String mString="test";
+        mPaint.getTextBounds(mString,0,mString.length(),mRect);
+        float strwid = mRect.width();
+        float strhei = mRect.height();
 
     }
 
