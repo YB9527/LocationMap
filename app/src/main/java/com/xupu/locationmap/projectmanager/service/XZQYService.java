@@ -76,4 +76,13 @@ public class XZQYService {
 
         //return  getCode(getCurrentXZDM());
     }
+
+    /**
+     * 根据行政区域得到所有的数据
+     * @param currentCode
+     * @return
+     */
+    public static List<MyJSONObject> findDatasByXZQYCode(String currentCode) {
+        return TableTool.findByParentId(XZQYService.getCurrentCode());
+    }
 }

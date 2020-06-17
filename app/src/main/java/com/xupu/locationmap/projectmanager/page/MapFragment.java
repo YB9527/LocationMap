@@ -95,6 +95,7 @@ import com.xupu.locationmap.projectmanager.view.ViewFieldCustom;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -327,25 +328,35 @@ public class MapFragment extends Fragment {
         }
     }
 
-
     /**
-     * 添加数据
+     * 重新再数据中查找 是shp的数据
+     *
+     * @return
      */
-    private void addData() {
+    private List<MyJSONObject> getAllShapDatas() {
         List<MyJSONObject> mapDatas = null;
         try {
-            mapDatas = TableTool.findByParentId(XZQYService.getCurrentCode());
-        } catch (Exception e) {
-            return;
-        }
+            mapDatas = XZQYService.findDatasByXZQYCode(XZQYService.getCurrentCode());
 
+        } catch (Exception e) {
+            return mapDatas;
+        }
         for (int i = 0; i < mapDatas.size(); i++) {
             if (!mapDatas.get(i).getJsonobject().containsKey("geometry")) {
                 mapDatas.remove(i);
                 i--;
             }
         }
-        Map<String, List<MyJSONObject>> map = JSONTool.getIDMap("table", mapDatas);
+        return mapDatas;
+    }
+
+    /**
+     * shp 数据放到对应的图层
+     *
+     * @param shpdatas
+     */
+    public Map<LowImage, List<MyJSONObject>> getLowImageListMap(List<MyJSONObject> shpdatas) {
+        Map<String, List<MyJSONObject>> map = JSONTool.getIDMap("table", shpdatas);
         //考虑图层没有数据的问题
         List<LowImage> layerStatus = MapService.getLayerStatus();
         Map<LowImage, List<MyJSONObject>> lowImageListMap = new LinkedHashMap<>();
@@ -357,6 +368,15 @@ public class MapFragment extends Fragment {
                 lowImageListMap.put(lowImage, myJSONObjects);
             }
         }
+        return lowImageListMap;
+    }
+
+    /**
+     * 添加数据
+     */
+    private void addData() {
+        List<MyJSONObject> shpdatas = getAllShapDatas();
+        Map<LowImage, List<MyJSONObject>> lowImageListMap = getLowImageListMap(shpdatas);
         addGraphicsOverlay(lowImageListMap);
     }
 
@@ -770,18 +790,14 @@ public class MapFragment extends Fragment {
         }
     }
 
-    private void addMapLayerText(GraphicsOverlay graphicsOverlay, MyJSONObject data) {
-        Geometry geometry = getGeometry(data);
-        addMapLayerText(graphicsOverlay, data, geometry);
-    }
 
     /**
-     * 添加地图标注
+     * 得到地图标注
      *
-     * @param graphicsOverlay 图层
-     * @param data            数据
+     * @param data
+     * @param geometry
      */
-    private void addMapLayerText(GraphicsOverlay graphicsOverlay, MyJSONObject data, Geometry geometry) {
+    private Graphic getMapTextMark(MyJSONObject data, Geometry geometry) {
 
         String text = data.getJsonobject().getString(tableResultMap.get(data.getTablename()).getFieldCustoms().get(0).getAttribute());
         Paint mPaint = new TextPaint();
@@ -803,7 +819,7 @@ public class MapFragment extends Fragment {
         Point center = geometry.getExtent().getCenter();
         center = new Point(center.getX(), center.getY() - 30);
         Graphic graphic = new Graphic(center, pictureMarkerSymbol);
-        graphicsOverlay.getGraphics().add(graphic);
+        return graphic;
     }
 
 
@@ -968,7 +984,9 @@ public class MapFragment extends Fragment {
             for (MyJSONObject geometryMyJson : map.get(lowImage)) {
                 Geometry geometry = getGeometry(geometryMyJson);
                 polygonGraphicOverlay.getGraphics().add(new Graphic(geometry));
-                addMapLayerText(textGraphicOverlay, geometryMyJson, geometry);
+                Graphic textMark = getMapTextMark(geometryMyJson, geometry);
+                textGraphicOverlay.getGraphics().add(textMark);
+
             }
         }
 
@@ -1107,14 +1125,13 @@ public class MapFragment extends Fragment {
         } else if (resultCode == MapResult.datalocation) {
             MyJSONObject shpdata = (MyJSONObject) data.getSerializableExtra("data");
             scaleData(shpdata);
-            addSerachShpMark(shpdata,"");
-        }else if (resultCode == MapResult.datachange){
-            AndroidTool.showAnsyTost("数据被改变了",0);
+            addSerachShpMark(shpdata, "");
+        } else if (resultCode == MapResult.datachange) {
+           // AndroidTool.showAnsyTost("数据被改变了", 0);
             //刷新数据
             reflushPage();
 
-        }
-        else {
+        } else {
             if (data == null) {
                 return;
             }
@@ -1159,6 +1176,43 @@ public class MapFragment extends Fragment {
      * 刷新页面
      */
     private void reflushPage() {
+        clearAll();
+        //1、重新获取数据库数据
+        List<MyJSONObject> shpdatas = getAllShapDatas();
+        Map<String, MyJSONObject> dataMap = new HashMap<>();
+        for (MyJSONObject data : shpdatas) {
+            dataMap.put(data.getId() + data.getTablename(), data);
+        }
+        //Map<LowImage,List<MyJSONObject>> lowImageListMap = getLowImageListMap( shpdatas );
+        //2、找到现在数据
+        for (LowImageGraphicsLayer lowImageGraphicsLayer : lowImageGraphicsLayers) {
+            //3、进行对比
+            List<MyJSONObject> olddatas = lowImageGraphicsLayer.getLayerdatas();
+            for (int i = 0; i < olddatas.size(); i++) {
+                MyJSONObject olddata = olddatas.get(i);
+                MyJSONObject newdata = dataMap.get(olddata.getId() + olddata.getTablename());
+                if (newdata == null) {
+                    //表示data数据被删除
+                    //删除对象
+                    lowImageGraphicsLayer.getLayerdatas().remove(i);
+                    //删除文字标注
+                    lowImageGraphicsLayer.getTextGraphics().getGraphics().remove(i);
+                    //删除图形
+                    lowImageGraphicsLayer.getShapeGraphics().getGraphics().remove(i);
+                } else if (!olddata.getJson().equals(newdata.getJson())) {
+                    //跟新对象
+                    lowImageGraphicsLayer.getLayerdatas().set(i,newdata);
+                    //删除以前标注
+                    //跟新文字标注
+                    Graphic textMark = getMapTextMark(newdata, getGeometry(newdata));
+                    lowImageGraphicsLayer.getTextGraphics().getGraphics().set(i,textMark);
+
+                }
+
+            }
+            //4、、 更新 、删除 图形、文字标注
+        }
+
 
     }
 
@@ -1177,9 +1231,14 @@ public class MapFragment extends Fragment {
                 List<MyJSONObject> layerdatas = lowImageGraphicsLayer.getLayerdatas();
                 for (int i = 0; i < layerdatas.size(); i++) {
                     if (layerdatas.get(i).getId().equals(obj.getId())) {
+                        //跟新对象
                         layerdatas.set(i, obj);
-                        lowImageGraphicsLayer.getTextGraphics().getGraphics().remove(i);
-                        addMapLayerText(lowImageGraphicsLayer.getTextGraphics(), obj);
+                        //删除以前标注
+                        //增加最新标注
+                        //lowImageGraphicsLayer.getTextGraphics().getGraphics().remove(i);
+                        Graphic textMark = getMapTextMark(obj, getGeometry(obj));
+                        lowImageGraphicsLayer.getTextGraphics().getGraphics().set(i,textMark);
+
                         break;
                     }
                 }

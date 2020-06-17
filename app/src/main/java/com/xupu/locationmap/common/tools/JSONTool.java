@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 public class JSONTool {
     /**
@@ -49,48 +50,55 @@ public class JSONTool {
 
     /**
      * 转 JSONObject
+     *
      * @param obj
      * @return
      */
-    public static JSONObject toJSONObject(Object obj){
-       String json = JSONObject.toJSONString(obj, SerializerFeature.WriteMapNullValue);
-       return  JSONObject.parseObject(json);
+    public static JSONObject toJSONObject(Object obj) {
+        String json = JSONObject.toJSONString(obj, SerializerFeature.WriteMapNullValue);
+        return JSONObject.parseObject(json);
     }
 
     /**
      * 用的是 myJSONObject.getJsonobject() 转换
+     *
      * @param myJSONObjects
      * @param clazz
      * @param <T>
      * @return
      */
-    public static <T> List<T> toObject(List<MyJSONObject> myJSONObjects,Class<T> clazz) {
+    public static <T> List<T> toObject(List<MyJSONObject> myJSONObjects, Class<T> clazz) {
         List<T> list = new ArrayList<>();
-        if(myJSONObjects != null){
-            for (MyJSONObject myJSONObject : myJSONObjects){
-                T t = JSONObject.toJavaObject(myJSONObject.getJsonobject(),clazz);
+        if (myJSONObjects != null) {
+            for (MyJSONObject myJSONObject : myJSONObjects) {
+                T t = JSONObject.toJavaObject(myJSONObject.getJsonobject(), clazz);
                 list.add(t);
             }
         }
-        return  list;
+        return list;
     }
 
     /**
      * new MyJSONObject(null, null, null, JSONTool.toJSONObject(obj))
-     * @param extiLayers
+     *
+     * @param list
      * @return
      */
-    public static <T> List<MyJSONObject> toMyJSONObject(List<T> extiLayers) {
+    public static <T> List<MyJSONObject> toMyJSONObject(List<T> list) {
         List<MyJSONObject> myShowLayers = new ArrayList<>();
-        if(extiLayers != null){
-            for(Object obj : extiLayers){
-                myShowLayers.add(new MyJSONObject(null, null, null, JSONTool.toJSONObject(obj)));
+        if (list != null) {
+            for (Object obj : list) {
+                myShowLayers.add(toMyJSONObject(obj));
             }
         }
-        return  myShowLayers;
+        return myShowLayers;
     }
 
     public static String getString(MyJSONObject myJSONObject, String key) {
         return myJSONObject.getJsonobject().getString(key);
+    }
+
+    public static MyJSONObject toMyJSONObject(Object obj) {
+        return new MyJSONObject(UUID.randomUUID().toString(), null, null, JSONTool.toJSONObject(obj));
     }
 }

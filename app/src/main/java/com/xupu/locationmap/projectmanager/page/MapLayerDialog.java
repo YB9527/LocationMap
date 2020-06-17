@@ -16,6 +16,10 @@ import com.google.gson.reflect.TypeToken;
 import com.xupu.locationmap.R;
 import com.xupu.locationmap.common.dialog.RightDialogFragment;
 import com.xupu.locationmap.common.po.Callback;
+import com.xupu.locationmap.common.po.MyCallback;
+import com.xupu.locationmap.common.po.ResultData;
+import com.xupu.locationmap.common.po.ViewHolderCallback;
+import com.xupu.locationmap.common.tools.AndroidTool;
 import com.xupu.locationmap.common.tools.JSONTool;
 import com.xupu.locationmap.common.tools.RedisTool;
 import com.xupu.locationmap.common.tools.Utils;
@@ -23,6 +27,7 @@ import com.xupu.locationmap.projectmanager.po.LowImage;
 import com.xupu.locationmap.projectmanager.po.MyJSONObject;
 import com.xupu.locationmap.projectmanager.service.MapService;
 import com.xupu.locationmap.projectmanager.service.ProjectService;
+import com.xupu.locationmap.projectmanager.service.XZQYService;
 import com.xupu.locationmap.projectmanager.service.ZTService;
 import com.xupu.locationmap.projectmanager.view.CheckBoxFieldCustom;
 import com.xupu.locationmap.projectmanager.view.FieldCustom;
@@ -31,6 +36,7 @@ import com.xupu.locationmap.projectmanager.view.TableDataCustom;
 import com.xupu.locationmap.projectmanager.view.ViewFieldCustom;
 
 
+import java.security.acl.LastOwnerException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -40,6 +46,12 @@ import java.util.Map;
  */
 public class MapLayerDialog extends RightDialogFragment {
 
+    private final static String CURRENT_LAYER = "CURRENT_LAYER";
+    private static LowImage currentlowImage;
+
+    static {
+        currentlowImage = RedisTool.findRedis(CURRENT_LAYER, LowImage.class);
+    }
 
     public MapLayerDialog() {
         super();
@@ -49,6 +61,7 @@ public class MapLayerDialog extends RightDialogFragment {
         super(width, height);
 
     }
+
 
     MyItemRecyclerViewAdapter myItemRecyclerViewAdapter;
 
@@ -68,7 +81,38 @@ public class MapLayerDialog extends RightDialogFragment {
         List<FieldCustom> fs = new ArrayList<>();
         //项目名称
         fs.add(new FieldCustom(R.id.tv_name, "name"));
-        fs.add(new CheckBoxFieldCustom(R.id.cb_isslect, LowMapManager.LOWIMAGE_SelectMark, R.id.item));
+        fs.add(new CheckBoxFieldCustom(R.id.cb_isslect, LowMapManager.LOWIMAGE_SelectMark, R.id.cb_isslect));
+        //点击设置为当前图层
+        fs.add(new ViewFieldCustom(R.id.item) {
+            @Override
+            public void OnClick(View view, MyJSONObject myJSONObject) {
+
+
+                LowImage lowImage = myJSONObject.getJsonobject().toJavaObject(LowImage.class);
+                if (currentlowImage == null || !currentlowImage.equals(lowImage)) {
+                    //如果是当前区域，不用选中
+
+                    AndroidTool.confirm(getContext(), "确定要选择这个图层吗？", new MyCallback() {
+                        @Override
+                        public void call(ResultData resultData) {
+                            if (resultData.getStatus() == 0) {
+                                if (currentlowImage != null) {
+                                    int index = layerStatus.indexOf(currentlowImage);
+                                    myItemRecyclerViewAdapter.notifyItemChanged(index);
+                                }
+                                myItemRecyclerViewAdapter.update(myJSONObject);
+                                setCurrentLowImage(lowImage);
+                            }
+                        }
+                    });
+
+
+
+
+                }
+            }
+        });
+
         //图层缩放至
         fs.add(new ViewFieldCustom(R.id.tv_location) {
             @Override
@@ -92,12 +136,28 @@ public class MapLayerDialog extends RightDialogFragment {
 
         RecyclerView recyclerView = view.findViewById(R.id.recy);
         TableDataCustom tableDataCustom = new TableDataCustom(R.layout.item_layer_map, fs, myShowLayers).setEdit(true);
-       // TableDataCustom tableDataCustom = new TableDataCustom(R.layout.map_item_searhhistorytext, fs, myShowLayers).setEdit(true);
+        // TableDataCustom tableDataCustom = new TableDataCustom(R.layout.map_item_searhhistorytext, fs, myShowLayers).setEdit(true);
         myItemRecyclerViewAdapter = new MyItemRecyclerViewAdapter(tableDataCustom, recyclerView);
         recyclerView.setAdapter(myItemRecyclerViewAdapter);
         myItemRecyclerViewAdapter.addItemTouch();
-
+        myItemRecyclerViewAdapter.setLoadViewCallback(new ViewHolderCallback() {
+            @Override
+            public void call(MyItemRecyclerViewAdapter.ViewHolder holder, int position) {
+                MyJSONObject myJSONObject = myItemRecyclerViewAdapter.getItem(position);
+                LowImage lowImage = myJSONObject.getJsonobject().toJavaObject(LowImage.class);
+                if (currentlowImage == null || !currentlowImage.equals(lowImage)) {
+                    holder.mView.findViewById(R.id.item_currentxzqy).setVisibility(View.GONE);
+                } else {
+                    holder.mView.findViewById(R.id.item_currentxzqy).setVisibility(View.VISIBLE);
+                }
+            }
+        });
         return view;
+    }
+
+    private void setCurrentLowImage(LowImage currentlowImage) {
+        MapLayerDialog.currentlowImage = currentlowImage;
+        RedisTool.updateRedis(CURRENT_LAYER, currentlowImage);
     }
 
 
