@@ -17,6 +17,7 @@ import com.esri.arcgisruntime.ArcGISRuntimeEnvironment;
 import com.esri.arcgisruntime.mapping.view.MapView;
 import com.google.android.material.navigation.NavigationView;
 import com.xupu.locationmap.common.tools.AndroidTool;
+import com.xupu.locationmap.common.tools.FileTool;
 import com.xupu.locationmap.projectmanager.page.HelpActivty;
 import com.xupu.locationmap.projectmanager.page.LowMapManager;
 import com.xupu.locationmap.projectmanager.page.MapFragment;
@@ -40,6 +41,14 @@ import android.view.Menu;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.io.IOException;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -82,7 +91,6 @@ public class MainActivity extends AppCompatActivity {
         ArcGISRuntimeEnvironment.setLicense("runtimelite,1000,rud4449636536,none,NKMFA0PL4S0DRJE15166");
         mapFragment = new MapFragment();
         getSupportFragmentManager().beginTransaction().replace(R.id.page, mapFragment, MapFragment.class.getSimpleName()).commit();
-
 
     }
 

@@ -14,7 +14,7 @@ public class FieldCustom implements Serializable {
     private Integer id;
     private String idText;
     private String attribute;
-    private int visable=View.VISIBLE;
+    private int visable=-1;
     public FieldCustom() {
 
     }

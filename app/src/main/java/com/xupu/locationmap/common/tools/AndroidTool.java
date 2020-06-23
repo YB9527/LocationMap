@@ -228,14 +228,204 @@ public class AndroidTool {
             }
         }
     }
+    @SuppressLint("NewApi")
+    public static void setView(View view, ItemDataCustom itemDataCustom, boolean isEdit, int postion) {
+        List<FieldCustom> fs = itemDataCustom.getFieldCustoms();
+        //使用副本修改，
+        final MyJSONObject myJSONObject = itemDataCustom.getMyJSONObject();
+        final JSONObject jsonObject;
+        if (isEdit) {
+            jsonObject = myJSONObject.getJsonobject();
+        } else {
+            jsonObject = (JSONObject) myJSONObject.getJsonobject().clone();
+        }
+        for (FieldCustom fieldCustom : fs) {
+            View v = view.findViewById(fieldCustom.getId());
 
+            if (fieldCustom.isVisable() != -1) {
+                v.setVisibility(fieldCustom.isVisable());
+            }
+            if (fieldCustom instanceof PositionField) {
+                TextView textView = (TextView) v;
+                PositionField positionField = (PositionField) fieldCustom;
+                textView.setText(positionField.getStartIndex() + postion + 1 + "");
+            }
+            else if (fieldCustom instanceof ViewFieldCustom) {
+                ViewFieldCustom viewFieldCustom = (ViewFieldCustom) fieldCustom;
+                v.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (viewFieldCustom.isConfirm()) {
+                            confirm(view.getContext(), viewFieldCustom.getConfirmmessage(), new MyCallback() {
+                                @Override
+                                public void call(ResultData resultData) {
+                                    if (resultData.getStatus() == 0) {
+                                        viewFieldCustom.OnClick(view, myJSONObject);
+                                    }
+                                }
+                            });
+                        } else {
+                            viewFieldCustom.OnClick(view, myJSONObject);
+                        }
+                    }
+                });
+            }
+            else if (fieldCustom instanceof CheckBoxFieldCustom) {
+                CheckBoxFieldCustom checkBoxFieldCustom = (CheckBoxFieldCustom) fieldCustom;
+                boolean bl = jsonObject.getBoolean(checkBoxFieldCustom.getAttribute());
+                CheckBox checkBox = view.findViewById(checkBoxFieldCustom.getId());
+                checkBox.setChecked(bl);
+                setCheckBox(checkBox, checkBoxFieldCustom);
+                view.findViewById(checkBoxFieldCustom.getItemRid()).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        boolean bl = !jsonObject.getBoolean(checkBoxFieldCustom.getAttribute());
+                        CheckBox checkBox = view.findViewById(checkBoxFieldCustom.getId());
+                        checkBox.setChecked(bl);
+                        setCheckBox(checkBox, checkBoxFieldCustom);
+                        jsonObject.replace(checkBoxFieldCustom.getAttribute(), bl);
+                        Callback callback = checkBoxFieldCustom.getCallback();
+                        if (callback != null) {
+                            callback.call(jsonObject);
+                        }
+                    }
+                });
+            }
+            else if (fieldCustom instanceof SlidingFieldCustom) {
+                SlidingFieldCustom slidingFieldCustom = (SlidingFieldCustom) fieldCustom;
+                View containerView = view.findViewById(slidingFieldCustom.getLayoutid());
+                if (slidingFieldCustom.getWidth() == 0) {
+                    containerView.getLayoutParams().width = ScreenUtils.getScreenWidth(AndroidTool.getMainActivity().getBaseContext());
+                } else {
+                    containerView.getLayoutParams().width = slidingFieldCustom.getWidth();
+                }
+
+                SlidingDeleteView slidingview = view.findViewById(slidingFieldCustom.getId());
+                slidingview.setEnable(true);
+                if (oldSliding != null) {
+                    oldSliding.removeOld();
+                }
+                oldSliding = slidingview;
+            }
+            else if (fieldCustom instanceof BtuFieldCustom) {
+                Button btu = (Button) v;
+                btu.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        BtuFieldCustom btuFieldCustom = (BtuFieldCustom) fieldCustom;
+                        //是否是检查选项按钮
+                        //ResultData<JSONObject> resultData = new ResultData<JSONObject>(0, jsonObject);
+                        if (btuFieldCustom.isCheck()) {
+                            //检查数据
+                            boolean checkresult = checkData(jsonObject, fs);
+                            if (!checkresult) {
+                                return;
+                            }
+                        }
+                        if (btuFieldCustom.isReturn() && !btuFieldCustom.isConfirm()) {
+                            myJSONObject.setJsonobject(jsonObject);
+                        }
+                        //先查 对象是否被更改
+                        if (btuFieldCustom.isCompare()) {
+                            if (jsonObject.toJSONString().equals(myJSONObject.getJsonobject().toJSONString())) {
+                                showAnsyTost(btuFieldCustom.getCompareMessage(), 2);
+                                return;
+                            }
+                        }
+                        //是否 弹出确认窗口
+                        if (btuFieldCustom.isConfirm()) {
+                            confirm(view.getContext(), btuFieldCustom.getConfirmmessage(), new MyCallback() {
+
+                                @Override
+                                public void call(ResultData resultData) {
+                                    if (resultData.getStatus() == 0) {
+                                        //检查是否被更改
+
+                                        myJSONObject.setJsonobject(jsonObject);
+                                        // Log.v("yb",myJSONObject.toString());
+                                        btuFieldCustom.OnClick(myJSONObject);
+
+                                    }
+                                }
+                            });
+                        } else {
+                            btuFieldCustom.OnClick(myJSONObject);
+                        }
+                    }
+                });
+            }
+            else  if(fieldCustom instanceof ImgFieldCusom){
+                ImageView img = (ImageView) v;
+                String path = jsonObject.getString("path");
+                if (FileTool.exitFile(path)) {
+                    img.setImageBitmap(BitmapFactory.decodeFile(jsonObject.getString("path")));
+                }else if(!Media.ADD_BUTTON.equals(myJSONObject.getId()) && fieldCustom instanceof  ImgFieldCusom){
+                    //img.setImageResource(R.mipmap.data_icon_picture_loss);
+                }
+               /* if (img instanceof ZQImageViewRoundOval) {
+                    ZQImageViewRoundOval iv_roundRect = (ZQImageViewRoundOval) img;
+                    iv_roundRect.setType(ZQImageViewRoundOval.TYPE_ROUND);
+                    iv_roundRect.setRoundRadius(10);//矩形凹行大小
+                }*/
+                img.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                            ImgFieldCusom imgFieldCustom = (ImgFieldCusom) fieldCustom;
+                            imgFieldCustom.onClick(myJSONObject);
+                        }
+                });
+            }
+            else if (fieldCustom instanceof ProgressFieldCusom) {
+                ProgressBar pb = (ProgressBar) v;
+                ProgressFieldCusom pbFieldCustom = (ProgressFieldCusom) fieldCustom;
+                pb.setProgress(jsonObject.getIntValue(pbFieldCustom.getAttribute()), true);
+            }
+            else  if(fieldCustom instanceof  EditFieldCusom){
+                EditText et = (EditText) v;
+                String attribute = fieldCustom.getAttribute();
+                String str = jsonObject.getString(attribute);
+                et.setText(str);
+                et.addTextChangedListener(new TextWatcher() {
+                    @Override
+                    public void onTextChanged(CharSequence s, int start, int before, int count) {
+                        // TODO Auto-generated method stub
+                    }
+
+                    @Override
+                    public void beforeTextChanged(CharSequence s, int start, int count,
+                                                  int after) {
+                        // TODO Auto-generated method stub
+                    }
+
+                    @RequiresApi(api = Build.VERSION_CODES.N)
+                    @Override
+                    public void afterTextChanged(Editable s) {
+                        String text = et.getText().toString();
+                        if ("".equals(text) && jsonObject.getString(fieldCustom.getAttribute()) == null) {
+                            return;
+                        }
+                        jsonObject.replace(fieldCustom.getAttribute(), text);
+                        // String aa ="123";1
+                        //jsonObject.replace("a","123");
+
+                    }
+                });
+            }
+            else {
+                TextView tv = (TextView)v;
+                String attribute = fieldCustom.getAttribute();
+                String str = jsonObject.getString(attribute);
+                tv.setText(str);
+            }
+        }
+    }
     /**
      * @param view
      * @param itemDataCustom
      * @param isEdit         是否直接修改
      */
     @SuppressLint("NewApi")
-    public static void setView(View view, ItemDataCustom itemDataCustom, boolean isEdit, int postion) {
+    public static void setView1(View view, ItemDataCustom itemDataCustom, boolean isEdit, int postion) {
         List<FieldCustom> fs = itemDataCustom.getFieldCustoms();
         //使用副本修改，
         final MyJSONObject myJSONObject = itemDataCustom.getMyJSONObject();

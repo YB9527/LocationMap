@@ -48,6 +48,7 @@ import com.esri.arcgisruntime.geometry.SpatialReference;
 import com.esri.arcgisruntime.layers.ArcGISTiledLayer;
 import com.esri.arcgisruntime.loadable.LoadStatus;
 import com.esri.arcgisruntime.mapping.ArcGISMap;
+import com.esri.arcgisruntime.mapping.view.BackgroundGrid;
 import com.esri.arcgisruntime.mapping.view.DefaultMapViewOnTouchListener;
 import com.esri.arcgisruntime.mapping.view.Graphic;
 import com.esri.arcgisruntime.mapping.view.GraphicsOverlay;
@@ -343,8 +344,9 @@ public class MapFragment extends Fragment {
             return;
         }
         mMapView.setAttributionTextVisible(false); //隐藏Esri logo
-        mMapView.setBackgroundColor(Color.WHITE);
-
+        //mMapView.setBackgroundColor(Color.WHITE);
+       // mMapView.setBackground(AndroidTool.getMainActivity().getResources().getDrawable(R.drawable.white1));
+        mMapView.setBackgroundGrid(new BackgroundGrid(0xffffff, 0xffffff, 1.0f, 100.0f));
         try {
             addData();
             addMarkGraphics();

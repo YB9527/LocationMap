@@ -9,9 +9,11 @@ import androidx.annotation.RequiresApi;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.channels.FileChannel;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -263,5 +265,43 @@ public class FileTool {
         }
        return false;
        // file.renameTo(new File("D:\\Java\\gitworkspace\\Coding\\src\\com\\stono\\thread2\\page0"+substring));
+    }
+
+    /**
+     * 将字节流写入为文件
+     *
+     * @param name
+     * @param binaryData
+     */
+    public static boolean saveFile(String name, byte[] binaryData) {
+        if(name == null || binaryData == null || binaryData.length == 0){
+            return false;
+        }
+        File file = new File(name);    //1、建立连接
+        Tool.exitsDir(file.getParent(), true);
+        OutputStream os = null;
+        try {
+            //2、选择输出流,以追加形式(在原有内容上追加) 写出文件 必须为true 否则为覆盖
+            os = new FileOutputStream(file, false);
+//            //和上一句功能一样，BufferedInputStream是增强流，加上之后能提高输出效率，建议
+//            os = new BufferedOutputStream(new FileOutputStream(file,true));
+            os.write(binaryData, 0, binaryData.length);    //3、写入文件
+            os.flush();    //将存储在管道中的数据强制刷新出去
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (os != null) {
+                try {
+                    os.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+
+                }
+            }
+        }
+        return true;
     }
 }

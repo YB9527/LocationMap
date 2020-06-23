@@ -18,13 +18,19 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.alibaba.fastjson.JSONObject;
 import com.xupu.locationmap.R;
 import com.xupu.locationmap.common.page.PhotoSingleActivty;
+import com.xupu.locationmap.common.po.Callback;
 import com.xupu.locationmap.common.po.Media;
 import com.xupu.locationmap.common.po.ViewHolderCallback;
 import com.xupu.locationmap.common.tools.AndroidTool;
+import com.xupu.locationmap.common.tools.FileTool;
+import com.xupu.locationmap.common.tools.JSONTool;
 import com.xupu.locationmap.common.tools.MediaTool;
+import com.xupu.locationmap.common.tools.OkHttpClientUtils;
 import com.xupu.locationmap.common.tools.TableTool;
+import com.xupu.locationmap.common.tools.Tool;
 import com.xupu.locationmap.projectmanager.view.FieldCustom;
 import com.xupu.locationmap.projectmanager.view.ImgFieldCusom;
 import com.xupu.locationmap.projectmanager.view.ItemDataCustom;
@@ -62,6 +68,11 @@ public class TaskFragment extends Fragment {
             Media media = meidaJson.getJsonobject().toJavaObject(Media.class);
             if (media.getMilepost() != null && media.getMilepost().equals(task.getId())) {
                 this.medias.add(meidaJson);
+                String path = media.getPath();
+                if (!FileTool.exitFile(path)) {
+                    //如果不存在，就在web上找
+
+                }
             }
         }
         this.task = task;
@@ -83,7 +94,7 @@ public class TaskFragment extends Fragment {
             public void onClick(MyJSONObject myJSONObject) {
                 if (myJSONObject.getId().equals("-1")) {
                     //第一个添加按钮
-                    MyJSONObject media =  MediaService.newMediaJSONObject(parent,task,0);
+                    MyJSONObject media = MediaService.newMediaJSONObject(parent, task, 0);
                     MediaTool.photo(TaskFragment.this, 101, media);
                     //AndroidTool.showAnsyTost(MediaService.getPath(media),0);
 
@@ -97,14 +108,13 @@ public class TaskFragment extends Fragment {
         });
         filedCustoms.add(new ViewFieldCustom(R.id.iv_delete) {
             @Override
-            public void OnClick(View view,MyJSONObject media) {
+            public void OnClick(View view, MyJSONObject media) {
                 myItemRecyclerViewAdapter.remove(media);
                 TableTool.delete(media);
                 //删除照片
                 MediaService.deleteFile(media);
             }
-        }.setConfirm(true,"确认要删除吗？"));
-
+        }.setConfirm(true, "确认要删除吗？"));
 
 
         //第一个添加 添加按钮 ，任务名
@@ -117,20 +127,52 @@ public class TaskFragment extends Fragment {
 
 
         TableDataCustom tableDataCustom = new TableDataCustom(fragmentItem, filedCustoms, medias);
-        myItemRecyclerViewAdapter = new MyItemRecyclerViewAdapter(tableDataCustom,recyclerView);
+        myItemRecyclerViewAdapter = new MyItemRecyclerViewAdapter(tableDataCustom, recyclerView);
 
         //recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext(), RecyclerView.HORIZONTAL, false));
-        recyclerView.setLayoutManager(new GridLayoutManager(getContext(),4));
+        recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 4));
         recyclerView.setAdapter(myItemRecyclerViewAdapter);
 
         myItemRecyclerViewAdapter.setLoadViewCallback(new ViewHolderCallback() {
             @Override
             public void call(MyItemRecyclerViewAdapter.ViewHolder holder, int position) {
-                if (position == medias.size()-1) {
+                //默认显示下载图片icon
+                ImageView imageView = holder.mView.findViewById(R.id.img);
+                if (position == medias.size() - 1) {
                     holder.mView.findViewById(R.id.iv_delete).setVisibility(View.GONE);
-                    ImageView imageView = holder.mView.findViewById(R.id.img);
-                   // imageView.getLayoutParams().height=150;
-                    //imageView.getLayoutParams().width=150;
+                    imageView.setImageResource(R.drawable.data_icon_add);
+                } else {
+                    MyJSONObject item = myItemRecyclerViewAdapter.getItem(position);
+                    Media media = item.getJsonobject().toJavaObject(Media.class);
+                    String path = media.getPath();
+                    File file = new File(path);
+                    /*如果文件不存在，就在网络上找*/
+                    if (file.exists()) {
+                        String url = Tool.getPhotoHostAddress() + path;
+                        new OkHttpClientUtils.GetBuild(url).photoBuild(path, new Callback<Boolean>() {
+                            @Override
+                            public void call(Boolean hasePhoto) {
+                                if (hasePhoto) {
+                                    getActivity().runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            //下载好了，就更新item
+                                            myItemRecyclerViewAdapter.notifyItemChanged(position);
+                                        }
+                                    });
+                                } /*else {
+                                    //照片失联
+                                    getActivity().runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            imageView.setImageResource(R.mipmap.data_icon_picture_loss);
+                                        }
+                                    });
+
+                                }*/
+                            }
+                        });
+                    }
                 }
             }
         });
@@ -139,14 +181,14 @@ public class TaskFragment extends Fragment {
     }
 
     private void initSelfPage(View view) {
-       // TextView tv= view.findViewById(R.id.title);
+        // TextView tv= view.findViewById(R.id.title);
         //tv.setText(TaskService.getTaskName(task));
-        Integer rid =view.getId();
+        Integer rid = view.getId();
         MyJSONObject jsonObject = task;
         List<FieldCustom> filedCustoms = new ArrayList<>();
-        filedCustoms.add(new FieldCustom(R.id.title,"taskname"));
-        ItemDataCustom itemDataCustom = new ItemDataCustom( rid,  jsonObject,  filedCustoms);
-        AndroidTool.setView(view,itemDataCustom,false,0);
+        filedCustoms.add(new FieldCustom(R.id.title, "taskname"));
+        ItemDataCustom itemDataCustom = new ItemDataCustom(rid, jsonObject, filedCustoms);
+        AndroidTool.setView(view, itemDataCustom, false, 0);
     }
 
     private String getResourcesUri(@DrawableRes int id) {
@@ -175,8 +217,8 @@ public class TaskFragment extends Fragment {
                 if (resultCode == RESULT_OK) {
                     // 将拍摄的照片显示出来
                     MyJSONObject media = (MyJSONObject) getActivity().getIntent().getSerializableExtra("media");
-                    TableTool.insert(media,TableTool.STATE_INSERT);
-                    myItemRecyclerViewAdapter.addItem(medias.size()-1, media);
+                    TableTool.insert(media, TableTool.STATE_INSERT);
+                    myItemRecyclerViewAdapter.addItem(medias.size() - 1, media);
                 }
                 break;
             default:

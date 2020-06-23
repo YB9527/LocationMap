@@ -84,7 +84,7 @@ public class NverTimeActivty extends AppCompatActivity {
     private void initView() {
         RecyclerView recyclerView = findViewById(R.id.recy);
 
-        int fragmentItem = R.layout.fragment_task_photo;
+        int fragmentItem = R.layout.fragment_nvertime_photo;
         List<FieldCustom> filedCustoms = new ArrayList<>();
         filedCustoms.add(new ImgFieldCusom(R.id.img, "path") {
             @Override

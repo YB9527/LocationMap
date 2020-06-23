@@ -63,6 +63,12 @@ public class Tool {
         String hostAddress = "http://192.168.30.105:9999/api/apidata/";
         return hostAddress;
     }
+    public static String getPhotoHostAddress() {
+
+        String hostAddress = "http://192.168.30.18:8012/";
+        return hostAddress;
+    }
+
 
     public static String getZTHostAddress() {
         return getHostAddress()+"data/";

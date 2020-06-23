@@ -25,6 +25,7 @@ import com.xupu.locationmap.common.po.ViewHolderCallback;
 import com.xupu.locationmap.common.tools.AndroidTool;
 import com.xupu.locationmap.common.tools.RedisTool;
 import com.xupu.locationmap.common.tools.TableTool;
+import com.xupu.locationmap.projectmanager.po.Customizing;
 import com.xupu.locationmap.projectmanager.view.BtuFieldCustom;
 import com.xupu.locationmap.projectmanager.view.FieldCustom;
 import com.xupu.locationmap.projectmanager.view.ItemDataCustom;
@@ -126,7 +127,10 @@ public class ProjectDownload extends AppCompatActivity {
                             //开始下载表结构
                             downFiledTable(project, i);
                             break;
-
+                        case 4:
+                            //开始下载附件列表
+                            downFuJianTable(project, i);
+                            break;
                         default:
                             //开始下载各种业务表格
 
@@ -139,6 +143,7 @@ public class ProjectDownload extends AppCompatActivity {
         ItemDataCustom itemDataCustom = new ItemDataCustom(rid, jsonObject, filedCustoms);
         AndroidTool.setView(findViewById(R.id.page), itemDataCustom, false, 0);
     }
+
 
     RecyclerView recyclerView;
 
@@ -157,10 +162,13 @@ public class ProjectDownload extends AppCompatActivity {
         MyJSONObject tasktable = newDownLoadPo("任务表", new JSONObject());
         MyJSONObject xzqtable = newDownLoadPo("行政区列表", new JSONObject());
         MyJSONObject fieldtable = newDownLoadPo("表结构", new JSONObject());
+        MyJSONObject fujiantable = newDownLoadPo("附件列表", new JSONObject());
         tasks.add(listable);
         tasks.add(tasktable);
         tasks.add(xzqtable);
         tasks.add(fieldtable);
+        tasks.add(fujiantable);
+
         recyclerView = findViewById(R.id.list);
         TableDataCustom tableDataCustom = new TableDataCustom(fragmentItem, fs, tasks);
         myItemRecyclerViewAdapter = new MyItemRecyclerViewAdapter(tableDataCustom, recyclerView);
@@ -248,6 +256,38 @@ public class ProjectDownload extends AppCompatActivity {
                             JSONObject tableItem = tableTasks.getJSONObject(i);
                             String tasktableid = ZTService.getTableIdByItemId(tableItem.getString("tableid"));
                             tableitemsMyJson.add(new MyJSONObject(tableItem.getString("id"), ZTService.TASK_LIST, tasktableid, tableItem));
+                        }
+                        //项目中表格保存
+                        TableTool.insertMany(tableitemsMyJson, 0);
+                        tableitemsMyJson.addAll(tableitemsMyJson);
+                        setProgress(tasks.get(taskindex).getJsonobject(), 3);
+                    }
+                });
+            }
+        });
+    }
+
+    /**
+     *下载系统表格
+     * @param project
+     * @param taskindex
+     *
+     */
+    private void downFuJianTable(MyJSONObject project, int taskindex) {
+        ZTService.getTableId(ZTService.FUJIAN_LIST, new Callback<String>() {
+            @Override
+            public void call(String tableid) {
+                ZTService.getTableItemList(tableid, new Callback<JSONArray>() {
+                    @Override
+                    public void call(JSONArray tableTasks) {
+                        setProgress(tasks.get(taskindex).getJsonobject(), 2);
+                        //表格任务列表,任务的tableid 不是表格的id 是所属表格的id
+                        List<MyJSONObject> tableitemsMyJson = new ArrayList<>();
+                        //项目中表格条目，
+                        for (int i = 0; i < tableTasks.size(); i++) {
+                            JSONObject tableItem = tableTasks.getJSONObject(i);
+                            String  patentid= tableItem.getString("oid");// 附件所属对象id
+                            tableitemsMyJson.add(new MyJSONObject(tableItem.getString("id"), Customizing.MEDIA, patentid, tableItem));
                         }
                         //项目中表格保存
                         TableTool.insertMany(tableitemsMyJson, 0);

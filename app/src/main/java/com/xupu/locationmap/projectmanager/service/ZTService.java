@@ -37,6 +37,8 @@ public class ZTService {
     public static String DK_List = "地块列表";
     public static String TASK_LIST = "任务列表_根据项目类型";
     public static String XZQ_LIST = "行政区列表";
+    public static String FUJIAN_LIST = "附件列表";
+
     private static Map<String, String> apidataList;
     //通过表格item 中的id 得到表格的id
     private static Map<String, String> tableIdMap;
@@ -97,6 +99,8 @@ public class ZTService {
                 tableIdMap.put("6a781e77-5f2d-4c71-bc59-2fd1d072d863", "90b42a43-b4a6-4ec2-b310-fc3251e7fe96");//村级区域
                 tableIdMap.put("ffd969bc-38cb-4a9b-8fac-e778f76f3acc", "c69de788-521c-4e4c-a3b1-56473b147614");//乡级区域
                 tableIdMap.put("fa4bed8e-7935-4511-a968-2aae5477e3bd", "1fe7ef50-dbae-497f-8d8e-777a30ab7fbe");//保护图斑
+
+
             }
         }
         return tableIdMap;
@@ -109,7 +113,7 @@ public class ZTService {
             AndroidTool.showAnsyTost("没有找到对应的表格,需要改后台api", 1);
             try {
                 Thread.sleep(2000);
-                throw new RuntimeException("没有找到对应的表格,需要改后台api");
+                throw new RuntimeException("没有找到对应的表格,需要改后台api:"+itemid);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

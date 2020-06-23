@@ -8,6 +8,8 @@ import com.alibaba.fastjson.JSONObject;
 import com.google.gson.Gson;
 
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
@@ -28,14 +30,18 @@ public class OkHttpClientUtils {
     static OkHttpClientUtils util;
     public static OkHttpClient client;
 
-
-    private OkHttpClientUtils() {
+    static {
         client = new OkHttpClient.Builder()
-                .connectTimeout(200, TimeUnit.SECONDS)
-                .writeTimeout(200, TimeUnit.SECONDS)
-                .readTimeout(200, TimeUnit.SECONDS)
+                .connectTimeout(10, TimeUnit.SECONDS)
+                .writeTimeout(10, TimeUnit.SECONDS)
+                .readTimeout(10, TimeUnit.SECONDS)
                 .build();
     }
+
+    private OkHttpClientUtils() {
+
+    }
+
 
     //单例的方法
     public static OkHttpClientUtils getInstance() {
@@ -91,6 +97,7 @@ public class OkHttpClientUtils {
     }
 
     private void get(Request request, JSONObjectRespon respon) {
+
         client.newCall(request).enqueue(new Callback() {
             //请求失败
             @Override
@@ -282,6 +289,33 @@ public class OkHttpClientUtils {
             }
             request = new Request.Builder().get().url(basicUrl + lastUrl).build();
             return request;
+        }
+
+        /**
+         *保存照片到本地
+         * @param filePath 保存路径
+         * @param callback 保存下来是true
+         */
+        public void photoBuild(String filePath, com.xupu.locationmap.common.po.Callback<Boolean> callback){
+            request = new Request.Builder().get().url(basicUrl).build();
+            client.newCall(request).enqueue(new Callback() {
+                @Override
+                public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                    callback.call(false);
+                }
+
+                @Override
+                public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                    if(response.isSuccessful()){
+                        byte[] bs = response.body().bytes();
+                        if(FileTool.saveFile(filePath,bs)){
+                            callback.call(true);
+                            return;
+                        }
+                        callback.call(false);
+                    }
+                }
+            });
         }
     }
 }

@@ -2,8 +2,16 @@ package com.xupu.locationmap;
 
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.xupu.locationmap.common.tools.OkHttpClientUtils;
 
+import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
+
+import java.io.IOException;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
 
 /**
  * Example local unit test, which will execute on the development machine (host).
@@ -13,11 +21,7 @@ import org.junit.Test;
 public class ExampleUnitTest {
     @Test
     public void addition_isCorrect() {
-        //TableDataCustom_TableName table = getTable("地块");
-        //table = getTable("地块");
-        Person person = new Person(null,"nan");
-        String aa= JSONObject.toJSONString(person, SerializerFeature.WriteMapNullValue);
-        aa ="123";
+
     }
 
     class Person {

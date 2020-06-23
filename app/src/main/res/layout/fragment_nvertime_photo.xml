@@ -26,7 +26,7 @@
             android:layout_height="80dp"
             android:layout_gravity="center"
             android:scaleType="centerCrop"
-            android:src="@mipmap/data_icon_media">
+            android:src="@drawable/data_icon_add">
         </com.xupu.locationmap.common.page.ZQImageViewRoundOval>
         <!--<ImageView
             android:id="@+id/img"
