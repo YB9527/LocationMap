@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteStatement;
 
 import com.alibaba.fastjson.JSONObject;
 import com.xupu.locationmap.exceptionmanager.MapException;
@@ -42,7 +43,7 @@ public class TableTool {
             } else {
                 MyJSONObject project = JSONObject.parseObject(projectJson, MyJSONObject.class);
                 ProjectService.setCurrentSugProject(project);
-                createDB(ProjectService.getName(project)+"_"+ProjectService.getProjectRandom(project));
+                createDB(ProjectService.getProjectDBName(project));
             }
         }
     }
@@ -175,23 +176,48 @@ public class TableTool {
     }
 
     /**
-     *
      * @param tablename 表格名称
-     * @param id 表格id
+     * @param id        表格id
      * @return
      */
     public static MyJSONObject findByTableNameAndId(String tablename, String id) {
-        return findByParentIdAndSmybol(tablename,id, "!=", STATE_DELETE);
+        return findByParentIdAndSmybol(tablename, id, "!=", STATE_DELETE);
+    }
+
+
+
+    public static  List<MyJSONObject> findLikeByParentid(String parentid){
+        //String sql = "select json from  redis where  mark like  '" + mark + "'";
+        String sql = "select " + FIELD + " from  " + Table_Name + " where  parentid  like  '" + parentid + "' And state !=" +STATE_DELETE ;
+        List<MyJSONObject> jsons = new ArrayList<>();
+        Cursor cursor = db.rawQuery(sql, null);
+        while (cursor.moveToNext()) {
+            MyJSONObject jsonObject = cursorToMyJSONObject(cursor);
+            jsons.add(jsonObject);
+        }
+        return jsons;
+    }
+
+    public static  List<MyJSONObject> findLikeByParentidAndTable(String parentid,String tablename){
+        //String sql = "select json from  redis where  mark like  '" + mark + "'";
+        String sql = "select " + FIELD + " from  " + Table_Name + " where  parentid  like  '" + parentid + "'AND tablename =  '" + tablename + "' And state !=" +STATE_DELETE ;
+        List<MyJSONObject> jsons = new ArrayList<>();
+        Cursor cursor = db.rawQuery(sql, null);
+        while (cursor.moveToNext()) {
+            MyJSONObject jsonObject = cursorToMyJSONObject(cursor);
+            jsons.add(jsonObject);
+        }
+        return jsons;
     }
 
     private static MyJSONObject findByParentIdAndSmybol(String tablename, String id, String smybol, int state) {
 
-        String sql = "select " + FIELD + "  from " + Table_Name + " where  tablename =  '" + tablename + "' AND id =  '" + id + "'AND state " + smybol + "'" + state + "'";
+        String sql = "select " + FIELD + "  from " + Table_Name + " where  tablename =  '" + tablename + "' AND id =  '" + id + "' AND state " + smybol + "'" + state + "'";
 
         Cursor cursor = db.rawQuery(sql, null);
         while (cursor.moveToNext()) {
             MyJSONObject jsonObject = cursorToMyJSONObject(cursor);
-           return jsonObject;
+            return jsonObject;
         }
         return null;
 
@@ -223,14 +249,14 @@ public class TableTool {
         values.put("json", myJSONObject.getJson());
         values.put("deletechild", myJSONObject.getDeletechild());
         values.put("tableid", myJSONObject.getTableid());
-        if(myJSONObject.getState() != STATE_INSERT){
+        if (myJSONObject.getState() != STATE_INSERT) {
             values.put("state", STATE_UPDATE);
         }
         return db
                 .update(Table_Name, values, "id" + " = ?", new String[]{myJSONObject.getId()});
     }
 
-    public static int updateById(MyJSONObject myJSONObject,int state) {
+    public static int updateById(MyJSONObject myJSONObject, int state) {
         myJSONObject.toJson();
         ContentValues values = new ContentValues();
         values.put("tablename", myJSONObject.getTablename());
@@ -242,6 +268,45 @@ public class TableTool {
         return db
                 .update(Table_Name, values, "id" + " = ?", new String[]{myJSONObject.getId()});
     }
+
+    public static boolean insertBySql1(List<MyJSONObject> list, int state) {
+
+
+        try {  //这里可以优化采用java7新特性 try-catch-resource。
+            String sql = "insert into " + Table_Name + "("
+                    + "id,"// 包名
+                    + "tablename,"// 账号
+                    + "parentid,"// 来源
+                    + "json,"// PC mac 地址
+                    + "deletechild,"// 手机唯一标识
+                    + "tableid,"// 手机IMEI
+                    + "state"// 安装状态
+                    + ") " + "values(?,?,?,?,?,?,?)";
+            SQLiteStatement stat = db.compileStatement(sql);  //预编译Sql语句避免重复解析Sql语句
+
+            for (MyJSONObject remoteAppInfo : list) {
+                stat.bindString(1, remoteAppInfo.getId());
+                stat.bindString(2, remoteAppInfo.getTablename());
+                stat.bindString(3, remoteAppInfo.getParentid());
+                stat.bindString(4, remoteAppInfo.getJson());
+                stat.bindLong(5, remoteAppInfo.getDeletechild());
+
+                stat.bindString(6, remoteAppInfo.getTableid());
+                stat.bindLong(7, state);
+                long result = stat.executeInsert();
+                if (result < 0) {
+                    return false;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+        db.endTransaction();
+
+        return true;
+    }
+
     /**
      * 保存对象
      *
@@ -249,7 +314,8 @@ public class TableTool {
      */
     public static boolean insert(MyJSONObject myJSONObject, int state) {
         try {
-            myJSONObject.toJson();
+
+            //myJSONObject.toJson();
             ContentValues values = new ContentValues();
             values.put("id", myJSONObject.getId());
             values.put("tablename", myJSONObject.getTablename());
@@ -274,47 +340,60 @@ public class TableTool {
      *
      * @param list
      */
-    public static boolean insertMany(List<MyJSONObject> list, int state) {
+    public synchronized static boolean insertMany(List<MyJSONObject> list, int state) {
+
+        //SQLiteDatabase db = DB .getInstance(context).getWritableDatabase();
+
+        //db.beginTransaction();
         for (MyJSONObject myJSONObject : list) {
             if (!insert(myJSONObject, state)) {
                 return false;
             }
         }
+        //db.endTransaction();
         return true;
     }
 
     /**
      * 先检查有没有子节点，如果没有才能删除
      * 只是改变了对象的状态，并没有删除
-     *
+     * <p>
      * 如果以前的状态时新增状态那么就直接删除
+     *
      * @param myJSONObject
      */
     public static boolean delete(MyJSONObject myJSONObject) {
-        List<MyJSONObject> childs = findByParentId(myJSONObject.getId());
+        if (myJSONObject.getState() == STATE_INSERT) {
+            deletefinal(myJSONObject);
+        } else {
+            myJSONObject.setState(STATE_DELETE);
+           int count =  updateById(myJSONObject, STATE_DELETE);
+        }
+        return  true;
+        /*List<MyJSONObject> childs = findByParentId(myJSONObject.getId());
         boolean flag = true;
         if (Tool.isEmpty(childs)) {
             flag = true;
             //deleteById(myJSONObject.getId());
-            if(myJSONObject.getState() == STATE_INSERT){
-               deletefinal(myJSONObject);
-            }else{
+            if (myJSONObject.getState() == STATE_INSERT) {
+                deletefinal(myJSONObject);
+            } else {
                 myJSONObject.setState(STATE_DELETE);
-                updateById(myJSONObject,STATE_DELETE);
+                updateById(myJSONObject, STATE_DELETE);
             }
 
         } else {
             for (MyJSONObject js : childs) {
                 if (js.getDeletechild() == 0) {
                     //删除地块改为修改状态
-                    if(myJSONObject.getState() == STATE_INSERT){
+                    if (myJSONObject.getState() == STATE_INSERT) {
                         deletefinal(myJSONObject);
                         deletefinal(js);
-                    }else{
+                    } else {
                         myJSONObject.setState(STATE_DELETE);
                         js.setState(STATE_DELETE);
-                        updateById(myJSONObject,STATE_DELETE);
-                        updateById(js,STATE_DELETE);
+                        updateById(myJSONObject, STATE_DELETE);
+                        updateById(js, STATE_DELETE);
                     }
                     //deleteByParentId(myJSONObject.getId());
                     //deleteById(myJSONObject.getId());
@@ -324,7 +403,7 @@ public class TableTool {
             AndroidTool.showAnsyTost("有子对象无法删除", 1);
             return false;
         }
-        return true;
+        return true;*/
     }
 
     /**
@@ -371,6 +450,7 @@ public class TableTool {
         int count = db.delete(Table_Name, "id = ?", new String[]{id});
         return count;
     }
+
 
     /**
      * 批量修改

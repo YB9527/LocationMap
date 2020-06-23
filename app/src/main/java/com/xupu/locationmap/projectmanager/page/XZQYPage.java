@@ -18,6 +18,7 @@ import com.xupu.locationmap.common.po.ViewHolderCallback;
 import com.xupu.locationmap.common.tools.AndroidTool;
 import com.xupu.locationmap.common.tools.TableTool;
 import com.xupu.locationmap.common.tools.Tool;
+import com.xupu.locationmap.projectmanager.po.MapResult;
 import com.xupu.locationmap.projectmanager.view.BtuFieldCustom;
 import com.xupu.locationmap.projectmanager.view.EditFieldCusom;
 import com.xupu.locationmap.projectmanager.view.FieldCustom;
@@ -37,6 +38,7 @@ public class XZQYPage extends AppCompatActivity {
     AddItemFragment addItemFragment;
     ItemFragment itemFragment;
 
+    private MyJSONObject oldXZQY;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +49,7 @@ public class XZQYPage extends AppCompatActivity {
         init();
         //initAddItemFragment();
         initTitle();
+
     }
     private void initTitle() {
         AndroidTool.addTitleFragment(this, "行政区域", R.mipmap.topnav_icon_new, "新增", new Callback() {
@@ -70,6 +73,7 @@ public class XZQYPage extends AppCompatActivity {
 
             //当前项目 放到第一个
             currentXZQY = XZQYService.getCurrentXZDM();
+            oldXZQY = currentXZQY;
             if (currentXZQY != null) {
                 String currentProjectId = currentXZQY.getId();
                 currentXZQY = null;
@@ -110,8 +114,12 @@ public class XZQYPage extends AppCompatActivity {
                         @Override
                         public void call(ResultData resultData) {
                             if (resultData.getStatus() == 0) {
+                                if(!myJSONObject.equals(oldXZQY)){
+                                    setResult(MapResult.XZQYCHANGE);
+                                }else{
+                                    setResult(MapResult.NONE);
+                                }
                                 setCurrentXZQY(myJSONObject);
-
                             }
                         }
                     });
@@ -222,6 +230,7 @@ public class XZQYPage extends AppCompatActivity {
                     public void call(ResultData resultData) {
                         if (resultData.getStatus() == 0) {
                             XZQYService.setCurrentXZDM(myJSONObject);
+
                             AndroidTool.showAnsyTost("当前区域是：" + XZQYService.getCaption(myJSONObject), 0);
                         }
                     }
@@ -282,4 +291,5 @@ public class XZQYPage extends AppCompatActivity {
             btuAdd.setVisibility(View.GONE);
         }
     }
+
 }

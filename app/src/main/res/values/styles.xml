@@ -33,16 +33,12 @@
         <item name="android:textColorHint">#f00</item>
     </style>
     <style name="Tabtext">
-
         <item name="android:textColor">@drawable/selector_tab_text2</item>
         <item name="android:textSize">12sp</item>
     </style>
 
 
-    <style name="Btu">
-        <item name="android:background">@drawable/btn_selector</item>
-        <item name="height">20dp</item>
-    </style>
+
 
     <style name="titlebarstyle" parent="AppTheme.NoActionBar">
         <item name="android:windowTitleSize">318dp</item>
@@ -114,4 +110,20 @@
     <declare-styleable name="MaxHeightRecyclerView">
         <attr name="maxHeight" format="dimension" />
     </declare-styleable>
+
+    <style name="nv_click">
+        <item name="android:background">@drawable/ripple_bg</item>
+    </style>
+    <style name="item_click">
+        <item name="android:background">@drawable/ripple_bg</item>
+    </style>
+    <style name="title_click">
+        <item name="android:background">@drawable/ripple_title</item>
+    </style>
+
+    <style name="RippleWhite">
+        <item name="android:colorControlHighlight" >@color/colorPrimary</item>
+        <item name="android:radius">50dp</item>
+    </style>
+
 </resources>

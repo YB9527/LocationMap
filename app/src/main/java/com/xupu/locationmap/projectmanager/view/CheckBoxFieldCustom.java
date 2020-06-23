@@ -1,5 +1,7 @@
 package com.xupu.locationmap.projectmanager.view;
 
+import android.content.Intent;
+
 import com.xupu.locationmap.common.po.Callback;
 
 public class CheckBoxFieldCustom extends FieldCustom {
@@ -32,5 +34,29 @@ public class CheckBoxFieldCustom extends FieldCustom {
 
     public void setItemRid(Integer itemRid) {
         this.itemRid = itemRid;
+    }
+
+    private Integer closeImg;
+    private Integer openImg;
+    public FieldCustom setImg(int closeImg, int openImg) {
+        this.closeImg = closeImg;
+        this.openImg =openImg;
+        return  this;
+    }
+
+    public Integer getCloseImg() {
+        return closeImg;
+    }
+
+    public void setCloseImg(Integer closeImg) {
+        this.closeImg = closeImg;
+    }
+
+    public Integer getOpenImg() {
+        return openImg;
+    }
+
+    public void setOpenImg(Integer openImg) {
+        this.openImg = openImg;
     }
 }

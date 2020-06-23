@@ -72,9 +72,9 @@ public class XZQYService {
     }
 
     public static String getCurrentCode() {
-        return "411627205222";
+        //return "411627102";
 
-        //return  getCode(getCurrentXZDM());
+        return  getCode(getCurrentXZDM());
     }
 
     /**
@@ -83,6 +83,11 @@ public class XZQYService {
      * @return
      */
     public static List<MyJSONObject> findDatasByXZQYCode(String currentCode) {
-        return TableTool.findByParentId(XZQYService.getCurrentCode());
+
+        return TableTool.findLikeByParentid(XZQYService.getCurrentCode()+"%");
+    }
+
+    public static List<MyJSONObject> findDatasByXZQYCode(String tablename, String code) {
+        return TableTool.findLikeByParentidAndTable(code+"%",tablename);
     }
 }

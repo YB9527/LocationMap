@@ -5,23 +5,31 @@ public interface MapResult {
     /**
      * 图层改变
      */
-    final int layer = 20;
+    final int LAYER = 20;
+
+
     /**
      * 定位
      */
-    final int datalocation = 21;
+    final int DATALOCATION = 21;
     /**
      * 数据被改变
      */
-    final int datachange = 22;
-
+    final int DATACHANGE = 22;
+    /**
+     * 行政区域被改变
+     */
+    final int XZQYCHANGE = 23;
     /**
      * 删除数据
      */
-    final  int deletedata = 1;
+    final  int DELETEDATA = 1;
     /**
      * 修改数据
      */
-    final  int updatedata = 2;
+    final  int UPDATEDATA = 2;
+
+    final int NONE=-100;
+
 
 }

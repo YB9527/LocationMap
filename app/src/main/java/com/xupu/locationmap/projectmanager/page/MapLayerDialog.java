@@ -1,10 +1,13 @@
 package com.xupu.locationmap.projectmanager.page;
 
 import android.content.DialogInterface;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -48,9 +51,14 @@ public class MapLayerDialog extends RightDialogFragment {
 
     private final static String CURRENT_LAYER = "CURRENT_LAYER";
     private static LowImage currentlowImage;
-
+    private static LowImage oldLayer;
     static {
         currentlowImage = RedisTool.findRedis(CURRENT_LAYER, LowImage.class);
+        oldLayer = currentlowImage;
+    }
+
+    public static  LowImage getCurrentLayer(){
+        return  currentlowImage;
     }
 
     public MapLayerDialog() {
@@ -59,7 +67,6 @@ public class MapLayerDialog extends RightDialogFragment {
 
     public MapLayerDialog(Integer width, Integer height) {
         super(width, height);
-
     }
 
 
@@ -69,7 +76,8 @@ public class MapLayerDialog extends RightDialogFragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-
+        getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        getDialog().getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         View view = super.onCreateView(inflater, container, savedInstanceState);
 
 
@@ -81,7 +89,7 @@ public class MapLayerDialog extends RightDialogFragment {
         List<FieldCustom> fs = new ArrayList<>();
         //项目名称
         fs.add(new FieldCustom(R.id.tv_name, "name"));
-        fs.add(new CheckBoxFieldCustom(R.id.cb_isslect, LowMapManager.LOWIMAGE_SelectMark, R.id.cb_isslect));
+        fs.add(new CheckBoxFieldCustom(R.id.cb_isslect, LowMapManager.LOWIMAGE_SelectMark, R.id.cb_isslect).setImg(R.mipmap.layer_icon_eyesclose, R.mipmap.layer_icon_eyesopen));
         //点击设置为当前图层
         fs.add(new ViewFieldCustom(R.id.item) {
             @Override
@@ -105,16 +113,12 @@ public class MapLayerDialog extends RightDialogFragment {
                             }
                         }
                     });
-
-
-
-
                 }
             }
         });
 
         //图层缩放至
-        fs.add(new ViewFieldCustom(R.id.tv_location) {
+        fs.add(new ViewFieldCustom(R.id.iv_location) {
             @Override
             public void OnClick(View view, MyJSONObject myJSONObject) {
                 LowImage lowImage = myJSONObject.getJsonobject().toJavaObject(LowImage.class);
@@ -123,7 +127,7 @@ public class MapLayerDialog extends RightDialogFragment {
             }
         });
         //图层表格数据
-        fs.add(new ViewFieldCustom(R.id.tv_datatable) {
+        fs.add(new ViewFieldCustom(R.id.iv_datatable) {
             @Override
             public void OnClick(View view, MyJSONObject myJSONObject) {
                 LowImage lowImage = myJSONObject.getJsonobject().toJavaObject(LowImage.class);
@@ -131,8 +135,7 @@ public class MapLayerDialog extends RightDialogFragment {
                 getDialogCallback().call(MapFragment.LOOK_DATATABEL, lowImage);
             }
         });
-        //侧滑功能
-        fs.add(new SlidingFieldCustom(R.id.slidingview, R.id.item).setWidth(getWidth()));
+
 
         RecyclerView recyclerView = view.findViewById(R.id.recy);
         TableDataCustom tableDataCustom = new TableDataCustom(R.layout.item_layer_map, fs, myShowLayers).setEdit(true);
@@ -175,6 +178,10 @@ public class MapLayerDialog extends RightDialogFragment {
             //修改过图层数据
             MapService.saveMapLayerStats(layerStatus);
             getDialogCallback().call(MapFragment.MAPLAYER_ChANGE, layerStatus);
+        }
+        //检查当前图层是否被更改
+        if(currentlowImage != null && oldLayer != null && !oldLayer.equals(currentlowImage)){
+            getDialogCallback().call(MapFragment.CURRENT_LAYER_CHANGE, currentlowImage);
         }
     }
 }

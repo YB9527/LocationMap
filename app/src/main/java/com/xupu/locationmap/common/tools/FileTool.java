@@ -104,8 +104,13 @@ public class FileTool {
             if (!dir.exists()) {
                 dir.mkdirs();
             }
+           File newFile =  new File(dest);
+            if(newFile.exists()){
+               newFile.delete();
+            }
+            boolean bl= newFile.createNewFile();
             input = new FileInputStream(new File(source)).getChannel();
-            output = new FileOutputStream(new File(dest)).getChannel();
+            output = new FileOutputStream(newFile).getChannel();
             output.transferFrom(input, 0, input.size());
         } catch (Exception e) {
             return false;

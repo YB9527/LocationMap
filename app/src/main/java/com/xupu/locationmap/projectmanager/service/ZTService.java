@@ -12,6 +12,7 @@ import com.xupu.locationmap.common.tools.JSONObjectRespon;
 import com.xupu.locationmap.common.tools.OkHttpClientUtils;
 import com.xupu.locationmap.common.tools.TableTool;
 import com.xupu.locationmap.common.tools.Tool;
+import com.xupu.locationmap.common.tools.ZTLimitRespon;
 import com.xupu.locationmap.common.tools.ZTRespon;
 import com.xupu.locationmap.projectmanager.po.MyJSONObject;
 import com.xupu.locationmap.projectmanager.po.TableItem;
@@ -83,20 +84,6 @@ public class ZTService {
         });
     }
 
-    /**
-     * @param tableid  项目表格id
-     * @param callback
-     */
-    public static void getTableItemList(String tableid, final Callback<JSONArray> callback) {
-        //拿到所有项目
-        new OkHttpClientUtils.GetBuild().addUrl(tableid + "/p").ztBuildToGet(new ZTRespon() {
-            @Override
-            public void onSuccess(JSONArray projects) {
-
-                callback.call(projects);
-            }
-        });
-    }
 
     public static Map<String, String> getTableIdMap() {
         synchronized (ZTService.class) {
@@ -141,21 +128,21 @@ public class ZTService {
 
     /**
      * 得到底图图层的 条目item
+     *
      * @return
      */
     public static List<MyJSONObject> getLayerTableItems() {
         List<MyJSONObject> tableItems = getTableItems();
         List<MyJSONObject> layerTableItems = new ArrayList<>();
-        for (MyJSONObject myJSONObject :tableItems){
-            if(myJSONObject.getJsonobject().getString(TableType.TYPE_MARK).equals(TableType.LAYER_TYPE)){
+        for (MyJSONObject myJSONObject : tableItems) {
+            if (myJSONObject.getJsonobject().getString(TableType.TYPE_MARK).equals(TableType.LAYER_TYPE)) {
                 layerTableItems.add(myJSONObject);
             }
         }
-        return  layerTableItems;
+        return layerTableItems;
     }
 
     /**
-     *
      * @return
      */
     private static List<MyJSONObject> getTableItems() {
@@ -163,45 +150,79 @@ public class ZTService {
     }
 
     public static String getTableName(MyJSONObject tableitem) {
-        return  tableitem.getJsonobject().getString("aliasname");
+        return tableitem.getJsonobject().getString("aliasname");
     }
 
     /**
      * 得到表格item 对象
+     *
      * @param tableid
      * @return
      */
     public static MyJSONObject getTableItem(String tableid) {
-       return TableTool.findByTableNameAndId(PROJECT_TABLE_LIST,tableid);
+        return TableTool.findByTableNameAndId(PROJECT_TABLE_LIST, tableid);
     }
 
     /**
      * 根据表格名字获取 tableitem
+     *
      * @param tablename
      * @return
      */
     public static MyJSONObject getTableItemByTablename(String tablename) {
 
         List<MyJSONObject> tableItemall = getTableItemAll();
-        for(MyJSONObject tableItem : tableItemall){
-            if(tableItem.getJsonobject().getString(TableItem.aliasname).equals(tablename)){
-                return  tableItem;
+        for (MyJSONObject tableItem : tableItemall) {
+            if (tableItem.getJsonobject().getString(TableItem.aliasname).equals(tablename)) {
+                return tableItem;
             }
         }
-        return  null;
+        return null;
     }
-    private static   List<MyJSONObject> tableItemall;
+
+    private static List<MyJSONObject> tableItemall;
+
     /**
      * 获取项目所有的关系列表
+     *
      * @return
      */
     public static List<MyJSONObject> getTableItemAll() {
-        synchronized (ZTService.class){
-            if(tableItemall == null){
+        synchronized (ZTService.class) {
+            if (tableItemall == null) {
                 tableItemall = TableTool.findByTableName(ZTService.PROJECT_TABLE_LIST);
             }
         }
-       return tableItemall;
+        return tableItemall;
+    }
+
+    /**
+     * @param tableid  项目表格id
+     * @param callback
+     */
+    public static void getTableItemList(String tableid, final Callback<JSONArray> callback) {
+        //拿到所有项目
+        new OkHttpClientUtils.GetBuild().addUrl(tableid + "/p").ztBuildToGet(new ZTRespon() {
+            @Override
+            public void onSuccess(JSONArray projects) {
+                callback.call(projects);
+            }
+        });
+    }
+
+    /**
+     * 分页请求数据
+     *
+     * @param tableid
+     * @param callback
+     */
+    public static void getTableItemListLimt(String tableid, int pageindex, int limit, Callback<JSONArray> callback) {
+        new OkHttpClientUtils.GetBuild(Tool.getHostAddress() + "datapage/").addUrl(tableid + "/" + pageindex + "/" + limit + "/p").ztBuildToGet(new ZTLimitRespon() {
+            @Override
+            public void onSuccess(JSONArray httpRespon) {
+                callback.call(httpRespon);
+            }
+        });
     }
 
     /**
@@ -218,4 +239,22 @@ public class ZTService {
         }
         return null;
     }*/
+
+    /**
+     * 请求表格有多少条记录
+     *
+     * @param tableid
+     */
+    public static void getTableItemTotal(String tableid, Callback<Integer> callback) {
+        new OkHttpClientUtils.GetBuild(Tool.getHostAddress() + "datapage/").addUrl(tableid + "/" + 1 + "/" + 1 + "/p").buildToGet(new JSONObjectRespon() {
+            @Override
+            public void onSuccess(JSONObject httpRespon) {
+                JSONObject jsonObject = httpRespon.getJSONObject("data");
+                Integer total = jsonObject.getInteger("total");
+                callback.call(total);
+            }
+        });
+
+
+    }
 }

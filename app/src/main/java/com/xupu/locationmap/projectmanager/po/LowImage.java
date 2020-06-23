@@ -10,6 +10,10 @@ public class LowImage {
     private int type;
     private  boolean select;
     private  String  size;
+    /**
+     * 是否已经加载了
+     */
+    private boolean isload;
     public LowImage() {
 
     }
@@ -17,6 +21,14 @@ public class LowImage {
         this.name = name;
         this.path = path;
         this.type = type;
+    }
+
+    public boolean isIsload() {
+        return isload;
+    }
+
+    public void setIsload(boolean isload) {
+        this.isload = isload;
     }
 
     public boolean isSelect() {

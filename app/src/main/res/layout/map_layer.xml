@@ -1,27 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    <RelativeLayout
-        android:background="?attr/colorPrimary"
-        android:orientation="horizontal"
+    android:layout_height="match_parent"
+
+    >
+    <LinearLayout
+        android:layout_centerInParent="true"
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/item_height_40">
-        <TextView
-          android:layout_centerVertical="true"
-            android:text="图层管理"
-            style="@style/titlebarstyle"
-            android:layout_marginLeft="@dimen/dp_10"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-    </RelativeLayout>
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recy"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:background="@color/pageback"
-        app:layoutManager="LinearLayoutManager"/>
-</LinearLayout>
+        android:layout_height="match_parent"
+        >
+        <RelativeLayout
+            android:background="@drawable/bg_white_round5"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/item_height_50">
+            <ImageView
+                android:id="@+id/num1"
+                android:paddingLeft="20dp"
+                android:layout_centerVertical="true"
+                android:src="@mipmap/floatinglayer_icon_layers_white"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+            <TextView
+                android:layout_centerVertical="true"
+                android:text="图层管理"
+                style="@style/titlebarstyle"
+                android:layout_marginLeft="@dimen/dp_10"
+                android:layout_toRightOf="@+id/num1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </RelativeLayout>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recy"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@drawable/bg_white_round4"
+            app:layoutManager="LinearLayoutManager"/>
+        <View
+            android:visibility="invisible"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"/>
+    </LinearLayout>
+
+
+</RelativeLayout>

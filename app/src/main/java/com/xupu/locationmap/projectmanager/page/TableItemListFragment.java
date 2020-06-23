@@ -7,14 +7,12 @@ import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.ogaclejapan.smarttablayout.SmartTabLayout;
 import com.xupu.locationmap.R;
@@ -98,8 +96,8 @@ public class TableItemListFragment extends Fragment {
             //int a = R.id.title;
             //a = R.id.info1;
             //a = R.id.info2;
-            if(tableDataCustom == null){
-                AndroidTool.showAnsyTost("表格xml配置中，没有添加这个表格："+tablename,1);
+            if (tableDataCustom == null) {
+                AndroidTool.showAnsyTost("表格xml配置中，没有添加这个表格：" + tablename, 1);
                 return;
             }
             tableDataCustom.setFragmentItem(R.layout.fragment_item);
@@ -120,36 +118,36 @@ public class TableItemListFragment extends Fragment {
             fs.add(new ViewFieldCustom(R.id.item_info) {
                 @Override
                 public void OnClick(View view, MyJSONObject myJSONObject) {
-                    toInfoPage(TableItemListFragment.this,myJSONObject);
+                    toInfoPage(TableItemListFragment.this, myJSONObject);
                 }
             });
-            //定位
+
             filedCustom = new ViewFieldCustom(R.id.v_location) {
                 @Override
                 public void OnClick(View view, MyJSONObject myJSONObject) {
                     Intent intent = new Intent();
-                    intent.putExtra("data",myJSONObject);
-                    getActivity().setResult(MapResult.datalocation,intent);
+                    intent.putExtra("data", myJSONObject);
+                    getActivity().setResult(MapResult.DATALOCATION, intent);
                     getActivity().finish();
                 }
             };
+
+            fs.add(filedCustom);
             //检查类型，如果是图形才有地位
             MyJSONObject tableItem = ZTService.getTableItemByTablename(tablename);
-            if(! tableItem.getJsonobject().getString(TableItem.type).equals(TableType.LAYER_TYPE) ){
+            if (!tableItem.getJsonobject().getString(TableItem.type).equals(TableType.LAYER_TYPE)) {
+                //定位
                 filedCustom.setVisable(View.GONE);
             }
-            fs.add(filedCustom);
-
 
 
             if (haseTask) {
                 //到多媒体
                 filedCustom = new ViewFieldCustom(R.id.v_tomedia) {
                     @Override
-                    public void OnClick(View view,MyJSONObject myJSONObject) {
+                    public void OnClick(View view, MyJSONObject myJSONObject) {
                         //跳到任务界面
-                        toMediaPage(TableItemListFragment.this,myJSONObject);
-
+                        toMediaPage(TableItemListFragment.this, myJSONObject);
                     }
                 };
                 fs.add(filedCustom);
@@ -159,7 +157,8 @@ public class TableItemListFragment extends Fragment {
             }*/
 
             String code = XZQYService.getCurrentCode();
-            List<MyJSONObject> items = TableTool.findByTableNameAndParentId(tablename, code);
+            //List<MyJSONObject> items = TableTool.findByTableNameAndParentId(tablename, code);
+            List<MyJSONObject> items = XZQYService.findDatasByXZQYCode(tablename, code);
             tableDataCustom.setList(items);
             mColumnCount = tableDataCustom.getList().size();
         }
@@ -178,7 +177,7 @@ public class TableItemListFragment extends Fragment {
         activity.startActivity(intent);
     }
 
-    public static void toInfoPage(Activity activity, MyJSONObject obj){
+    public static void toInfoPage(Activity activity, MyJSONObject obj) {
         //AndroidTool.showAnsyTost("详请", 1);
         Intent intent = new Intent(activity, ObjectInfoActivty.class);
         intent.putExtra("id", obj.getId());
@@ -192,7 +191,7 @@ public class TableItemListFragment extends Fragment {
         fragment.startActivity(intent);
     }
 
-    public static void toInfoPage(Fragment fragment, MyJSONObject obj){
+    public static void toInfoPage(Fragment fragment, MyJSONObject obj) {
         //AndroidTool.showAnsyTost("详请", 1);
         Intent intent = new Intent(fragment.getActivity(), ObjectInfoActivty.class);
         intent.putExtra("id", obj.getId());
@@ -203,11 +202,11 @@ public class TableItemListFragment extends Fragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        myOnActivityResult(requestCode,resultCode,data);
+        myOnActivityResult(requestCode, resultCode, data);
     }
 
 
-    public  void myOnActivityResult(int requestCode, int resultCode, @Nullable Intent data){
+    public void myOnActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         switch (requestCode) {
             case 1:
                 //详情页面返回
@@ -243,7 +242,6 @@ public class TableItemListFragment extends Fragment {
     }
 
 
-
     /**
      * 使用java反射机制
      * 设置Activity不用findViewbyid
@@ -266,7 +264,7 @@ public class TableItemListFragment extends Fragment {
         } else {
             //recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
         }
-        myItemRecyclerViewAdapter = new MyItemRecyclerViewAdapter(tableDataCustom,recyclerView);
+        myItemRecyclerViewAdapter = new MyItemRecyclerViewAdapter(tableDataCustom, recyclerView);
         boolean flag = false;
         /**
          * 因为缓存问题，替换到当前 myItemRecyclerViewAdapter
@@ -301,7 +299,7 @@ public class TableItemListFragment extends Fragment {
             public void call(MyItemRecyclerViewAdapter.ViewHolder holder, int position) {
                 //如果没有任务，隐藏多媒体图标
                 if (!haseTask) {
-                    View v =  holder.mView.findViewById(R.id.v_tomedia);
+                    View v = holder.mView.findViewById(R.id.v_tomedia);
                     v.setVisibility(View.GONE);
                 }
                 initTitelLinstener();
@@ -349,12 +347,12 @@ public class TableItemListFragment extends Fragment {
     public void remove(MyJSONObject jsonObject) {
         myItemRecyclerViewAdapter.remove(jsonObject);
         checkHasDataAndShow();
-        getActivity().setResult(MapResult.datachange,null);
+        getActivity().setResult(MapResult.DATACHANGE, null);
     }
 
-    public  void update(MyJSONObject jsonObject) {
+    public void update(MyJSONObject jsonObject) {
         myItemRecyclerViewAdapter.update(jsonObject);
-        getActivity().setResult(MapResult.datachange,null);
+        getActivity().setResult(MapResult.DATACHANGE, null);
     }
 
     @Override

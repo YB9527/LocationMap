@@ -5,7 +5,7 @@
  <!--   <color name="colorAccent">#fffea208</color>-->
    <color name="colorPrimary">#409eff</color>
    <color name="colorPrimaryDark">#409eff</color>
-
+  <color name="colorPrimaryDark2">#ff03a9f4</color>
     <!--<color name="colorPrimary">#008577</color>
    <color name="colorPrimaryDark">#008577</color>
   <color name="colorPrimaryDark">#00574B</color>-->
@@ -201,5 +201,7 @@
  <color name="tab_bottom_selected">#46c01b</color>
  <color name="github_color">#24292E</color>
 
+ <color name="colorWhite">#ffffff</color>
+ <color name="text_Grey">#c1c1c2</color>
 
 </resources>

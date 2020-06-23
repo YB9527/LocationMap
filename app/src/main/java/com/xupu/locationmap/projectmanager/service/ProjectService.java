@@ -1,5 +1,6 @@
 package com.xupu.locationmap.projectmanager.service;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 
 import com.alibaba.fastjson.JSONObject;
@@ -13,6 +14,7 @@ import com.xupu.locationmap.projectmanager.po.Customizing;
 import com.xupu.locationmap.projectmanager.po.MyJSONObject;
 
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -67,7 +69,13 @@ public class ProjectService {
     }
 
     public static String getProjectDBName(MyJSONObject project) {
-        return getName(project) + "_" + getProjectRandom(project);
+        String random = getProjectRandom(project);
+        if(Tool.isEmpty(random)){
+            return getName(project);
+        }else{
+            return getName(project) + "_" + getProjectRandom(project);
+        }
+
     }
 
     public static String getCurrentProjectDBName() {
@@ -82,6 +90,13 @@ public class ProjectService {
 
     public static String getName(MyJSONObject currentSugProject) {
         return currentSugProject.getJsonobject().getString(Customizing.PROJECT_Field.get(Customizing.PROJECT_name).getName());
+    }
+
+    @SuppressLint("NewApi")
+    public static void setName(MyJSONObject currentSugProject, String projectname) {
+        String key  = Customizing.PROJECT_Field.get(Customizing.PROJECT_name).getName();
+         currentSugProject.getJsonobject().replace(key,projectname);
+        currentSugProject.toJson();
     }
 
     public static MyJSONObject newProject() {
@@ -101,15 +116,33 @@ public class ProjectService {
      */
     public static void deleteProject(MyJSONObject deleteProject) {
 
+        String dbpath = null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+            dbpath = AndroidTool.getDatabaseDir()+getProjectDBName(deleteProject);
+            boolean bl = new File(dbpath+".db").delete();
+            boolean b2 = new File(dbpath+".db-journal").delete();
+        }
+
         RedisTool.deleteRedisByMark(ZTService.PROJECT_TABLE_NAME + "_" + getProjectDBName(deleteProject));
         if(currentSugProject != null && deleteProject.getId().equals(currentSugProject.getId())){
             setCurrentSugProject(null);
         }
+       
     }
 
 
     public static void toProjectPage() {
         Intent intent = new Intent(AndroidTool.getMainActivity(), ProjectPage.class);
         AndroidTool.getMainActivity().startActivity(intent);
+    }
+
+    public static void saveProject(MyJSONObject project) {
+
+
+        //设置为当前项目
+        ProjectService.setCurrentSugProject(project);
+        //开启事务
+        RedisTool.saveRedis(ZTService.PROJECT_TABLE_NAME + "_" + ProjectService.getProjectDBName(project), project);
+
     }
 }

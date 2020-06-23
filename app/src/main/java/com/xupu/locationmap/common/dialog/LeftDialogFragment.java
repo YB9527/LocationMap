@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import androidx.appcompat.widget.Toolbar;
 
 import com.gyf.immersionbar.ImmersionBar;
+import com.xupu.locationmap.common.tools.Utils;
 
 
 import butterknife.BindView;
@@ -20,15 +21,27 @@ import butterknife.BindView;
  */
 public class LeftDialogFragment extends BaseDialogFragment {
 
+    private Integer width;
+    private Integer height;
     @BindView(R.id.toolbar)
     Toolbar toolbar;
+    public  LeftDialogFragment(Integer width,Integer height){
+        this.width = width;
+        this.height = height;
+    }
+    public  LeftDialogFragment(){
+        Integer[] widthAndHeight = Utils.getWidthAndHeight();
+        this.width = widthAndHeight[0] / 2;
+        this.height = widthAndHeight[1];
+    }
+
 
     @Override
     public void onStart() {
         super.onStart();
         mWindow.setGravity(Gravity.TOP | Gravity.START);
         mWindow.setWindowAnimations(R.style.LeftAnimation);
-        mWindow.setLayout(mWidthAndHeight[0] / 2, ViewGroup.LayoutParams.MATCH_PARENT);
+        mWindow.setLayout(width, height);
     }
 
     @Override

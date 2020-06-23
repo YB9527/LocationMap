@@ -57,6 +57,7 @@ public class MediaService {
         return media;
     }
 
+
     private static String newMediaPath(MyJSONObject parent, String taskname, int mediaType) {
         MyJSONObject project = ProjectService.getCurrentSugProject();
         if (project == null) {
@@ -65,24 +66,23 @@ public class MediaService {
         }
         MyJSONObject xzdm = XZQYService.getCurrentXZDM();
         if (xzdm == null) {
-            AndroidTool.showAnsyTost("请先选择项目", 1);
+            AndroidTool.showAnsyTost("请先选择区域", 1);
             return null;
         }
 
         String root = AndroidTool.getRootDir();
         String uuid = UUID.randomUUID().toString();
         String path = root + ProjectService.getName(project) + "/" + XZQYService.getCode(xzdm) + "_" + XZQYService.getCaption(xzdm) + "/"
-                  + parent.getId() + "/" + taskname.replace("正面", "").replace("反面", "") + "/" + uuid;
+                + parent.getId() + "/" + taskname + "/" + uuid;
 
         /*String path = root + ProjectService.getName(project) + "/" + XZQYService.getCode(xzdm) + "_" + XZQYService.getCaption(xzdm) + "/"
                 + NFService.getName(parent) + "_" + parent.getId() + "/" + taskname.replace("正面", "").replace("反面", "") + "/" + uuid;*/
-        FileTool.exitsDir(FileTool.getDir(path), true);
 
         switch (mediaType) {
-            case 0:
+            case Media.PHOTO:
                 path = path + ".jpg";
                 break;
-            case 1:
+            case Media.VIDEO:
                 path = path + ".mp4";
                 break;
         }
@@ -157,5 +157,26 @@ public class MediaService {
     public static MyJSONObject newMediaJSONObject(MyJSONObject parent, MyJSONObject task, int mtype) {
         Media media = newMedia(parent, task, mtype);
         return mediaToMyJSONObject(media);
+    }
+
+    public static String getNverTimePhotoDir() {
+        return AndroidTool.getRootDir() + Customizing.NEVER_TIME + "/";
+    }
+
+    public static String getNverTimePhoto() {
+        return getNverTimePhotoDir() + UUID.randomUUID().toString() + ".jpg";
+    }
+
+    /**
+     * 删除文件
+     *
+     * @param media
+     */
+    public static void deleteFile(MyJSONObject media) {
+        String path = getPath(media);
+        File file = new File(path);
+        if (file.exists()) {
+            file.delete();
+        }
     }
 }

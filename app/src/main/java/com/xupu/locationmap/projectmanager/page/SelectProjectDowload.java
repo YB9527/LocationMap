@@ -1,5 +1,6 @@
 package com.xupu.locationmap.projectmanager.page;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -10,6 +11,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.xupu.locationmap.R;
 import com.xupu.locationmap.common.po.Callback;
+import com.xupu.locationmap.common.tools.AndroidTool;
 import com.xupu.locationmap.common.tools.ReflectTool;
 import com.xupu.locationmap.exceptionmanager.MapException;
 import com.xupu.locationmap.projectmanager.view.BtuFieldCustom;
@@ -101,8 +103,9 @@ public class SelectProjectDowload extends AppCompatActivity {
                 public void OnClick(View view, MyJSONObject project) {
                     Intent intent = new Intent(SelectProjectDowload.this,ProjectDownload.class);
                     intent.putExtra("project",project);
-                    SelectProjectDowload.this.startActivity(intent);
-                    SelectProjectDowload.this.finish();
+
+                    SelectProjectDowload.this.startActivityForResult(intent,AndroidTool.ACTIVITY_FINISH);
+                    //SelectProjectDowload.this.finish();
                 }
             });
 
@@ -112,12 +115,18 @@ public class SelectProjectDowload extends AppCompatActivity {
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fl, itemFragment, "下载列表")   // 此处的R.id.fragment_container是要盛放fragment的父容器'
                     .commit();
-
         } catch (MapException e) {
             e.printStackTrace();
         }
 
     }
 
-
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode == AndroidTool.ACTIVITY_FINISH){
+            setResult(AndroidTool.ACTIVITY_FINISH);
+            finish();
+        }
+    }
 }

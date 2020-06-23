@@ -5,6 +5,7 @@ import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,7 @@ import android.widget.ImageView;
 import androidx.annotation.DrawableRes;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -83,6 +85,8 @@ public class TaskFragment extends Fragment {
                     //第一个添加按钮
                     MyJSONObject media =  MediaService.newMediaJSONObject(parent,task,0);
                     MediaTool.photo(TaskFragment.this, 101, media);
+                    //AndroidTool.showAnsyTost(MediaService.getPath(media),0);
+
                 } else {
                     //后面的是 media
                     Intent intent = new Intent(getActivity(), PhotoSingleActivty.class);
@@ -96,6 +100,8 @@ public class TaskFragment extends Fragment {
             public void OnClick(View view,MyJSONObject media) {
                 myItemRecyclerViewAdapter.remove(media);
                 TableTool.delete(media);
+                //删除照片
+                MediaService.deleteFile(media);
             }
         }.setConfirm(true,"确认要删除吗？"));
 
@@ -104,7 +110,8 @@ public class TaskFragment extends Fragment {
         //第一个添加 添加按钮 ，任务名
         task.getJsonobject().put("name", "");
         MyJSONObject myJSONObject = MediaService.getMedia(task, 0, TaskService.getTaskName(task));
-        myJSONObject.setId("-1");
+        myJSONObject.setId(Media.ADD_BUTTON);
+
         //MediaService.setPath(myJSONObject, getResourcesUri(R.drawable.good_night_img));
         medias.add(myJSONObject);
 
@@ -112,7 +119,8 @@ public class TaskFragment extends Fragment {
         TableDataCustom tableDataCustom = new TableDataCustom(fragmentItem, filedCustoms, medias);
         myItemRecyclerViewAdapter = new MyItemRecyclerViewAdapter(tableDataCustom,recyclerView);
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext(), RecyclerView.HORIZONTAL, false));
+        //recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext(), RecyclerView.HORIZONTAL, false));
+        recyclerView.setLayoutManager(new GridLayoutManager(getContext(),4));
         recyclerView.setAdapter(myItemRecyclerViewAdapter);
 
         myItemRecyclerViewAdapter.setLoadViewCallback(new ViewHolderCallback() {
@@ -168,9 +176,6 @@ public class TaskFragment extends Fragment {
                     // 将拍摄的照片显示出来
                     MyJSONObject media = (MyJSONObject) getActivity().getIntent().getSerializableExtra("media");
                     TableTool.insert(media,TableTool.STATE_INSERT);
-                    String path = MediaService.getPath(media);
-                    File file =new File(path);
-                    boolean bl = file.exists();
                     myItemRecyclerViewAdapter.addItem(medias.size()-1, media);
                 }
                 break;

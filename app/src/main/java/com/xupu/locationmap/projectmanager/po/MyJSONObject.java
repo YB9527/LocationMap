@@ -49,7 +49,7 @@ public class MyJSONObject implements Serializable {
 
 
     public MyJSONObject() {
-
+        this.setJsonobject(new JSONObject());
     }
 
     public MyJSONObject(String id, String tablename, String parentid, String json) {

@@ -36,6 +36,10 @@
     <item android:title="">
         <menu>
             <item
+                android:id="@+id/m_tool"
+                android:icon="@mipmap/leftnav_icon_setting_gray"
+                android:title="工具箱" />
+            <item
                 android:id="@+id/m_help"
                 android:icon="@mipmap/leftnav_icon_help_gray"
                 android:title="帮助" />

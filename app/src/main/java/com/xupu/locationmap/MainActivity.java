@@ -7,6 +7,7 @@ import android.view.KeyEvent;
 import android.view.MenuInflater;
 import android.view.View;
 
+import androidx.annotation.Nullable;
 import androidx.core.view.GravityCompat;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 
@@ -22,6 +23,7 @@ import com.xupu.locationmap.projectmanager.page.MapFragment;
 import com.xupu.locationmap.projectmanager.page.NFActivity;
 import com.xupu.locationmap.projectmanager.page.ProjectPage;
 import com.xupu.locationmap.projectmanager.page.TableListPage;
+import com.xupu.locationmap.projectmanager.page.ToolActivty;
 import com.xupu.locationmap.projectmanager.page.XZQYPage;
 import com.xupu.locationmap.projectmanager.po.MapResult;
 import com.xupu.locationmap.projectmanager.service.ProjectService;
@@ -39,8 +41,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +49,8 @@ public class MainActivity extends AppCompatActivity
         setTitle("");
         AndroidTool.setFullWindow(this);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = findViewById(R.id.toolbar);
+
+       /* Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setVisibility(View.VISIBLE);
         setSupportActionBar(toolbar);
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -57,13 +59,16 @@ public class MainActivity extends AppCompatActivity
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
-        navigationView.setNavigationItemSelectedListener(this);
+        navigationView.setNavigationItemSelectedListener(this);*/
+
         init();
 
 
     }
+
     private MapView mMapView;
-    MapFragment mapFragment ;
+    MapFragment mapFragment;
+
     /**
      * 检查用户是否登录
      * 设置 Android tool 的active
@@ -71,12 +76,13 @@ public class MainActivity extends AppCompatActivity
     private void init() {
         AndroidTool.setMainActivity(this);
 
-        mMapView =findViewById(R.id.mv_tian_di_tu);
+        mMapView = findViewById(R.id.mv_tian_di_tu);
 
         //消除水印
         ArcGISRuntimeEnvironment.setLicense("runtimelite,1000,rud4449636536,none,NKMFA0PL4S0DRJE15166");
         mapFragment = new MapFragment();
-        getSupportFragmentManager().beginTransaction().replace(R.id.page, mapFragment,"tinaditu").commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.page, mapFragment, MapFragment.class.getSimpleName()).commit();
+
 
     }
 
@@ -88,79 +94,6 @@ public class MainActivity extends AppCompatActivity
         } else {
             super.onBackPressed();
         }
-    }
-
-
-    @SuppressWarnings("StatementWithEmptyBody")
-    @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
-        Intent intent;
-        switch (id) {
-            case R.id.m_myproject:
-                toPrjectPage();
-                break;
-            case R.id.m_xzqy:
-                if(ProjectService.getCurrentSugProject() == null){
-                    toPrjectPage();
-                    AndroidTool.showAnsyTost("请先选择项目",1);
-                }else{
-                    intent = new Intent(this, XZQYPage.class);
-                    startActivity(intent);
-                }
-                break;
-            case R.id.m_lowmapmanager:
-                intent = new Intent(this, LowMapManager.class);
-                //startActivity(intent);
-                mapFragment.startActivityForResult(intent, MapResult.layer);
-                break;
-            case R.id.m_nfmanager:
-                intent = new Intent(this, NFActivity.class);
-                startActivity(intent);
-                break;
-            case R.id.m_tablelist:
-                if(ProjectService.getCurrentSugProject() == null){
-
-                    toPrjectPage();
-                    AndroidTool.showAnsyTost("请先选择项目，在选择区域",1);
-                }else if(XZQYService.getCurrentXZDM() == null){
-
-                    intent = new Intent(this, XZQYPage.class);
-                    startActivity(intent);
-                    AndroidTool.showAnsyTost("请先选择区域",1);
-                }else{
-                    intent = new Intent(this, TableListPage.class);
-                    mapFragment.startActivityForResult(intent, MapResult.datalocation);
-                }
-
-
-                break;
-            case R.id.m_help:
-                intent = new Intent(this, HelpActivty.class);
-                startActivity(intent);
-                break;
-        }
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
-    }
-    public void toPrjectPage(){
-        Intent intent = new Intent(this, ProjectPage.class);
-        //intent = new Intent(this, Ph.class);
-        startActivity(intent);
-    }
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        //导航栏设置用户、账号
-        TextView tv_nickname = findViewById(R.id.tv_nickname);
-        tv_nickname.setText(UserService.getUser().getNickName());
-        TextView tv_account = findViewById(R.id.tv_account);
-        tv_account.setText(UserService.getUser().getAccount());
-        MenuInflater inflater = getMenuInflater();
-        setHeadOnClick();
-        return true;
     }
 
 
@@ -201,6 +134,12 @@ public class MainActivity extends AppCompatActivity
         return super.onKeyDown(keyCode, event);
     }
 
-
-
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        /*if (requestCode == MapResult.XZQYCHANGE && resultCode == MapResult.XZQYCHANGE) {
+            *//*现将该fragment从fragmentList移除*//*
+            getSupportFragmentManager().beginTransaction().replace(R.id.page, mapFragment, MapFragment.class.getSimpleName()).commit();
+        }*/
+    }
 }

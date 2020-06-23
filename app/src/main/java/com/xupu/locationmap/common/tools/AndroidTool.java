@@ -16,6 +16,9 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.view.Window;
+import android.view.animation.Animation;
+import android.view.animation.OvershootInterpolator;
+import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -37,6 +40,7 @@ import com.xupu.locationmap.common.page.SlidingDeleteView;
 import com.xupu.locationmap.common.page.TitleBarFragment;
 import com.xupu.locationmap.common.page.ZQImageViewRoundOval;
 import com.xupu.locationmap.common.po.Callback;
+import com.xupu.locationmap.common.po.Media;
 import com.xupu.locationmap.common.po.MyCallback;
 import com.xupu.locationmap.common.po.ResultData;
 import com.xupu.locationmap.projectmanager.page.AddItemFragment;
@@ -67,6 +71,7 @@ import java.util.Map;
  */
 public class AndroidTool {
 
+    public final  static  int ACTIVITY_FINISH=501;
     private static AppCompatActivity activity;
 
     public static void setMainActivity(AppCompatActivity activity) {
@@ -211,6 +216,19 @@ public class AndroidTool {
 
     private static SlidingDeleteView oldSliding;
 
+
+    private static void setCheckBox(CheckBox checkBox, CheckBoxFieldCustom checkBoxFieldCustom) {
+        boolean bl = checkBox.isChecked();
+        Integer openImg = checkBoxFieldCustom.getOpenImg();
+        if (openImg != null) {
+            if (bl) {
+                checkBox.setButtonDrawable(openImg);
+            } else {
+                checkBox.setButtonDrawable(checkBoxFieldCustom.getCloseImg());
+            }
+        }
+    }
+
     /**
      * @param view
      * @param itemDataCustom
@@ -230,14 +248,15 @@ public class AndroidTool {
 
         for (FieldCustom fieldCustom : fs) {
             View temView = view.findViewById(fieldCustom.getId());
-
+            if (temView != null) {
+                temView.setVisibility(fieldCustom.isVisable());
+            }
             if (temView instanceof TextView) {
                 TextView tv = (TextView) temView;
-                temView.setVisibility(fieldCustom.isVisable());
                 if (fieldCustom instanceof PositionField) {
                     PositionField positionField = (PositionField) fieldCustom;
                     tv.setText(positionField.getStartIndex() + postion + 1 + "");
-                } else  if(!(fieldCustom instanceof  CheckBoxFieldCustom)){
+                } else if (!(fieldCustom instanceof CheckBoxFieldCustom)) {
                     String attribute = fieldCustom.getAttribute();
                     if (attribute == null) {
                         tv.setText("");
@@ -245,7 +264,7 @@ public class AndroidTool {
                         String str = jsonObject.getString(attribute);
                         if (str != null || temView instanceof EditText) {
                             tv.setText(str);
-                        }else if(!(fieldCustom instanceof  BtuFieldCustom || fieldCustom instanceof  ViewFieldCustom) ){
+                        } else if (!(fieldCustom instanceof BtuFieldCustom || fieldCustom instanceof ViewFieldCustom)) {
                             tv.setText("");
                         }
                     }
@@ -266,7 +285,7 @@ public class AndroidTool {
                                 }
                             });
                         } else {
-                            viewFieldCustom.OnClick(view,myJSONObject);
+                            viewFieldCustom.OnClick(view, myJSONObject);
                         }
                     }
                 });
@@ -277,13 +296,14 @@ public class AndroidTool {
                 boolean bl = jsonObject.getBoolean(checkBoxFieldCustom.getAttribute());
                 CheckBox checkBox = view.findViewById(checkBoxFieldCustom.getId());
                 checkBox.setChecked(bl);
-
+                setCheckBox(checkBox, checkBoxFieldCustom);
                 view.findViewById(checkBoxFieldCustom.getItemRid()).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         boolean bl = !jsonObject.getBoolean(checkBoxFieldCustom.getAttribute());
                         CheckBox checkBox = view.findViewById(checkBoxFieldCustom.getId());
                         checkBox.setChecked(bl);
+                        setCheckBox(checkBox, checkBoxFieldCustom);
                         jsonObject.replace(checkBoxFieldCustom.getAttribute(), bl);
                         Callback callback = checkBoxFieldCustom.getCallback();
                         if (callback != null) {
@@ -296,10 +316,10 @@ public class AndroidTool {
             } else if (fieldCustom instanceof SlidingFieldCustom) {
                 SlidingFieldCustom slidingFieldCustom = (SlidingFieldCustom) fieldCustom;
                 View containerView = view.findViewById(slidingFieldCustom.getLayoutid());
-                if(slidingFieldCustom.getWidth() == 0){
+                if (slidingFieldCustom.getWidth() == 0) {
                     containerView.getLayoutParams().width = ScreenUtils.getScreenWidth(AndroidTool.getMainActivity().getBaseContext());
-                }else{
-                    containerView.getLayoutParams().width =slidingFieldCustom.getWidth();
+                } else {
+                    containerView.getLayoutParams().width = slidingFieldCustom.getWidth();
                 }
 
                 SlidingDeleteView slidingview = view.findViewById(slidingFieldCustom.getId());
@@ -409,6 +429,8 @@ public class AndroidTool {
                 String path = jsonObject.getString("path");
                 if (FileTool.exitFile(path)) {
                     img.setImageBitmap(BitmapFactory.decodeFile(jsonObject.getString("path")));
+                }else if(!Media.ADD_BUTTON.equals(myJSONObject.getId()) && fieldCustom instanceof  ImgFieldCusom){
+                    //img.setImageResource(R.mipmap.data_icon_picture_loss);
                 }
                 if (img instanceof ZQImageViewRoundOval) {
                     ZQImageViewRoundOval iv_roundRect = (ZQImageViewRoundOval) img;
@@ -457,15 +479,19 @@ public class AndroidTool {
     }
 
     public static String getRootDir() {
-        String root;
+        String root = Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + Customizing.COMPANY + "/" + Customizing.APP_NAME;
+        return root + "/";
+
+        /*String root;
         String state = Environment.getExternalStorageState();
         if (state.equals("mounted")) {
-            root = Environment.getExternalStorageDirectory().getAbsolutePath() + "/外业调查";
+
+            root = Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + Customizing.COMPANY + "/" + Customizing.APP_NAME;
+            return root;
             if (!new File(root).exists()) {
-                boolean bl = new File(root).mkdirs();
-                if (!bl) {
-                    root = AndroidTool.getMainActivity().getFilesDir().getAbsolutePath();
-                }
+
+                root = AndroidTool.getMainActivity().getFilesDir().getAbsolutePath();
+
             } else {
                 if (!new File(root).canWrite()) {
                     root = AndroidTool.getMainActivity().getFilesDir().getAbsolutePath();
@@ -474,7 +500,7 @@ public class AndroidTool {
         } else {
             root = AndroidTool.getMainActivity().getFilesDir().getAbsolutePath();
         }
-        return root + "/";
+        return root + "/";*/
     }
 
     /**
@@ -499,7 +525,7 @@ public class AndroidTool {
         return titleBarFragment;
     }
 
-    public static   Bitmap setTextToImg(int rid, String text, float textsize, int color) {
+    public static Bitmap setTextToImg(int rid, String text, float textsize, int color) {
         BitmapDrawable icon = (BitmapDrawable) getMainActivity().getResources().getDrawable(rid);
 
         Bitmap bitmap = icon.getBitmap().copy(Bitmap.Config.ARGB_8888, true);
@@ -515,18 +541,19 @@ public class AndroidTool {
         paint.setTextAlign(Paint.Align.CENTER);
 
         paint.setColor(color);
-        canvas.drawText(text,(bitmap.getWidth() / 2),(bitmap.getHeight() / 2), paint);
+        canvas.drawText(text, (bitmap.getWidth() / 2), (bitmap.getHeight() / 2), paint);
         return bitmap;
     }
-    public static   Bitmap setTextToImg(Bitmap bitmap,Paint paint,String text) {
+
+    public static Bitmap setTextToImg(Bitmap bitmap, Paint paint, String text) {
 
         Canvas canvas = new Canvas(bitmap);
-        canvas.drawText(text,(bitmap.getWidth() / 2),(bitmap.getHeight() / 2), paint);
+        canvas.drawText(text, (bitmap.getWidth() / 2), (bitmap.getHeight() / 2), paint);
         return bitmap;
     }
 
 
-    public  static Bitmap getNewBitmap(Bitmap bitmap, int newWidth ,int newHeight){
+    public static Bitmap getNewBitmap(Bitmap bitmap, int newWidth, int newHeight) {
         // 获得图片的宽高.
         int width = bitmap.getWidth();
         int height = bitmap.getHeight();
@@ -539,5 +566,67 @@ public class AndroidTool {
         // 得到新的图片.
         Bitmap newBitmap = Bitmap.createBitmap(bitmap, 0, 0, width, height, matrix, true);
         return newBitmap;
+    }
+
+    public static String getDatabaseDir() {
+        String dir = null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+            dir = AndroidTool.getMainActivity().getDataDir().getAbsolutePath() + "/databases/";
+        }
+        return dir;
+    }
+
+    public static void slideview(View view, final float p1, final float p2) {
+        TranslateAnimation animation = new TranslateAnimation(p1, p2, 0, 0);
+        animation.setInterpolator(new OvershootInterpolator());
+        animation.setDuration(100);
+        animation.setStartOffset(500);
+        animation.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                int left = view.getLeft() + (int) (p2 - p1);
+                int top = view.getTop();
+                int width = view.getWidth();
+                int height = view.getHeight();
+                view.clearAnimation();
+                view.layout(left, top, left + width, top + height);
+            }
+        });
+        view.startAnimation(animation);
+    }
+
+
+    /**
+     * 从控件所在位置移动到控件的底部
+     *
+     * @return
+     */
+    public static TranslateAnimation moveToViewBottom() {
+        TranslateAnimation mHiddenAction = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 0.0f,
+                Animation.RELATIVE_TO_SELF, 0.0f, Animation.RELATIVE_TO_SELF,
+                0.0f, Animation.RELATIVE_TO_SELF, 1.0f);
+        mHiddenAction.setDuration(500);
+        return mHiddenAction;
+    }
+
+    /**
+     * 从控件的底部移动到控件所在位置
+     *
+     * @return
+     */
+    public static TranslateAnimation moveToViewLocation(float fromX, float toX, float fromY, float toY) {
+        TranslateAnimation mHiddenAction = new TranslateAnimation(Animation.RELATIVE_TO_SELF, fromX,
+                Animation.RELATIVE_TO_SELF, toX, Animation.RELATIVE_TO_SELF,
+                fromY, Animation.RELATIVE_TO_SELF, toY);
+        mHiddenAction.setDuration(500);
+        return mHiddenAction;
     }
 }

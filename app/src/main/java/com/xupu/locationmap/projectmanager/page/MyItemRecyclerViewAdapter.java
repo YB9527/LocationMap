@@ -40,7 +40,7 @@ import java.util.Map;
  * TODO: Replace the implementation with code for your data type.
  */
 //public class MyItemRecyclerViewAdapter  extends RecyclerView.Adapter<MyItemRecyclerViewAdapter.ViewHolder> implements ItemTouchHelperAdapter {
-public class MyItemRecyclerViewAdapter  extends BaseQuickAdapter<MyJSONObject,MyItemRecyclerViewAdapter.ViewHolder> implements ItemTouchHelperAdapter {
+public class MyItemRecyclerViewAdapter extends BaseQuickAdapter<MyJSONObject, MyItemRecyclerViewAdapter.ViewHolder> implements ItemTouchHelperAdapter {
 
     private final List<MyJSONObject> mValues;
     public final TableDataCustom tableDataCustom;
@@ -51,6 +51,7 @@ public class MyItemRecyclerViewAdapter  extends BaseQuickAdapter<MyJSONObject,My
     private ViewHolderCallback callback;
     private int mBannerHeight;
     private int mBannerPosition = -1;
+
     /**
      * 设置每条数据加载完成的回调函数
      *
@@ -67,7 +68,7 @@ public class MyItemRecyclerViewAdapter  extends BaseQuickAdapter<MyJSONObject,My
     /**
      * 添加条目移动
      */
-    public void  addItemTouch(){
+    public void addItemTouch() {
 
         //创建SimpleItemTouchHelperCallback
         ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(this);
@@ -81,6 +82,7 @@ public class MyItemRecyclerViewAdapter  extends BaseQuickAdapter<MyJSONObject,My
     protected void convert(MyItemRecyclerViewAdapter.ViewHolder helper, MyJSONObject item) {
 
     }
+
     @SuppressLint("WrongConstant")
     public MyItemRecyclerViewAdapter(TableDataCustom tableDataCustom, RecyclerView recyclerView) {
         super(tableDataCustom.getList());
@@ -91,9 +93,11 @@ public class MyItemRecyclerViewAdapter  extends BaseQuickAdapter<MyJSONObject,My
         openLoadAnimation(BaseQuickAdapter.SCALEIN);
         isFirstOnly(false);
     }
-    public RecyclerView getRecyclerView(){
-            return  this.recyclerView;
+
+    public RecyclerView getRecyclerView() {
+        return this.recyclerView;
     }
+
     public void setAnimation(int animation) {
         openLoadAnimation(animation);
     }
@@ -109,7 +113,6 @@ public class MyItemRecyclerViewAdapter  extends BaseQuickAdapter<MyJSONObject,My
                 .inflate(tableDataCustom.getFragmentItem(), parent, false);
         return new ViewHolder(view);
     }
-
 
 
     @Override
@@ -175,9 +178,26 @@ public class MyItemRecyclerViewAdapter  extends BaseQuickAdapter<MyJSONObject,My
         return mValues.size();
     }
 
-    public void setDatas(List<MyJSONObject> medias) { this.mValues.clear();
-        this.mValues.addAll(medias);
-        this.notifyDataSetChanged();
+    public void setDatas(List<MyJSONObject> medias) {
+        boolean isequals = true;
+        //检查是否是一样的信息
+        if (medias.size() == this.mValues.size()) {
+            for (int i = 0; i < medias.size(); i++) {
+                if (!medias.get(i).getJson().equals(this.mValues.get(i).getJson())) {
+                    isequals = false;
+                    break;
+                }
+            }
+        }else{
+            isequals =false;
+        }
+
+        if(!isequals){
+            this.mValues.clear();
+            this.mValues.addAll(medias);
+            this.notifyDataSetChanged();
+        }
+
     }
 
     RecyclerView recyclerView;
@@ -189,11 +209,10 @@ public class MyItemRecyclerViewAdapter  extends BaseQuickAdapter<MyJSONObject,My
     public void changeItem(int oldindex, int newindex) {
         MyJSONObject myJSONObject = this.getmValues().get(oldindex);
         this.remove(myJSONObject);
-        this.addItem(newindex,myJSONObject);
+        this.addItem(newindex, myJSONObject);
         this.notifyItemChanged(oldindex);
         this.notifyItemChanged(newindex);
     }
-
 
 
     public class ViewHolder extends BaseViewHolder {
@@ -261,7 +280,8 @@ public class MyItemRecyclerViewAdapter  extends BaseQuickAdapter<MyJSONObject,My
         }
 
     }
-      @Override
+
+    @Override
     public void onItemMove(RecyclerView.ViewHolder source,
                            RecyclerView.ViewHolder target) {
         int fromPosition = source.getAdapterPosition();
@@ -299,7 +319,6 @@ public class MyItemRecyclerViewAdapter  extends BaseQuickAdapter<MyJSONObject,My
         viewHolder.itemView.setScaleX(1.0f);
         viewHolder.itemView.setScaleY(1.0f);
     }
-
 
 
 }

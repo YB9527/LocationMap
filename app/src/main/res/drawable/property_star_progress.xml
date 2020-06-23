@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:id="@android:id/background">
+        <shape>
+            <corners android:radius="21dp" />
+            <solid android:color="#eaeaea"/>
+        </shape>
+    </item>
+
+    <item android:id="@android:id/progress">
+        <!--不能使用clip，clip会将progress的右边裁成直角，必须使用scale-->
+        <!--<clip>
+            <shape>
+                <corners
+                    android:radius="@dimen/x21"/>
+                <gradient
+                    android:angle="0"
+                    android:startColor="#5a5df6"
+                    android:endColor="#3f6ef6"/>
+            </shape>
+        </clip>-->
+        <scale
+            android:scaleWidth="100%"
+            android:drawable="@drawable/property_star_progress_scale"/>
+        <!--android:scaleWidth="50%"-->
+        <!--android:drawable="@drawable/property_star_progress_scale"  bg_wuyezhixing-->
+    </item>
+
+</layer-list>

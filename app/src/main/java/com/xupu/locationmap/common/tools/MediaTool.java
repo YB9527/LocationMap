@@ -2,6 +2,7 @@ package com.xupu.locationmap.common.tools;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
@@ -23,7 +24,10 @@ import com.xupu.locationmap.projectmanager.po.Customizing;
 import com.xupu.locationmap.projectmanager.po.MyJSONObject;
 import com.xupu.locationmap.projectmanager.service.MediaService;
 
+import org.apache.http.client.fluent.Content;
+
 import java.io.File;
+import java.io.IOException;
 
 public class MediaTool {
 
@@ -75,20 +79,36 @@ public class MediaTool {
         activity.startActivityForResult(intent, requestCode);
     }*/
 
-    //private static final int REQUEST_CODE_DRIVING_LICENSE = 103;
 
     public static void photo(Activity activity,int requestCode,MyJSONObject media){
         String path = MediaService.getPath(media);
-        //File outputImage = new File(media.getJsonobject().getString(Customizing.MEDIA_path));
-        Intent intent = new Intent(activity, CameraActivity.class);
-        intent.putExtra(CameraActivity.KEY_OUTPUT_FILE_PATH,path
-                );
-       intent.putExtra(CameraActivity.KEY_CONTENT_TYPE,
-                CameraActivity.CONTENT_TYPE_GENERAL);
+
+        Intent intent  = getPhotoIntent(activity,path);
         activity.getIntent().putExtra("media", media);
         activity.startActivityForResult(intent, requestCode);
     }
     public static void photo(Fragment fragment, int requestCode, MyJSONObject media){
+        String path = MediaService.getPath(media);
+
+
+        Intent intent  = getPhotoIntent(fragment.getActivity(),path);
+        fragment.getActivity().getIntent().putExtra("media", media);
+        fragment.startActivityForResult(intent, requestCode);
+    }
+    public static void photo(Fragment fragment, int requestCode, String path ){
+
+        fragment.getActivity().getIntent().putExtra("data", path);
+        Intent intent  = getPhotoIntent(fragment.getActivity(),path);
+        fragment.startActivityForResult(intent, requestCode);
+    }
+    public static void photo(Activity activity, int requestCode, String path ){
+
+        activity.getIntent().putExtra("data", path);
+        Intent intent  = getPhotoIntent(activity,path);
+        activity.startActivityForResult(intent, requestCode);
+    }
+
+   /* public static void photo(Fragment fragment, int requestCode, MyJSONObject media){
         String path = MediaService.getPath(media);
         //File outputImage = new File(media.getJsonobject().getString(Customizing.MEDIA_path));
         Intent intent = new Intent(fragment.getActivity(), CameraActivity.class);
@@ -98,5 +118,19 @@ public class MediaTool {
                 CameraActivity.CONTENT_TYPE_GENERAL);
         fragment.getActivity().getIntent().putExtra("media", media);
         fragment.startActivityForResult(intent, requestCode);
+    }*/
+
+    public static Intent getPhotoIntent(Activity activity, String path){
+        FileTool.exitsDir(FileTool.getDir(path),true);
+        //File outputImage = new File(media.getJsonobject().getString(Customizing.MEDIA_path));
+        //boolean bl = FileTool.exitsDir(FileTool.getDir(path),true);
+        Intent intent = new Intent(activity, CameraActivity.class);
+        intent.putExtra(CameraActivity.KEY_OUTPUT_FILE_PATH,path
+        );
+        intent.putExtra(CameraActivity.KEY_CONTENT_TYPE,
+                CameraActivity.CONTENT_TYPE_GENERAL);
+        return  intent;
     }
+
+
 }

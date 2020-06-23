@@ -46,6 +46,9 @@
                             android:id="@+id/tv_projectname"
                             style="@style/itemtitlestyle"
                             android:text="泰康项目"
+                            android:maxEms="10"
+                            android:ellipsize = "end"
+                            android:singleLine="true"
                             />
                         <FrameLayout
                             android:id="@+id/fl_currentproject"

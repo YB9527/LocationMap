@@ -1,5 +1,6 @@
 package com.xupu.locationmap.projectmanager.page;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -64,8 +65,8 @@ public class ProjectPage extends AppCompatActivity {
     private void toDownLoadProject() {
         Intent intent = new Intent(ProjectPage.this, SelectProjectDowload.class);
         intent.putExtra("projects", projects);
-        startActivity(intent);
-        ProjectPage.this.finish();
+
+        startActivityForResult(intent,AndroidTool.ACTIVITY_FINISH);
     }
 
 
@@ -97,6 +98,7 @@ public class ProjectPage extends AppCompatActivity {
     MyJSONObject currentProject;
 
     private void init() {
+
         projects = ProjectService.findAll();
         if (!Tool.isEmpty(projects)) {
             findViewById(R.id.recy).setVisibility(View.VISIBLE);
@@ -188,6 +190,22 @@ public class ProjectPage extends AppCompatActivity {
                     imageView.setImageResource(R.drawable.project_icon_gray);
                     holder.mView.findViewById(R.id.fl_currentproject).setVisibility(View.GONE);
                 }
+                /*更新到服务器*/
+                holder.mView.findViewById(R.id.first).setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View view) {
+                        AndroidTool.confirm(ProjectPage.this,"确定要更新到服务器吗？", new MyCallback() {
+
+                            @Override
+                            public void call(ResultData resultData) {
+                                if(resultData.getStatus() == 0){
+                                    AndroidTool.showAnsyTost("已更新到服务器",0);
+                                }
+                            }
+                        });
+                        return false;
+                    }
+                });
 
             }
         });
@@ -250,5 +268,14 @@ public class ProjectPage extends AppCompatActivity {
 
     }
 
-
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == AndroidTool.ACTIVITY_FINISH){
+            finish();
+            Intent intent = new Intent(this, XZQYPage.class);
+            startActivity(intent);
+            AndroidTool.showAnsyTost("项目下载完成，请选择工作区域", 0);
+        }
+    }
 }

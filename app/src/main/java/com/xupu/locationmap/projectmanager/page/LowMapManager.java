@@ -1,17 +1,14 @@
 package com.xupu.locationmap.projectmanager.page;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
-import android.content.Intent;
 import android.os.Bundle;
 
 import com.google.gson.reflect.TypeToken;
 import com.xupu.locationmap.R;
 import com.xupu.locationmap.common.po.Callback;
-import com.xupu.locationmap.common.po.ViewHolderCallback;
 import com.xupu.locationmap.common.tdt.TianDiTuLayerTypes;
 import com.xupu.locationmap.common.tools.AndroidTool;
 import com.xupu.locationmap.common.tools.JSONTool;
@@ -21,7 +18,6 @@ import com.xupu.locationmap.projectmanager.view.CheckBoxFieldCustom;
 import com.xupu.locationmap.projectmanager.view.FieldCustom;
 import com.xupu.locationmap.projectmanager.po.LowImage;
 import com.xupu.locationmap.projectmanager.po.MyJSONObject;
-import com.xupu.locationmap.projectmanager.view.SimpleItemTouchHelperCallback;
 import com.xupu.locationmap.projectmanager.view.TableDataCustom;
 import com.xupu.locationmap.projectmanager.service.ProjectService;
 
@@ -55,7 +51,7 @@ public class LowMapManager extends AppCompatActivity {
             public void call(Object o) {
                 List<LowImage> lowMapManagers = JSONTool.toObject(myItemRecyclerViewAdapter.getmValues(), LowImage.class);
                 RedisTool.updateRedis(Laerys_REDIS_Mark, lowMapManagers);
-                setResult(MapResult.layer);
+                setResult(MapResult.LAYER);
                 finish();
             }
         }, "确定要保存吗？");
@@ -187,13 +183,13 @@ public class LowMapManager extends AppCompatActivity {
         List<LowImage> list = new ArrayList<>();
         //天地图矢量墨卡托投影地图服务
         LowImage lowImage = new LowImage("天地图矢量投影地图服务", null, TianDiTuLayerTypes.TIANDITU_VECTOR_MERCATOR);
-        LowImage lowImage1 = new LowImage("天地图中文标注", null, TianDiTuLayerTypes.TIANDITU_VECTOR_ANNOTATION_CHINESE_MERCATOR);
+        LowImage lowImage1 = new LowImage("天地图矢量中文标注", null, TianDiTuLayerTypes.TIANDITU_VECTOR_ANNOTATION_CHINESE_MERCATOR);
         LowImage lowImage2 = new LowImage("天地图影像投影地图服务", null, TianDiTuLayerTypes.TIANDITU_IMAGE_MERCATOR);
-
+        LowImage lowImage3 = new LowImage("天地图影像投影中文标注", null, TianDiTuLayerTypes.TIANDITU_IMAGE_ANNOTATION_CHINESE_MERCATOR);
         list.add(lowImage);
         list.add(lowImage1);
         list.add(lowImage2);
-
+        list.add(lowImage3);
         return list;
     }
 

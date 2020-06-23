@@ -8,6 +8,9 @@ import java.util.Map;
 public class Customizing {
 
 
+    public final static String COMPANY="旭普公司";
+    public final static String APP_NAME="调绘专家";
+    public final static String NEVER_TIME="随手拍";
 
     public static String PROJECT = "旭普公司测试软件";
     public static String PROJECT_name = "name";

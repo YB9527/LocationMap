@@ -22,6 +22,8 @@ import com.xupu.locationmap.common.tools.Utils;
  */
 public class RightDialogFragment extends BaseDialogFragment {
 
+
+
     private Integer width;
     private Integer height;
     @BindView(R.id.toolbar)

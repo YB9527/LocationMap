@@ -6,7 +6,15 @@ import java.util.Date;
  * 多媒体对象
  */
 public class Media {
-
+    /**
+     * 拍照
+     */
+    public final static int PHOTO = 0;
+    /**
+     * 录像
+     */
+    public final static int VIDEO = 1;
+    public static final String ADD_BUTTON = "-1";
     private String id;
     /**
      * 表id

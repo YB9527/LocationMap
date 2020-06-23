@@ -57,4 +57,15 @@ public class MapService {
         RedisTool.updateRedis(getMapLayerStausRedisMark(),layerStatus);
         MapService.layerStatus= layerStatus;
     }
+
+    public static void setLayerLoad(LowImage newImage) {
+        for(LowImage lowimage: layerStatus){
+            if(lowimage.equals(newImage)){
+                lowimage.setIsload(true);
+                //更新到数据库
+                saveMapLayerStats(layerStatus);
+                return;
+            }
+        }
+    }
 }

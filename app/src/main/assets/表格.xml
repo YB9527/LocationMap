@@ -14,20 +14,6 @@
             <attribute>jtzz</attribute>
         </fieldCustom>
     </page>
-    <page tablename="地块">
-        <fieldCustom>
-            <id>title</id>
-            <attribute>dkbh</attribute>
-        </fieldCustom>
-        <fieldCustom>
-            <id>info1</id>
-            <attribute>zldwmc</attribute>
-        </fieldCustom>
-        <fieldCustom>
-            <id>info2</id>
-            <attribute>dlmc</attribute>
-        </fieldCustom>
-    </page>
     <page tablename="潜力图斑">
         <fieldCustom>
             <id>title</id>
@@ -42,6 +28,21 @@
             <attribute>tbmj</attribute>
         </fieldCustom>
     </page>
+    <page tablename="地块">
+        <fieldCustom>
+            <id>title</id>
+            <attribute>dkbh</attribute>
+        </fieldCustom>
+        <fieldCustom>
+            <id>info1</id>
+            <attribute>zldwmc</attribute>
+        </fieldCustom>
+        <fieldCustom>
+            <id>info2</id>
+            <attribute>dlmc</attribute>
+        </fieldCustom>
+    </page>
+
     <page tablename="保护图斑">
         <fieldCustom>
             <id>title</id>

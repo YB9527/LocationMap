@@ -1,21 +1,27 @@
 package com.xupu.locationmap.projectmanager.page;
 
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.xupu.locationmap.MainActivity;
 import com.xupu.locationmap.R;
 import com.xupu.locationmap.common.po.Callback;
+import com.xupu.locationmap.common.po.ViewHolderCallback;
 import com.xupu.locationmap.common.tools.AndroidTool;
 import com.xupu.locationmap.common.tools.RedisTool;
 import com.xupu.locationmap.common.tools.TableTool;
@@ -30,6 +36,7 @@ import com.xupu.locationmap.projectmanager.service.ProjectService;
 import com.xupu.locationmap.projectmanager.service.ZTService;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -54,6 +61,8 @@ public class ProjectDownload extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        AndroidTool.setFullWindow(this);
+        getSupportActionBar().hide();
         setContentView(R.layout.activity_project_download);
 
         //1、拿到要下载的页面
@@ -61,6 +70,11 @@ public class ProjectDownload extends AppCompatActivity {
         setTitle("一旦下载，请勿断开");
         downProject(project);
         init();
+        initTitle();
+    }
+
+    private void initTitle() {
+        AndroidTool.addTitleFragment(this, "下载进度");
     }
 
     private void init() {
@@ -78,14 +92,18 @@ public class ProjectDownload extends AppCompatActivity {
             @Override
             public void OnClick(MyJSONObject project) {
 
-                String projectRandom = UUID.randomUUID().toString();
+
+                Button btn_down = findViewById(R.id.btn_down);
+                btn_down.setText("下载中...");
+                btn_down.setClickable(false);
+                btn_down.setBackground(getResources().getDrawable(R.drawable.btn_download_go));
+                //添加记录方便上传
+                String projectRandom = System.currentTimeMillis() + "";
                 project.getJsonobject().put(ProjectService.PROJECT_RANDOM_MARK, projectRandom);
                 project.toJson();
 
-                //设置为当前项目
-                ProjectService.setCurrentSugProject(project);
+                ProjectService.saveProject(project);
 
-                RedisTool.saveRedis(ZTService.PROJECT_TABLE_NAME + "_" + ProjectService.getProjectDBName(project), project);
                 TableTool.insert(project, 0);
 
                 //TableTool.createDB(ProjectService.getName(project)+"_"+projectRandom);
@@ -146,8 +164,16 @@ public class ProjectDownload extends AppCompatActivity {
         recyclerView = findViewById(R.id.list);
         TableDataCustom tableDataCustom = new TableDataCustom(fragmentItem, fs, tasks);
         myItemRecyclerViewAdapter = new MyItemRecyclerViewAdapter(tableDataCustom, recyclerView);
-
-
+        myItemRecyclerViewAdapter.setAnimation(BaseQuickAdapter.SLIDEIN_BOTTOM);
+        myItemRecyclerViewAdapter.setLoadViewCallback(new ViewHolderCallback() {
+            @Override
+            public void call(MyItemRecyclerViewAdapter.ViewHolder holder, int position) {
+                ProgressBar progressBar = holder.itemView.findViewById(R.id.pb);
+                if(progressBar.getProgress() == 100){
+                    holder.itemView.findViewById(R.id.iv_complte).setVisibility(View.VISIBLE);
+                }
+            }
+        });
         //得到要下载的表格
         getTableList(project, new Callback<JSONArray>() {
             @Override
@@ -197,6 +223,7 @@ public class ProjectDownload extends AppCompatActivity {
         }
         //项目中表格保存
         TableTool.insertMany(tableitemsMyJson, 0);
+        //saveAll.addAll(tableitemsMyJson);
         setProgress(tasks.get(taskindex).getJsonobject(), 3);
     }
 
@@ -224,6 +251,7 @@ public class ProjectDownload extends AppCompatActivity {
                         }
                         //项目中表格保存
                         TableTool.insertMany(tableitemsMyJson, 0);
+                        tableitemsMyJson.addAll(tableitemsMyJson);
                         setProgress(tasks.get(taskindex).getJsonobject(), 3);
                     }
                 });
@@ -254,6 +282,7 @@ public class ProjectDownload extends AppCompatActivity {
                         }
                         //项目中表格保存
                         TableTool.insertMany(tableitemsMyJson, 0);
+                        //saveAll.addAll(tableitemsMyJson);
                         setProgress(tasks.get(taskindex).getJsonobject(), 3);
                     }
                 });
@@ -284,12 +313,15 @@ public class ProjectDownload extends AppCompatActivity {
                         }
                         //项目中表格保存
                         TableTool.insertMany(filedsMyJson, 0);
+                        //saveAll.addAll(filedsMyJson);
                         setProgress(tasks.get(taskindex).getJsonobject(), 3);
                     }
                 });
             }
         });
     }
+
+    //private  List<MyJSONObject> saveAll = new ArrayList<>();
 
     /**
      * 得到要下载的 业务表格
@@ -323,27 +355,39 @@ public class ProjectDownload extends AppCompatActivity {
         //1、得到是哪张表格
 
         String tableid = ZTService.getTableIdByItemId(tableItem.getString("id"));
-
-        //2、得到表格内容
-        ZTService.getTableItemList(tableid, new Callback<JSONArray>() {
-            @SuppressLint("NewApi")
+        Integer limit = 1000;
+        ZTService.getTableItemTotal(tableid, new Callback<Integer>() {
             @Override
-            public void call(JSONArray objects) {
-                //3、转换成本地使用数据
-                MyJSONObject task = null;
-                for (int i = 0; i < tasks.size(); i++) {
-                    task = tasks.get(i);
-                    if (task.getJsonobject() == tableItem) {
-                        setProgress(tableItem, 2);
-                        break;
-                    }
-                }
-                saveInDatabase(tableid, tableItem.getString("aliasname"), objects);
-                if (task != null) {
-                    setProgress(tableItem, 3);
+            public void call(Integer total) {
+                final int[] finishCount = {0};
+                int requestCount = total / limit + 1;
+                for (int page = 0; page < requestCount; page++) {
+                    //2、得到表格内容
+                    ZTService.getTableItemListLimt(tableid, page + 1, limit, new Callback<JSONArray>() {
+                        @SuppressLint("NewApi")
+                        @Override
+                        public void call(JSONArray objects) {
+                            //3、转换成本地使用数据
+                            MyJSONObject task = null;
+                            for (int i = 0; i < tasks.size(); i++) {
+                                task = tasks.get(i);
+                                if (task.getJsonobject() == tableItem) {
+                                    setProgress(tableItem, 2);
+                                    break;
+                                }
+                            }
+                            saveInDatabase(tableid, tableItem.getString("aliasname"), objects);
+                            finishCount[0]++;
+                            if (task != null && finishCount[0] == requestCount) {
+                                setProgress(tableItem, 3);
+                            }
+                        }
+                    });
                 }
             }
         });
+
+
     }
 
     /**
@@ -391,10 +435,12 @@ public class ProjectDownload extends AppCompatActivity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Intent intent = new Intent(ProjectDownload.this, XZQYPage.class);
-                startActivity(intent);
-                AndroidTool.showAnsyTost("项目下载完成，请选择工作区域", 0);
+                //开启事务
+                //TableTool.insertMany(saveAll,0);
+
+                setResult(AndroidTool.ACTIVITY_FINISH);
                 ProjectDownload.this.finish();
+
             }
         });
 
@@ -414,21 +460,25 @@ public class ProjectDownload extends AppCompatActivity {
      * @param objects
      */
     private void saveInDatabase(String tableid, String tablename, JSONArray objects) {
+
         List<MyJSONObject> myJSONObjects = new ArrayList<>();
         for (int i = 0; i < objects.size(); i++) {
             JSONObject jsonObject = objects.getJSONObject(i);
-            if( jsonObject.containsKey("geom") ){
+            if (jsonObject.containsKey("geom")) {
                 jsonObject.remove("geom");
             }
-            if( jsonObject.containsKey("shape") ){
+            if (jsonObject.containsKey("shape")) {
                 jsonObject.remove("shape");
             }
             MyJSONObject myJSONObject = new MyJSONObject(jsonObject.getString("gid"), tablename, jsonObject.getString("gdomain"), jsonObject);
             myJSONObject.setTableid(tableid);
             myJSONObjects.add(myJSONObject);
         }
+        //TableTool.insertBySql(myJSONObjects, 0);
+        //saveAll.addAll(myJSONObjects);
         TableTool.insertMany(myJSONObjects, 0);
         Log.v("yb", tablename + " 完成");
+
     }
 
     public MyJSONObject newDownLoadPo(String tablename, JSONObject tableitem) {
@@ -439,4 +489,5 @@ public class ProjectDownload extends AppCompatActivity {
         MyJSONObject myJSONObject = new MyJSONObject("", "", "", tableitem);
         return myJSONObject;
     }
+
 }
