@@ -40,10 +40,7 @@
             android:layout_weight="1"
             android:background="@drawable/bg_white_round4"
             app:layoutManager="LinearLayoutManager"/>
-        <View
-            android:visibility="invisible"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"/>
+
     </LinearLayout>
 
 

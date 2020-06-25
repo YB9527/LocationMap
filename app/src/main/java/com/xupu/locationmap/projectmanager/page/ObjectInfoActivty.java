@@ -1,14 +1,21 @@
 package com.xupu.locationmap.projectmanager.page;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 
 import com.alibaba.fastjson.JSONObject;
+import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.xupu.locationmap.R;
 import com.xupu.locationmap.common.po.Callback;
 import com.xupu.locationmap.common.po.MyCallback;
@@ -227,6 +234,8 @@ public class ObjectInfoActivty extends AppCompatActivity {
         return newobj;
     }
 
+
+    @SuppressLint("NewApi")
     private void init(MyJSONObject obj, List<MyJSONObject> fileds) {
         //页面显示
         List<FieldCustom> fs = new ArrayList<>();
@@ -246,7 +255,18 @@ public class ObjectInfoActivty extends AppCompatActivity {
         TableDataCustom tableDataCustom = new TableDataCustom(fragmentItem, fs, fileds).setEdit(true);
         RecyclerView recyclerView = findViewById(R.id.recy);
         myItemRecyclerViewAdapter = new MyItemRecyclerViewAdapter(tableDataCustom,recyclerView);
+        myItemRecyclerViewAdapter.setNewData(fileds);
 
+        myItemRecyclerViewAdapter.setEnableLoadMore(true);
+        myItemRecyclerViewAdapter.setOnLoadMoreListener(() -> new Handler().postDelayed(() -> {
+            String s = "123";
+        }, 500), recyclerView);
+        recyclerView.setOnScrollChangeListener(new View.OnScrollChangeListener() {
+            @Override
+            public void onScrollChange(View view, int i, int i1, int i2, int i3) {
+                String s= "123"+i;
+            }
+        });
         recyclerView.setAdapter(myItemRecyclerViewAdapter);
 
 

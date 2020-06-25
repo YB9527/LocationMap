@@ -248,6 +248,7 @@
                             android:background="@color/bg_gray"/>
                     </LinearLayout>
                     <LinearLayout
+                        android:id="@+id/btn_trajectory"
                         android:paddingTop="10dp"
                         style="@style/nv_click"
                         android:gravity="center_horizontal"

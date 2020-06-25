@@ -52,8 +52,15 @@ public class PermissionUtils {
      * 申请权限
      *
      */
-    public static void requestPermissions(@NonNull Activity activity, int requestCode, String[] permissions) {
-
+    public static void requestPermissions(@NonNull Activity activity, int requestCode) {
+        String[] permissions = new String[]{
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.MOUNT_UNMOUNT_FILESYSTEMS,
+                Manifest.permission.READ_EXTERNAL_STORAGE,
+                //定位权限
+                Manifest.permission.ACCESS_COARSE_LOCATION,
+                Manifest.permission.ACCESS_FINE_LOCATION
+        };
         List<String> permissionList = new ArrayList<>();
         for (String permission : permissions) {
             if (ContextCompat.checkSelfPermission(activity, permission) != PackageManager.PERMISSION_GRANTED) {
@@ -164,12 +171,12 @@ public class PermissionUtils {
         activity.startActivityForResult(intent, GOTO_SEETING_CODE);
     }
 
-    public static void showPermissionReason(final int requestCode, final Activity activity, final String[] permission, String s) {
+    public static void showPermissionReason(final int requestCode, final Activity activity,  String s) {
         AlertDialog dialog = new AlertDialog.Builder(activity)
                 .setMessage(s)
                 .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        requestPermissions(activity, requestCode, permission);
+                        requestPermissions(activity, requestCode);
                     }
                 })
                 .setNegativeButton("取消", new DialogInterface.OnClickListener() {

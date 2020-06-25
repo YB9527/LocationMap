@@ -164,7 +164,7 @@ public class MediaService {
     }
 
     public static String getNverTimePhoto() {
-        return getNverTimePhotoDir() + UUID.randomUUID().toString() + ".jpg";
+        return getNverTimePhotoDir() + System.currentTimeMillis() + ".jpg";
     }
 
     /**

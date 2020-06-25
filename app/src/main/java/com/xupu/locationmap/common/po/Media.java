@@ -15,6 +15,8 @@ public class Media {
      */
     public final static int VIDEO = 1;
     public static final String ADD_BUTTON = "-1";
+    public static final String TASK_NAME = "milepost";
+
     private String id;
     /**
      * 表id

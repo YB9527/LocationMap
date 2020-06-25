@@ -65,7 +65,7 @@ public class Tool {
     }
     public static String getPhotoHostAddress() {
 
-        String hostAddress = "http://192.168.30.18:8012/";
+        String hostAddress = "http://192.168.30.18:9091/admin";
         return hostAddress;
     }
 

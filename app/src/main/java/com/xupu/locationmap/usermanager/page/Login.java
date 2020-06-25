@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
+import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -23,6 +24,7 @@ import com.xupu.locationmap.projectmanager.view.FieldCustom;
 import com.xupu.locationmap.projectmanager.view.ImgFieldCusom;
 import com.xupu.locationmap.projectmanager.view.ItemDataCustom;
 import com.xupu.locationmap.projectmanager.po.MyJSONObject;
+import com.xupu.locationmap.projectmanager.view.ViewFieldCustom;
 import com.xupu.locationmap.usermanager.po.User;
 import com.xupu.locationmap.usermanager.service.UserService;
 
@@ -42,15 +44,8 @@ public class Login extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         AndroidTool.setMainActivity(this);
         init();
-        String[] permis = new String[]{
-                Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                Manifest.permission.MOUNT_UNMOUNT_FILESYSTEMS,
-                Manifest.permission.READ_EXTERNAL_STORAGE,
-                //定位权限
-                Manifest.permission.ACCESS_COARSE_LOCATION,
-                Manifest.permission.ACCESS_FINE_LOCATION
-        };
-        PermissionUtils.requestPermissions(this,1,permis);
+
+        PermissionUtils.requestPermissions(this,1);
 
 
     }
@@ -84,16 +79,16 @@ public class Login extends AppCompatActivity {
         filedCustoms.add(new BtuFieldCustom(R.id.btn_youke_login, "游客登录") {
             @Override
             public void OnClick(MyJSONObject myJSONObject) {
-                AndroidTool.showAnsyTost("还没有开发功能", 2);
+                AndroidTool.showAnsyTost("暂未开放，敬请期待", 2);
             }
         });
         /**
          * 清除账号
          */
-        filedCustoms.add(new ImgFieldCusom(R.id.login_username_cancel) {
-            @SuppressLint("NewApi")
+        filedCustoms.add(new ViewFieldCustom(R.id.login_username_cancel) {
+
             @Override
-            public void onClick(MyJSONObject myJSONObject) {
+            public void OnClick(View view, MyJSONObject myJSONObject) {
                 EditText et = findViewById(R.id.et_account);
                 et.setText("");
             }
@@ -101,9 +96,9 @@ public class Login extends AppCompatActivity {
         /**
          * 查看密码
          */
-        filedCustoms.add(new ImgFieldCusom(R.id.login_password_visible) {
+        filedCustoms.add(new ViewFieldCustom(R.id.login_password_visible) {
             @Override
-            public void onClick(MyJSONObject myJSONObject) {
+            public void OnClick(View view, MyJSONObject myJSONObject) {
                 EditText et = findViewById(R.id.et_password);
                 if (et.getInputType() == 129) {
                     et.setInputType(InputType.TYPE_CLASS_TEXT);

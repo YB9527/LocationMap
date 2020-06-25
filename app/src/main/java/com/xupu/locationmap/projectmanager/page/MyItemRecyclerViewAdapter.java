@@ -7,7 +7,9 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.graphics.Color;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -91,7 +93,11 @@ public class MyItemRecyclerViewAdapter extends BaseQuickAdapter<MyJSONObject, My
         this.childRidMap = tableDataCustom.getChildRidList();
         this.recyclerView = recyclerView;
         openLoadAnimation(BaseQuickAdapter.SCALEIN);
+
         isFirstOnly(false);
+
+        setNewData( this.mValues);
+
     }
 
     public RecyclerView getRecyclerView() {
@@ -319,6 +325,7 @@ public class MyItemRecyclerViewAdapter extends BaseQuickAdapter<MyJSONObject, My
         viewHolder.itemView.setScaleX(1.0f);
         viewHolder.itemView.setScaleY(1.0f);
     }
+
 
 
 }

@@ -123,14 +123,7 @@ public class ProjectPage extends AppCompatActivity {
         fs.add(new FieldCustom(R.id.tv_projectname, "name"));
         //项目描述
         fs.add(new FieldCustom(R.id.tv_descrip, "srs"));
-        //项目选择
-        fs.add(new BtuFieldCustom(R.id.btu_select, "选择") {
-            @Override
-            public void OnClick(MyJSONObject myJSONObject) {
-                ProjectService.setCurrentSugProject(myJSONObject);
-                AndroidTool.showAnsyTost("当前项目是：" + ProjectService.getName(myJSONObject), 0);
-            }
-        }.setConfirm(true, "确定要选择这个项目吗？"));
+
         //侧滑功能
         fs.add(new SlidingFieldCustom(R.id.slidingview, R.id.first));
         //删除项目
@@ -235,7 +228,7 @@ public class ProjectPage extends AppCompatActivity {
 
         List<FieldCustom> fs = new ArrayList<>();
         fs.add(new EditFieldCusom(R.id.name, "name", true));
-        fs.add(new BtuFieldCustom(R.id.btu_submit, "添加") {
+       /* fs.add(new BtuFieldCustom(R.id.btu_submit, "添加") {
             @Override
             public void OnClick(MyJSONObject myJSONObject) {
                 itemFragment.addItem(myJSONObject);
@@ -243,13 +236,13 @@ public class ProjectPage extends AppCompatActivity {
                 //TableTool.insert(myJSONObject);
                 showMain(true);
             }
-        }.setCheck(true).setReturn(true));
-        fs.add(new BtuFieldCustom(R.id.btu_cancel, "取消") {
+        }.setCheck(true).setReturn(true));*/
+       /* fs.add(new BtuFieldCustom(R.id.btu_cancel, "取消") {
             @Override
             public void OnClick(MyJSONObject myJSONObject) {
                 showMain(true);
             }
-        });
+        });*/
 
         ItemDataCustom itemDataCustom = new ItemDataCustom(R.layout.fragment_project_item_add, ProjectService.newProject(), fs);
         addItemFragment = new AddItemFragment(itemDataCustom);

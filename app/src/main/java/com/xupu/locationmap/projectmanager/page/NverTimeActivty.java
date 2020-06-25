@@ -71,10 +71,13 @@ public class NverTimeActivty extends AppCompatActivity {
                 return false;
             }
         });
-        for (File file : files){
-            MyJSONObject media = getMedia(file.getAbsolutePath());
-            medias.add(media);
+        if(files != null){
+            for (File file : files){
+                MyJSONObject media = getMedia(file.getAbsolutePath());
+                medias.add(media);
+            }
         }
+
     }
 
     private void initTitle() {
@@ -118,7 +121,7 @@ public class NverTimeActivty extends AppCompatActivity {
         myJSONObject.setId("-1");
         //MediaService.setPath(myJSONObject, getResourcesUri(R.drawable.good_night_img));
         medias.add(myJSONObject);
-
+        MediaService.setPath(myJSONObject,null);
 
         TableDataCustom tableDataCustom = new TableDataCustom(fragmentItem, filedCustoms, medias);
         myItemRecyclerViewAdapter = new MyItemRecyclerViewAdapter(tableDataCustom, recyclerView);

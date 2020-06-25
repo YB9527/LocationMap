@@ -63,10 +63,15 @@ public class  ZQImageViewRoundOval extends ImageView {
     }
 
     private void initView() {
+
+
         mPaint = new Paint();
         mPaint.setAntiAlias(true);
         mMatrix = new Matrix();
-        mRoundRadius = DEFAUT_ROUND_RADIUS;
+        mRoundRadius = TYPE_ROUND;
+
+        setType(ZQImageViewRoundOval.TYPE_ROUND);
+        setRoundRadius(10);
     }
 
     @Override

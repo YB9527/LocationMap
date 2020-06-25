@@ -1,6 +1,5 @@
 package com.xupu.locationmap.projectmanager.page;
 
-import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -13,36 +12,26 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.google.gson.reflect.TypeToken;
 import com.xupu.locationmap.R;
 import com.xupu.locationmap.common.dialog.RightDialogFragment;
-import com.xupu.locationmap.common.po.Callback;
 import com.xupu.locationmap.common.po.MyCallback;
 import com.xupu.locationmap.common.po.ResultData;
 import com.xupu.locationmap.common.po.ViewHolderCallback;
 import com.xupu.locationmap.common.tools.AndroidTool;
 import com.xupu.locationmap.common.tools.JSONTool;
 import com.xupu.locationmap.common.tools.RedisTool;
-import com.xupu.locationmap.common.tools.Utils;
 import com.xupu.locationmap.projectmanager.po.LowImage;
 import com.xupu.locationmap.projectmanager.po.MyJSONObject;
 import com.xupu.locationmap.projectmanager.service.MapService;
-import com.xupu.locationmap.projectmanager.service.ProjectService;
-import com.xupu.locationmap.projectmanager.service.XZQYService;
-import com.xupu.locationmap.projectmanager.service.ZTService;
 import com.xupu.locationmap.projectmanager.view.CheckBoxFieldCustom;
 import com.xupu.locationmap.projectmanager.view.FieldCustom;
-import com.xupu.locationmap.projectmanager.view.SlidingFieldCustom;
 import com.xupu.locationmap.projectmanager.view.TableDataCustom;
 import com.xupu.locationmap.projectmanager.view.ViewFieldCustom;
 
 
-import java.security.acl.LastOwnerException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * map 图层弹框
@@ -166,7 +155,7 @@ public class MapLayerDialog extends RightDialogFragment {
 
     @Override
     protected int setLayoutId() {
-        return R.layout.map_layer;
+        return R.layout.dialog_map_layer;
     }
 
     @Override

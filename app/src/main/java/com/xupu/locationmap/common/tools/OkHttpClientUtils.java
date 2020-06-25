@@ -11,7 +11,9 @@ import com.google.gson.Gson;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -297,7 +299,7 @@ public class OkHttpClientUtils {
          * @param callback 保存下来是true
          */
         public void photoBuild(String filePath, com.xupu.locationmap.common.po.Callback<Boolean> callback){
-            request = new Request.Builder().get().url(basicUrl).build();
+            request = new Request.Builder().get().url(basicUrl).addHeader("Connection", "close").build();
             client.newCall(request).enqueue(new Callback() {
                 @Override
                 public void onFailure(@NotNull Call call, @NotNull IOException e) {
@@ -307,16 +309,53 @@ public class OkHttpClientUtils {
                 @Override
                 public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                     if(response.isSuccessful()){
+                        //fun(filePath,response);
+                       /*InputStream inputStream = response.body().byteStream();
                         byte[] bs = response.body().bytes();
                         if(FileTool.saveFile(filePath,bs)){
                             callback.call(true);
                             return;
-                        }
-                        callback.call(false);
+                        }*/
+                        callback.call(savePhoto(filePath,response));
+                        return;
                     }
+                    callback.call(false);
                 }
             });
         }
+    }
+    public static boolean  savePhoto(String savePath, Response response){
+       // savePath = AndroidTool.getMainActivity().getFilesDir()+"/123.jpg";
+        InputStream is = null;
+        byte[] buf = new byte[2048];
+        int len = 0;
+        FileOutputStream fos = null;
+        // 储存下载文件的目录
+        FileTool.exitsDir(FileTool.getDir(savePath),true);
+        try {
+            is = response.body().byteStream();
+            File file = new File(savePath);
+            fos = new FileOutputStream(file);
+            while ((len = is.read(buf)) != -1) {
+                fos.write(buf, 0, len);
+            }
+            fos.flush();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (is != null)
+                    is.close();
+            } catch (IOException e) {
+            }
+            try {
+                if (fos != null)
+                    fos.close();
+            } catch (IOException e) {
+                return false;
+            }
+        }
+      return  true;
     }
 }
 

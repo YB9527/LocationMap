@@ -407,6 +407,16 @@ public class MapFragment extends Fragment {
                 showLaerys();
             }
         });
+        /**
+         * 轨迹导航
+         */
+        view.findViewById(R.id.btn_trajectory).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+               showTrajectory();
+            }
+        });
+
         serachEditText = view.findViewById(R.id.et_search);
         searchHistoryText(serachEditText);
         //查询按钮
@@ -533,6 +543,15 @@ public class MapFragment extends Fragment {
         mMapView.getGraphicsOverlays().add(markGrapics);
     }
 
+    /**
+     * 显示 轨迹 dialog
+     */
+    private void showTrajectory(){
+        Integer[] widthAndHeight = Utils.getWidthAndHeight();
+        MapTrajectoryDialog mapTrajectoryDialog = new MapTrajectoryDialog(widthAndHeight[0] / 3 * 2, widthAndHeight[1]);
+        mapTrajectoryDialog.show(getActivity().getSupportFragmentManager(), MapTrajectoryDialog.class.getSimpleName());
+
+    }
     /**
      * 显示 图层 dialog
      */
@@ -704,7 +723,8 @@ public class MapFragment extends Fragment {
      * @param shpdatas
      */
     public Map<LowImage, List<MyJSONObject>> getLowImageListMap(List<MyJSONObject> shpdatas) {
-        Map<String, List<MyJSONObject>> map = JSONTool.getIDMap("table", shpdatas);
+
+        Map<String, List<MyJSONObject>> map = ReflectTool.getListIDMap("getTablename",shpdatas);
         //考虑图层没有数据的问题
         List<LowImage> layerStatus = MapService.getLayerStatus();
         Map<LowImage, List<MyJSONObject>> lowImageListMap = new LinkedHashMap<>();
@@ -1524,8 +1544,8 @@ public class MapFragment extends Fragment {
                         @Override
                         public void run() {
                             oldx = x;
-                            xTextView.setText(String.format("%.4f", x));
-                            yTextView.setText(String.format("%.4f", jinweiduPoint.getY()));
+                            xTextView.setText(String.format("%.5f", x));
+                            yTextView.setText(String.format("%.5f", jinweiduPoint.getY()));
                         }
                     });
                 }

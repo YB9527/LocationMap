@@ -6,6 +6,11 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     >
+    <LinearLayout
+        android:orientation="horizontal"
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="match_parent"

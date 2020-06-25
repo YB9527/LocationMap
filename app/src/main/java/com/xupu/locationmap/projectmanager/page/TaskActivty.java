@@ -7,7 +7,10 @@ import androidx.fragment.app.FragmentTransaction;
 import android.os.Bundle;
 
 import com.xupu.locationmap.R;
+import com.xupu.locationmap.common.po.Media;
 import com.xupu.locationmap.common.tools.AndroidTool;
+import com.xupu.locationmap.common.tools.JSONTool;
+import com.xupu.locationmap.common.tools.ReflectTool;
 import com.xupu.locationmap.common.tools.TableTool;
 import com.xupu.locationmap.projectmanager.po.Customizing;
 import com.xupu.locationmap.projectmanager.po.MyJSONObject;
@@ -15,6 +18,7 @@ import com.xupu.locationmap.projectmanager.service.ZTService;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class TaskActivty extends AppCompatActivity {
     private FragmentPagerAdapter mAdapter;
@@ -70,10 +74,12 @@ public class TaskActivty extends AppCompatActivity {
     private void init(List<MyJSONObject> tableTasks, MyJSONObject parent, List<MyJSONObject> medias) {
        /* RecyclerView recyclerView = findViewById(R.id.list);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));*/
+        Map<String, List<MyJSONObject>> mediaMapGroupTask = JSONTool.getIDMap(Media.TASK_NAME, medias);
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         List<TaskFragment> taskFragments = new ArrayList<>();
         for (MyJSONObject task : tableTasks) {
-            TaskFragment taskFragment = new TaskFragment(task, parent, medias);
+
+            TaskFragment taskFragment = new TaskFragment(task, parent, mediaMapGroupTask.get(task.getId()));
             taskFragments.add(taskFragment);
             transaction.add(R.id.ll, taskFragment);
         }

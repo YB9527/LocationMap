@@ -60,6 +60,8 @@ import com.xupu.locationmap.projectmanager.view.ViewFieldCustom;
 import org.w3c.dom.Text;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -129,7 +131,12 @@ public class AndroidTool {
      */
     public static void confirm(Context context, String tip, final MyCallback callback) {
         MyDialog myDialog = MyDialog.newInstance(tip, callback);
-        Activity activity = (Activity) context;
+        Activity activity ;
+        if(context instanceof  Activity){
+             activity = (Activity) context;
+        }else{
+            activity = AndroidTool.getMainActivity();
+        }
         myDialog.show(activity.getFragmentManager(), "123");
        /* AlertDialog.Builder builder = new AlertDialog.Builder(context).setIcon(R.mipmap.ic_launcher).setTitle("提示")
                 .setMessage(tip)
@@ -308,8 +315,8 @@ public class AndroidTool {
                 oldSliding = slidingview;
             }
             else if (fieldCustom instanceof BtuFieldCustom) {
-                Button btu = (Button) v;
-                btu.setOnClickListener(new View.OnClickListener() {
+
+                v.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         BtuFieldCustom btuFieldCustom = (BtuFieldCustom) fieldCustom;
@@ -356,24 +363,29 @@ public class AndroidTool {
             }
             else  if(fieldCustom instanceof ImgFieldCusom){
                 ImageView img = (ImageView) v;
+                img.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        ImgFieldCusom imgFieldCustom = (ImgFieldCusom) fieldCustom;
+                        imgFieldCustom.onClick(myJSONObject);
+                    }
+                });
                 String path = jsonObject.getString("path");
+                if(path == null){
+                    return;//使用的是rid
+                }
                 if (FileTool.exitFile(path)) {
-                    img.setImageBitmap(BitmapFactory.decodeFile(jsonObject.getString("path")));
-                }else if(!Media.ADD_BUTTON.equals(myJSONObject.getId()) && fieldCustom instanceof  ImgFieldCusom){
-                    //img.setImageResource(R.mipmap.data_icon_picture_loss);
+                    setImgViewPath(img,path);
+                    //img.setImageBitmap(BitmapFactory.decodeFile(jsonObject.getString("path")));
+                }else {
+                    img.setImageResource(R.mipmap.data_icon_picture_loss);
                 }
                /* if (img instanceof ZQImageViewRoundOval) {
                     ZQImageViewRoundOval iv_roundRect = (ZQImageViewRoundOval) img;
                     iv_roundRect.setType(ZQImageViewRoundOval.TYPE_ROUND);
                     iv_roundRect.setRoundRadius(10);//矩形凹行大小
                 }*/
-                img.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                            ImgFieldCusom imgFieldCustom = (ImgFieldCusom) fieldCustom;
-                            imgFieldCustom.onClick(myJSONObject);
-                        }
-                });
+
             }
             else if (fieldCustom instanceof ProgressFieldCusom) {
                 ProgressBar pb = (ProgressBar) v;
@@ -425,7 +437,7 @@ public class AndroidTool {
      * @param isEdit         是否直接修改
      */
     @SuppressLint("NewApi")
-    public static void setView1(View view, ItemDataCustom itemDataCustom, boolean isEdit, int postion) {
+    public static void setView2(View view, ItemDataCustom itemDataCustom, boolean isEdit, int postion) {
         List<FieldCustom> fs = itemDataCustom.getFieldCustoms();
         //使用副本修改，
         final MyJSONObject myJSONObject = itemDataCustom.getMyJSONObject();
@@ -818,5 +830,27 @@ public class AndroidTool {
                 fromY, Animation.RELATIVE_TO_SELF, toY);
         mHiddenAction.setDuration(500);
         return mHiddenAction;
+    }
+
+    public static void setImgViewPath(ImageView imageView, String nativePath) {
+        if(nativePath.endsWith(".jpg")){
+            try {
+                InputStream is =new FileInputStream(nativePath);
+                BitmapFactory.Options options = new BitmapFactory.Options();
+                options.inJustDecodeBounds = false;
+                options.inPreferredConfig = Bitmap.Config.RGB_565;
+                options.inPurgeable = true;
+                options.inInputShareable = true;
+                options.inSampleSize = 1;
+                Bitmap btp = BitmapFactory.decodeStream(is, null, options);
+                imageView.setImageBitmap(btp);
+                imageView.setScaleType(ImageView.ScaleType.MATRIX);
+                //imageView.setImageBitmap(BitmapFactory.decodeStream (is));
+            }catch (Exception e){
+                AndroidTool.showAnsyTost(e.getMessage(),1);
+               // AndroidTool.showAnsyTost("照片过大："+nativePath,1);
+            }
+
+        }
     }
 }

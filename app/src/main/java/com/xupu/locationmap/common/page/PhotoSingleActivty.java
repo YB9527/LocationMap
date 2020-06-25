@@ -3,6 +3,7 @@ package com.xupu.locationmap.common.page;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
 
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.graphics.PointF;
@@ -21,6 +22,9 @@ import com.xupu.locationmap.projectmanager.po.MyJSONObject;
 import com.xupu.locationmap.projectmanager.service.MediaService;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 
 /**
  * 当个照片的显示
@@ -41,19 +45,38 @@ public class PhotoSingleActivty extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        AndroidTool.setFullWindow(this);
+        getSupportActionBar().hide();
 
         setContentView(R.layout.activity_photo_single);
 
         MyJSONObject media = (MyJSONObject) getIntent().getSerializableExtra("media");
 
-        Uri imageUri = FileProvider.getUriForFile(this, AndroidTool.FILEPROVIDER, new File(MediaService.getPath(media)));
+
         imageView = findViewById(R.id.imageView);
+        AndroidTool.setImgViewPath(imageView,MediaService.getPath(media));
+
+       /* InputStream is = null;
+        try {
+            is = new FileInputStream(MediaService.getPath(media));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = false;
+        options.inPreferredConfig = Bitmap.Config.RGB_565;
+        options.inPurgeable = true;
+        options.inInputShareable = true;
+        options.inSampleSize = 1;
+        Bitmap btp = BitmapFactory.decodeStream(is, null, options);
+        imageView.setImageBitmap(btp);*/
+
+       /* Uri imageUri = FileProvider.getUriForFile(this, AndroidTool.FILEPROVIDER, new File(MediaService.getPath(media)));
+
         imageView.setImageURI(imageUri);
-        imageView.setOnTouchListener(new ImageTouchListener(imageView));
+        imageView.setOnTouchListener(new ImageTouchListener(imageView));*/
 
-
+        initTitle();
        /* ImageViewTouch imageViewTouch = ImageViewTouch.getImageViewTouch(MediaService.getPath(media));
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.fl, imageViewTouch)   // 此处的R.id.fragment_container是要盛放fragment的父容器'
@@ -62,7 +85,9 @@ public class PhotoSingleActivty extends AppCompatActivity {
         imageView.setImageBitmap(BitmapFactory.decodeFile(MediaService.getPath(media)));
         imageView.setOnTouchListener(new PhotoSingleActivty.ImageTouchListener(imageView));*/
     }
-
+    private void initTitle() {
+        AndroidTool.addTitleFragment(this, "附件");
+    }
     /**
      * 图片 手势操作监听
      */

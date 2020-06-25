@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -64,17 +65,10 @@ public class TaskFragment extends Fragment {
 
     public TaskFragment(MyJSONObject task, MyJSONObject parent, List<MyJSONObject> medias) {
         this.medias = new ArrayList<>();
-        for (MyJSONObject meidaJson : medias) {
-            Media media = meidaJson.getJsonobject().toJavaObject(Media.class);
-            if (media.getMilepost() != null && media.getMilepost().equals(task.getId())) {
-                this.medias.add(meidaJson);
-                String path = media.getPath();
-                if (!FileTool.exitFile(path)) {
-                    //如果不存在，就在web上找
-
-                }
-            }
+        if(medias != null){
+            this.medias.addAll(medias);
         }
+
         this.task = task;
         this.parent = parent;
     }
@@ -88,7 +82,7 @@ public class TaskFragment extends Fragment {
         RecyclerView recyclerView = view.findViewById(R.id.recy);
         int fragmentItem = R.layout.fragment_task_photo;
         List<FieldCustom> filedCustoms = new ArrayList<>();
-        filedCustoms.add(new PositionField(R.id.index, "").setStartIndex(-1));
+        //filedCustoms.add(new PositionField(R.id.index, "").setStartIndex(-1));
         filedCustoms.add(new ImgFieldCusom(R.id.img, "path") {
             @Override
             public void onClick(MyJSONObject myJSONObject) {
@@ -143,13 +137,34 @@ public class TaskFragment extends Fragment {
                     imageView.setImageResource(R.drawable.data_icon_add);
                 } else {
                     MyJSONObject item = myItemRecyclerViewAdapter.getItem(position);
-                    Media media = item.getJsonobject().toJavaObject(Media.class);
-                    String path = media.getPath();
-                    File file = new File(path);
-                    /*如果文件不存在，就在网络上找*/
-                    if (file.exists()) {
-                        String url = Tool.getPhotoHostAddress() + path;
-                        new OkHttpClientUtils.GetBuild(url).photoBuild(path, new Callback<Boolean>() {
+                    if(item.getState() != TableTool.STATE_NONE){
+                        //如果不是网络图片就不用再网上找
+                        return;
+                    }
+                    //肯定是网络图片
+                    String srcpath =MediaService.getPath(item).replace("\\","/").replace("#","%23");
+                    String nativePath = null;
+                    if(!srcpath.startsWith(AndroidTool.getRootDir())){
+                        //如果不包含本地前缀，就增加，查看本地是否已经下载了
+                        nativePath = AndroidTool.getRootDir() + srcpath;
+
+                    }else{
+                        nativePath = srcpath;
+                    }
+                    File file = new File(nativePath);
+                    MediaService.setPath(item,nativePath);
+                    if(file.exists()){
+                        try {
+                            AndroidTool.setImgViewPath(imageView,nativePath);
+
+                        }catch (Exception e){
+                            AndroidTool.showAnsyTost("图片有问题："+nativePath,1);
+                        }
+
+                    }else {
+                        String url = Tool.getPhotoHostAddress() + srcpath;
+
+                        new OkHttpClientUtils.GetBuild(url).photoBuild(nativePath, new Callback<Boolean>() {
                             @Override
                             public void call(Boolean hasePhoto) {
                                 if (hasePhoto) {
@@ -158,6 +173,7 @@ public class TaskFragment extends Fragment {
                                         public void run() {
                                             //下载好了，就更新item
                                             myItemRecyclerViewAdapter.notifyItemChanged(position);
+                                            //保存图片到本地
                                         }
                                     });
                                 } /*else {
@@ -172,7 +188,9 @@ public class TaskFragment extends Fragment {
                                 }*/
                             }
                         });
+
                     }
+
                 }
             }
         });

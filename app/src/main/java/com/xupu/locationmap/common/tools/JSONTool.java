@@ -38,10 +38,11 @@ public class JSONTool {
         Map<String, List<MyJSONObject>> map = new HashMap<>();
         List<MyJSONObject> list;
         for (MyJSONObject myJSONObject : source) {
-            list = map.get(myJSONObject.getTablename());
+            String key = myJSONObject.getJsonobject().getString(jsonKey);
+            list = map.get(key);
             if (list == null) {
                 list = new ArrayList<>();
-                map.put(myJSONObject.getTablename(), list);
+                map.put(key, list);
             }
             list.add(myJSONObject);
         }
@@ -101,4 +102,6 @@ public class JSONTool {
     public static MyJSONObject toMyJSONObject(Object obj) {
         return new MyJSONObject(UUID.randomUUID().toString(), null, null, JSONTool.toJSONObject(obj));
     }
+
+
 }
