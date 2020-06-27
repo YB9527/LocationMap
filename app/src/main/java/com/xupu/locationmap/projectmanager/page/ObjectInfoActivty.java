@@ -13,6 +13,7 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
 import com.chad.library.adapter.base.BaseQuickAdapter;
@@ -20,6 +21,7 @@ import com.xupu.locationmap.R;
 import com.xupu.locationmap.common.po.Callback;
 import com.xupu.locationmap.common.po.MyCallback;
 import com.xupu.locationmap.common.po.ResultData;
+import com.xupu.locationmap.common.po.ViewHolderCallback;
 import com.xupu.locationmap.common.tools.AndroidTool;
 import com.xupu.locationmap.common.tools.TableTool;
 import com.xupu.locationmap.projectmanager.view.BtuFieldCustom;
@@ -56,9 +58,9 @@ public class ObjectInfoActivty extends AppCompatActivity {
             //隐藏删除按钮
 
             //新增一个对象
-            fileds = TableTool.findByTableNameAndParentId(ZTService.TABLE_Structure,id);
-            if(fileds.size() ==0){
-                AndroidTool.showAnsyTost("还没有添加字段表",1);
+            fileds = TableTool.findByTableNameAndParentId(ZTService.TABLE_Structure, id);
+            if (fileds.size() == 0) {
+                AndroidTool.showAnsyTost("还没有添加字段表", 1);
                 this.finish();
                 return;
             }
@@ -76,7 +78,7 @@ public class ObjectInfoActivty extends AppCompatActivity {
             initAddTitle();
         } else {
 
-            obj = TableTool.findByTableNameAndId(tablename,id);
+            obj = TableTool.findByTableNameAndId(tablename, id);
             //根据tableid 查询 表格字段
             fileds = TableTool.findByTableNameAndParentId(ZTService.TABLE_Structure, obj.getTableid());
             initEditTitle();
@@ -104,9 +106,9 @@ public class ObjectInfoActivty extends AppCompatActivity {
                     AndroidTool.showAnsyTost("没有被修改", 2);
                     return;
                 }
-                String message ="确定要修改吗？";
-                if(state == TableTool.STATE_INSERT){
-                    message="确定要增加吗？";
+                String message = "确定要修改吗？";
+                if (state == TableTool.STATE_INSERT) {
+                    message = "确定要增加吗？";
                 }
                 //3、对象传给父组件
                 AndroidTool.confirm(ObjectInfoActivty.this, message, new MyCallback() {
@@ -214,7 +216,7 @@ public class ObjectInfoActivty extends AppCompatActivity {
             }
         }.setConfirm(true, "确认要删除吗？");
         filedCustoms.add(btn_delete);
-        if (state == TableTool.STATE_INSERT){
+        if (state == TableTool.STATE_INSERT) {
             btn_delete.setVisable(View.GONE);
         }
 
@@ -243,9 +245,9 @@ public class ObjectInfoActivty extends AppCompatActivity {
         for (MyJSONObject filed : fileds) {
             String name = filed.getJsonobject().getString("fieldname").toLowerCase();
             String value = obj.getJsonobject().getString(name);
-            if (value == null) {
+           /* if (value == null) {
                 value = "";
-            }
+            }*/
             filed.getJsonobject().put("my_value", value);
         }
         fs.add(new FieldCustom(R.id.key, "fieldaliasname"));
@@ -254,19 +256,20 @@ public class ObjectInfoActivty extends AppCompatActivity {
         int fragmentItem = R.layout.fragment_key_value_item;
         TableDataCustom tableDataCustom = new TableDataCustom(fragmentItem, fs, fileds).setEdit(true);
         RecyclerView recyclerView = findViewById(R.id.recy);
-        myItemRecyclerViewAdapter = new MyItemRecyclerViewAdapter(tableDataCustom,recyclerView);
+        myItemRecyclerViewAdapter = new MyItemRecyclerViewAdapter(tableDataCustom, recyclerView);
         myItemRecyclerViewAdapter.setNewData(fileds);
 
-        myItemRecyclerViewAdapter.setEnableLoadMore(true);
+       /* myItemRecyclerViewAdapter.setEnableLoadMore(true);
         myItemRecyclerViewAdapter.setOnLoadMoreListener(() -> new Handler().postDelayed(() -> {
             String s = "123";
         }, 500), recyclerView);
         recyclerView.setOnScrollChangeListener(new View.OnScrollChangeListener() {
             @Override
             public void onScrollChange(View view, int i, int i1, int i2, int i3) {
-                String s= "123"+i;
+                String s = "123" + i;
             }
-        });
+        });*/
+
         recyclerView.setAdapter(myItemRecyclerViewAdapter);
 
 

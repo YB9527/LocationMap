@@ -112,11 +112,15 @@
     </declare-styleable>
 
     <style name="nv_click">
-        <item name="android:background">@drawable/ripple_bg</item>
+        <item name="android:background">@drawable/ripple_bg_rec</item>
     </style>
     <style name="item_click">
+        <item name="android:background">@drawable/ripple_bg_rec</item>
+    </style>
+    <style name="circular_click">
         <item name="android:background">@drawable/ripple_bg</item>
     </style>
+
     <style name="title_click">
         <item name="android:background">@drawable/ripple_title</item>
     </style>

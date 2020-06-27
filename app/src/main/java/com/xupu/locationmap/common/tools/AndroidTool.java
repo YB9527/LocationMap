@@ -14,6 +14,7 @@ import android.os.Build;
 import android.os.Environment;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.animation.Animation;
@@ -73,7 +74,7 @@ import java.util.Map;
  */
 public class AndroidTool {
 
-    public final  static  int ACTIVITY_FINISH=501;
+    public final static int ACTIVITY_FINISH = 501;
     private static AppCompatActivity activity;
 
     public static void setMainActivity(AppCompatActivity activity) {
@@ -131,10 +132,10 @@ public class AndroidTool {
      */
     public static void confirm(Context context, String tip, final MyCallback callback) {
         MyDialog myDialog = MyDialog.newInstance(tip, callback);
-        Activity activity ;
-        if(context instanceof  Activity){
-             activity = (Activity) context;
-        }else{
+        Activity activity;
+        if (context instanceof Activity) {
+            activity = (Activity) context;
+        } else {
             activity = AndroidTool.getMainActivity();
         }
         myDialog.show(activity.getFragmentManager(), "123");
@@ -235,6 +236,7 @@ public class AndroidTool {
             }
         }
     }
+
     @SuppressLint("NewApi")
     public static void setView(View view, ItemDataCustom itemDataCustom, boolean isEdit, int postion) {
         List<FieldCustom> fs = itemDataCustom.getFieldCustoms();
@@ -256,8 +258,7 @@ public class AndroidTool {
                 TextView textView = (TextView) v;
                 PositionField positionField = (PositionField) fieldCustom;
                 textView.setText(positionField.getStartIndex() + postion + 1 + "");
-            }
-            else if (fieldCustom instanceof ViewFieldCustom) {
+            } else if (fieldCustom instanceof ViewFieldCustom) {
                 ViewFieldCustom viewFieldCustom = (ViewFieldCustom) fieldCustom;
                 v.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -276,8 +277,7 @@ public class AndroidTool {
                         }
                     }
                 });
-            }
-            else if (fieldCustom instanceof CheckBoxFieldCustom) {
+            } else if (fieldCustom instanceof CheckBoxFieldCustom) {
                 CheckBoxFieldCustom checkBoxFieldCustom = (CheckBoxFieldCustom) fieldCustom;
                 boolean bl = jsonObject.getBoolean(checkBoxFieldCustom.getAttribute());
                 CheckBox checkBox = view.findViewById(checkBoxFieldCustom.getId());
@@ -297,8 +297,7 @@ public class AndroidTool {
                         }
                     }
                 });
-            }
-            else if (fieldCustom instanceof SlidingFieldCustom) {
+            } else if (fieldCustom instanceof SlidingFieldCustom) {
                 SlidingFieldCustom slidingFieldCustom = (SlidingFieldCustom) fieldCustom;
                 View containerView = view.findViewById(slidingFieldCustom.getLayoutid());
                 if (slidingFieldCustom.getWidth() == 0) {
@@ -313,8 +312,7 @@ public class AndroidTool {
                     oldSliding.removeOld();
                 }
                 oldSliding = slidingview;
-            }
-            else if (fieldCustom instanceof BtuFieldCustom) {
+            } else if (fieldCustom instanceof BtuFieldCustom) {
 
                 v.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -360,8 +358,7 @@ public class AndroidTool {
                         }
                     }
                 });
-            }
-            else  if(fieldCustom instanceof ImgFieldCusom){
+            } else if (fieldCustom instanceof ImgFieldCusom) {
                 ImageView img = (ImageView) v;
                 img.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -371,13 +368,13 @@ public class AndroidTool {
                     }
                 });
                 String path = jsonObject.getString("path");
-                if(path == null){
+                if (path == null) {
                     return;//使用的是rid
                 }
                 if (FileTool.exitFile(path)) {
-                    setImgViewPath(img,path);
+                    setImgViewPath(img, path);
                     //img.setImageBitmap(BitmapFactory.decodeFile(jsonObject.getString("path")));
-                }else {
+                } else {
                     img.setImageResource(R.mipmap.data_icon_picture_loss);
                 }
                /* if (img instanceof ZQImageViewRoundOval) {
@@ -386,58 +383,66 @@ public class AndroidTool {
                     iv_roundRect.setRoundRadius(10);//矩形凹行大小
                 }*/
 
-            }
-            else if (fieldCustom instanceof ProgressFieldCusom) {
+            } else if (fieldCustom instanceof ProgressFieldCusom) {
                 ProgressBar pb = (ProgressBar) v;
                 ProgressFieldCusom pbFieldCustom = (ProgressFieldCusom) fieldCustom;
                 pb.setProgress(jsonObject.getIntValue(pbFieldCustom.getAttribute()), true);
-            }
-            else  if(fieldCustom instanceof  EditFieldCusom){
+            } else if (fieldCustom instanceof EditFieldCusom) {
                 EditText et = (EditText) v;
+
+
+//        通过tag判断当前editText是否已经设置监听，有监听的话，移除监听再给editText赋值
+                if (et.getTag() instanceof TextWatcher) {
+                    et.removeTextChangedListener((TextWatcher) et.getTag());
+                }
+//        必须在判断tag后给editText赋值，否则会数据错乱
                 String attribute = fieldCustom.getAttribute();
                 String str = jsonObject.getString(attribute);
                 et.setText(str);
-                et.addTextChangedListener(new TextWatcher() {
+                TextWatcher watcher = new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                    }
+
                     @Override
                     public void onTextChanged(CharSequence s, int start, int before, int count) {
-                        // TODO Auto-generated method stub
+
                     }
 
                     @Override
-                    public void beforeTextChanged(CharSequence s, int start, int count,
-                                                  int after) {
-                        // TODO Auto-generated method stub
-                    }
-
-                    @RequiresApi(api = Build.VERSION_CODES.N)
-                    @Override
-                    public void afterTextChanged(Editable s) {
+                    public void afterTextChanged(Editable editable) {
                         String text = et.getText().toString();
                         if ("".equals(text) && jsonObject.getString(fieldCustom.getAttribute()) == null) {
                             return;
                         }
                         jsonObject.replace(fieldCustom.getAttribute(), text);
-                        // String aa ="123";1
-                        //jsonObject.replace("a","123");
-
                     }
-                });
-            }
-            else {
-                TextView tv = (TextView)v;
+                };
+//        给item中的editText设置监听
+                et.addTextChangedListener(watcher);
+//        给editText设置tag，以便于判断当前editText是否已经设置监听
+                et.setTag(watcher);
+
+
+            } else {
+                TextView tv = (TextView) v;
                 String attribute = fieldCustom.getAttribute();
                 String str = jsonObject.getString(attribute);
                 tv.setText(str);
+
+
             }
         }
     }
+
     /**
      * @param view
      * @param itemDataCustom
      * @param isEdit         是否直接修改
      */
     @SuppressLint("NewApi")
-    public static void setView2(View view, ItemDataCustom itemDataCustom, boolean isEdit, int postion) {
+   /* public static void setView2(View view, ItemDataCustom itemDataCustom, boolean isEdit, int postion) {
         List<FieldCustom> fs = itemDataCustom.getFieldCustoms();
         //使用副本修改，
         final MyJSONObject myJSONObject = itemDataCustom.getMyJSONObject();
@@ -608,14 +613,14 @@ public class AndroidTool {
                 });
             } else if (temView instanceof ImageView) {
                 ImageView img = (ImageView) temView;
-               /* View tem = view.findViewById(R.id.SFZ_Front);
+               *//* View tem = view.findViewById(R.id.SFZ_Front);
                 if (tem != null) {
                     tem.setVisibility(View.GONE);
                 }
                 tem = view.findViewById(R.id.SFZ_back);
                 if (tem != null) {
                     tem.setVisibility(View.GONE);
-                }*/
+                }*//*
                 String task = jsonObject.getString("task");
                 if (task != null) {
                     if (task.equals(Customizing.SFZ_Front)) {
@@ -631,7 +636,7 @@ public class AndroidTool {
                 String path = jsonObject.getString("path");
                 if (FileTool.exitFile(path)) {
                     img.setImageBitmap(BitmapFactory.decodeFile(jsonObject.getString("path")));
-                }else if(!Media.ADD_BUTTON.equals(myJSONObject.getId()) && fieldCustom instanceof  ImgFieldCusom){
+                } else if (!Media.ADD_BUTTON.equals(myJSONObject.getId()) && fieldCustom instanceof ImgFieldCusom) {
                     //img.setImageResource(R.mipmap.data_icon_picture_loss);
                 }
                 if (img instanceof ZQImageViewRoundOval) {
@@ -654,7 +659,7 @@ public class AndroidTool {
                 pb.setProgress(jsonObject.getIntValue(pbFieldCustom.getAttribute()), true);
             }
         }
-    }
+    }*/
 
     private static Map<String, Class<?>> clsMap = new HashMap<>();
 
@@ -833,9 +838,9 @@ public class AndroidTool {
     }
 
     public static void setImgViewPath(ImageView imageView, String nativePath) {
-        if(nativePath.endsWith(".jpg")){
+        if (nativePath.endsWith(".jpg")) {
             try {
-                InputStream is =new FileInputStream(nativePath);
+                InputStream is = new FileInputStream(nativePath);
                 BitmapFactory.Options options = new BitmapFactory.Options();
                 options.inJustDecodeBounds = false;
                 options.inPreferredConfig = Bitmap.Config.RGB_565;
@@ -846,9 +851,9 @@ public class AndroidTool {
                 imageView.setImageBitmap(btp);
                 imageView.setScaleType(ImageView.ScaleType.MATRIX);
                 //imageView.setImageBitmap(BitmapFactory.decodeStream (is));
-            }catch (Exception e){
-                AndroidTool.showAnsyTost(e.getMessage(),1);
-               // AndroidTool.showAnsyTost("照片过大："+nativePath,1);
+            } catch (Exception e) {
+                AndroidTool.showAnsyTost(e.getMessage(), 1);
+                // AndroidTool.showAnsyTost("照片过大："+nativePath,1);
             }
 
         }

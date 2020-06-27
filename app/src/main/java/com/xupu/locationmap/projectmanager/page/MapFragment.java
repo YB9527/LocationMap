@@ -1539,7 +1539,7 @@ public class MapFragment extends Fragment {
                 Point jinweiduPoint = (Point)geometry;
                 double x = jinweiduPoint.getX();
                 //可见状态 且 坐标被移动才变化
-                if (x != oldx && rl_xy.getVisibility() == View.VISIBLE) {
+                if (x != oldx &&rl_xy != null && rl_xy.getVisibility() == View.VISIBLE) {
                     activity.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {

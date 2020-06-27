@@ -1,20 +1,21 @@
-<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     >
+
     <LinearLayout
         android:orientation="horizontal"
         android:id="@+id/title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
-    <com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
-        android:id="@+id/imageView"
-        android:scaleType="fitXY"
+
+    <androidx.viewpager.widget.ViewPager
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_width="match_parent" />
+        android:id="@+id/horizontal_pager" android:visibility="gone" />
+    <com.xupu.locationmap.common.imgview.VerticalViewPager   android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/vertical_pager" android:visibility="gone"/>
 
 </LinearLayout>

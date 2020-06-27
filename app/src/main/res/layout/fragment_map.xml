@@ -220,12 +220,13 @@
                     android:layout_alignParentRight="true"
                     android:layout_marginRight="15dp"
                     android:layout_marginTop="@dimen/item_height_20"
+                    android:paddingTop="2dp"
                     android:background="@drawable/bg_white_round"
                     android:layout_width="40dp"
                     android:layout_height="wrap_content">
                     <LinearLayout
                         android:id="@+id/btn_layers"
-                        style="@style/nv_click"
+                        style="@style/circular_click"
                         android:paddingTop="10dp"
                         android:gravity="center_horizontal"
                         android:orientation="vertical"
@@ -250,7 +251,7 @@
                     <LinearLayout
                         android:id="@+id/btn_trajectory"
                         android:paddingTop="10dp"
-                        style="@style/nv_click"
+                        style="@style/circular_click"
                         android:gravity="center_horizontal"
                         android:orientation="vertical"
                         android:layout_width="wrap_content"
@@ -273,7 +274,7 @@
                     </LinearLayout>
                     <LinearLayout
                         android:id="@+id/btn_state4"
-                        style="@style/nv_click"
+                        style="@style/circular_click"
                         android:paddingTop="10dp"
                         android:gravity="center_horizontal"
                         android:orientation="vertical"
@@ -297,7 +298,7 @@
                     </LinearLayout>
                     <LinearLayout
                         android:paddingTop="10dp"
-                        style="@style/nv_click"
+                        style="@style/circular_click"
                         android:gravity="center_horizontal"
                         android:orientation="vertical"
                         android:layout_width="wrap_content"
@@ -348,7 +349,7 @@
                 </RelativeLayout>
                 <RelativeLayout
                     android:id="@+id/btn_location"
-                    style="@style/nv_click"
+                    style="@style/circular_click"
                     android:gravity="center"
                     android:layout_alignParentBottom="true"
                     android:layout_alignParentRight="true"

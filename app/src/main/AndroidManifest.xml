@@ -85,6 +85,11 @@
             android:theme="@style/titlebarstyle"
             tools:ignore="LockedOrientationActivity" />
         <activity
+            android:name=".common.imgview.ViewPagerActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/titlebarstyle"
+            tools:ignore="LockedOrientationActivity" />
+        <activity
             android:name=".usermanager.page.Login"
             android:screenOrientation="portrait"
             android:theme="@style/titlebarstyle"

@@ -54,6 +54,7 @@
                 <EditText android:id="@+id/et_account" android:textSize="@dimen/text_s12"  android:textColorHint="@color/text_hint" android:layout_gravity="center_vertical"  android:background="@null" android:layout_width="0dp" android:layout_weight="1" android:layout_height="fill_parent" android:hint="请输入账号" android:singleLine="true" android:maxLength="20" android:layout_marginStart="16.0dip" android:layout_marginEnd="16.0dip" />
                 <RelativeLayout
                     android:id="@+id/login_username_cancel"
+                    style="@style/circular_click"
                     android:layout_width="40dp"
                     android:layout_height="match_parent">
                     <ImageView
@@ -66,6 +67,7 @@
             </LinearLayout>
 
             <LinearLayout
+
                 android:layout_marginTop="30dp"
 
                 android:background="@drawable/bg_login_input"
@@ -79,11 +81,20 @@
                 <EditText android:id="@+id/et_password" android:inputType="textPassword"  android:textSize="@dimen/text_s12"  android:textColorHint="@color/text_hint" android:layout_gravity="center_vertical"  android:background="@null" android:layout_width="0dp" android:layout_weight="1" android:layout_height="fill_parent" android:hint="请输入密码" android:singleLine="true" android:maxLength="20" android:layout_marginStart="16.0dip" android:layout_marginEnd="16.0dip" />
                 <RelativeLayout
                     android:id="@+id/login_password_visible"
+                    style="@style/circular_click"
                     android:layout_width="40dp"
                     android:layout_height="match_parent">
                     <ImageView
+                        android:id="@+id/img_pasword_visible"
                         android:layout_centerInParent="true"
                         android:src="@mipmap/login_icon_hidden"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+                    <ImageView
+                        android:id="@+id/img_pasword_gone"
+                        android:visibility="gone"
+                        android:layout_centerInParent="true"
+                        android:src="@mipmap/login_icon_display"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"/>
                 </RelativeLayout>
@@ -93,7 +104,7 @@
 
             <RelativeLayout
                 android:id="@+id/btn_sign_in"
-                style="@style/item_click"
+
                 android:layout_marginTop="40dp"
                 android:layout_marginBottom="10dp"
                 android:background="@drawable/btn_bg_blue2"

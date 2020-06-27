@@ -13,7 +13,9 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.alibaba.fastjson.JSONObject;
+import com.google.gson.Gson;
 import com.xupu.locationmap.R;
+import com.xupu.locationmap.common.imgview.ViewPagerActivity;
 import com.xupu.locationmap.common.page.PhotoSingleActivty;
 import com.xupu.locationmap.common.po.Callback;
 import com.xupu.locationmap.common.po.Media;
@@ -66,6 +68,7 @@ public class NverTimeActivty extends AppCompatActivity {
             @Override
             public boolean accept(File file, String s) {
                 if(s.endsWith(".jpg")){
+                   
                     return true;
                 }
                 return false;
@@ -73,6 +76,7 @@ public class NverTimeActivty extends AppCompatActivity {
         });
         if(files != null){
             for (File file : files){
+                //boolean delete = file.delete();
                 MyJSONObject media = getMedia(file.getAbsolutePath());
                 medias.add(media);
             }
@@ -98,8 +102,13 @@ public class NverTimeActivty extends AppCompatActivity {
                     MediaTool.photo(NverTimeActivty.this, NVER_TIME, path);
                 } else {
                     //后面的是 media 显示全屏图片
-                    Intent intent = new Intent(NverTimeActivty.this, PhotoSingleActivty.class);
-                    intent.putExtra("media", myJSONObject);
+                    Intent intent = new Intent(NverTimeActivty.this, ViewPagerActivity.class);
+                    List<MyJSONObject> myJSONObjects1 = new ArrayList<>();
+                    myJSONObjects1.addAll(medias);
+                    myJSONObjects1.remove(medias.size()-1);
+                    
+                    intent.putExtra("medias", new Gson().toJson(myJSONObjects1));
+                    intent.putExtra("index", medias.indexOf(myJSONObject));
                     startActivity(intent);
                 }
             }

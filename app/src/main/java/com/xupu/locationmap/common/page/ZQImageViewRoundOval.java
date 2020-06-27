@@ -16,13 +16,15 @@ import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.widget.ImageView;
 
+import me.panpf.sketch.SketchImageView;
+
 /**
  * 实现圆形、圆角，椭圆等自定义图片View。
  * @author zq
  *
  */
 @SuppressLint("AppCompatCustomView")
-public class  ZQImageViewRoundOval extends ImageView {
+public class  ZQImageViewRoundOval extends SketchImageView {
 
     private Paint mPaint;
 
@@ -130,6 +132,7 @@ public class  ZQImageViewRoundOval extends ImageView {
 
         } else if (mType == TYPE_ROUND ||mType == TYPE_OVAL) {
             // 如果图片的宽或者高与view的宽高不匹配，计算出需要缩放的比例；缩放后的图片的宽高，一定要大于我们view的宽高；所以我们这里取大值；
+
             scale = Math.max(getWidth() * 1.0f/ bitmap.getWidth(), getHeight() * 1.0f / bitmap.getHeight());
         }
         // shader的变换矩阵，我们这里主要用于放大或者缩小

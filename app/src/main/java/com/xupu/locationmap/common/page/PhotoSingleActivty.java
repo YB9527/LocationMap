@@ -2,6 +2,10 @@ package com.xupu.locationmap.common.page;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentStatePagerAdapter;
+import androidx.viewpager.widget.ViewPager;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -16,46 +20,69 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.davemorrissey.labs.subscaleview.ImageSource;
+import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.xupu.locationmap.R;
+import com.xupu.locationmap.common.imgview.AbstractPagesActivity;
+import com.xupu.locationmap.common.imgview.ViewPagerFragment;
 import com.xupu.locationmap.common.tools.AndroidTool;
+import com.xupu.locationmap.common.tools.JSONTool;
 import com.xupu.locationmap.projectmanager.po.MyJSONObject;
 import com.xupu.locationmap.projectmanager.service.MediaService;
+
+
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
+
 
 /**
  * 当个照片的显示
  */
-public class PhotoSingleActivty extends AppCompatActivity {
+public class PhotoSingleActivty extends AbstractPagesActivity {
 
     private static String path;
 
-    public static PhotoSingleActivty getImageViewTouch(String path) {
-        PhotoSingleActivty imageViewTouch = new PhotoSingleActivty();
-
-        PhotoSingleActivty.path = path;
-        return imageViewTouch;
+    protected PhotoSingleActivty() {
+        super(R.layout.activity_photo_single);
     }
 
-    ImageView imageView;
+
+    SubsamplingScaleImageView imageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         AndroidTool.setFullWindow(this);
-        getSupportActionBar().hide();
+        //getSupportActionBar().hide();
 
         setContentView(R.layout.activity_photo_single);
+        String meidsStr = getIntent().getStringExtra("medias");
+        int currentIndex = getIntent().getIntExtra("index",-1);
 
-        MyJSONObject media = (MyJSONObject) getIntent().getSerializableExtra("media");
-
+       List<MyJSONObject> medias =  new Gson().fromJson(meidsStr,new TypeToken<List<MyJSONObject>>(){}.getType());
+        List<MyJSONObject> myJSONObjects = new ArrayList<>();
 
         imageView = findViewById(R.id.imageView);
-        AndroidTool.setImgViewPath(imageView,MediaService.getPath(media));
+        //imageView.setZoomEnabled(true);
+        //String s =  MediaService.getPath(media);
+        //ImageSource imageSource = ImageSource.uri(s);
 
+       // imageView.setImage(imageSource);
+
+
+
+        //AndroidTool.setImgViewPath(imageView,MediaService.getPath(media));
+        //imageView.setOnTouchListener(new ImageTouchListener(imageView));
        /* InputStream is = null;
         try {
             is = new FileInputStream(MediaService.getPath(media));
@@ -97,7 +124,7 @@ public class PhotoSingleActivty extends AppCompatActivity {
 
         public ImageTouchListener(ImageView imageView) {
             this.imageView = imageView;
-            imageView.setScaleType(ImageView.ScaleType.MATRIX);
+            //imageView.setScaleType(ImageView.ScaleType.MATRIX);
 
         }
 
@@ -211,4 +238,6 @@ public class PhotoSingleActivty extends AppCompatActivity {
         }
 
     }
+
+
 }

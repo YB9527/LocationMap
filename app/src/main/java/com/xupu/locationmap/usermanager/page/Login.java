@@ -101,9 +101,13 @@ public class Login extends AppCompatActivity {
             public void OnClick(View view, MyJSONObject myJSONObject) {
                 EditText et = findViewById(R.id.et_password);
                 if (et.getInputType() == 129) {
+                    view.findViewById(R.id.img_pasword_visible).setVisibility(View.GONE);
+                    view.findViewById(R.id.img_pasword_gone).setVisibility(View.VISIBLE);
                     et.setInputType(InputType.TYPE_CLASS_TEXT);
                 } else {
                     et.setInputType(129);
+                    view.findViewById(R.id.img_pasword_visible).setVisibility(View.VISIBLE);
+                    view.findViewById(R.id.img_pasword_gone).setVisibility(View.GONE);
                 }
             }
         });

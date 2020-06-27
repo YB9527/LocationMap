@@ -117,6 +117,7 @@ public class MyItemRecyclerViewAdapter extends BaseQuickAdapter<MyJSONObject, My
     public MyItemRecyclerViewAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(tableDataCustom.getFragmentItem(), parent, false);
+
         return new ViewHolder(view);
     }
 
@@ -124,7 +125,7 @@ public class MyItemRecyclerViewAdapter extends BaseQuickAdapter<MyJSONObject, My
     @Override
     public void onBindViewHolder(final MyItemRecyclerViewAdapter.ViewHolder holder, int position) {
         MyJSONObject json = mValues.get(position);
-        holder.itemView.setBackgroundColor(Color.WHITE);
+
         ItemDataCustom itemDataCustom = new ItemDataCustom(null, json, tableDataCustom.getFieldCustoms());
         AndroidTool.setView(holder.mView, itemDataCustom, tableDataCustom.isEdit(), position);
         /**
@@ -138,44 +139,9 @@ public class MyItemRecyclerViewAdapter extends BaseQuickAdapter<MyJSONObject, My
                 }
             }
         }
-
-        holder.mView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (oldHolder != null) {
-                    //oldHolder.itemView.setBackgroundColor(Color.WHITE);
-                }
-                //holder.itemView.setBackgroundColor(Color.GRAY);
-                oldHolder = holder;
-            }
-        });
         if (callback != null) {
             callback.call(holder, position);
         }
-      /*  holder.mItem = json;
-        for (View view : holder.vieMap.keySet()) {
-
-            if (view instanceof Button) {
-                Button btu = (Button) view;
-                btu.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        BtuFiledCustom btuFiledCustom = (BtuFiledCustom) holder.vieMap.get(view);
-                        btuFiledCustom.OnClick(new ResultData<JSONObject>(0, json));
-                    }
-                });
-            } else if (view instanceof TextView) {
-                TextView tv = (TextView) view;
-                tv.setText(json.getString(holder.vieMap.get(tv).getAttribute()));
-            } else if (view instanceof ImageView) {
-                //ImageView img = (ImageView) view;
-                //Bitmap bm = BitmapFactory.decodeFile(json.getString("path"));
-                //img.setImageBitmap(bm);//不会变形
-                //img.setImageResource(R.drawable.good_morning_img);//不会变形
-            }
-        }
-        */
-
     }
 
 
@@ -231,8 +197,6 @@ public class MyItemRecyclerViewAdapter extends BaseQuickAdapter<MyJSONObject, My
             mView = view;
             List<FieldCustom> filedMap = tableDataCustom.getFieldCustoms();
             for (FieldCustom filedCustom : filedMap) {
-                Integer id = filedCustom.getId();
-
                 View temView = view.findViewById(filedCustom.getId());
                 if (view != null) {
                     vieMap.put(temView, filedCustom);
