@@ -13,10 +13,15 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.lcodecore.tkrefreshlayout.IHeaderView;
+import com.lcodecore.tkrefreshlayout.OnAnimEndListener;
+import com.lcodecore.tkrefreshlayout.RefreshListenerAdapter;
+import com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout;
 import com.xupu.locationmap.R;
 import com.xupu.locationmap.common.po.Callback;
 import com.xupu.locationmap.common.po.MyCallback;
@@ -237,7 +242,7 @@ public class ObjectInfoActivty extends AppCompatActivity {
     }
 
 
-    @SuppressLint("NewApi")
+    @SuppressLint({"NewApi", "ClickableViewAccessibility"})
     private void init(MyJSONObject obj, List<MyJSONObject> fileds) {
         //页面显示
         List<FieldCustom> fs = new ArrayList<>();
@@ -272,7 +277,30 @@ public class ObjectInfoActivty extends AppCompatActivity {
 
         recyclerView.setAdapter(myItemRecyclerViewAdapter);
 
+        View view = findViewById(R.id.btn_delete);
+        TwinklingRefreshLayout refreshLayout = findViewById(R.id.refreshLayout);
+        refreshLayout.setPureScrollModeOn();
+        refreshLayout.setOnRefreshListener(new RefreshListenerAdapter(){
 
+            @Override
+            public void onPullingDown(TwinklingRefreshLayout refreshLayout, float fraction) {
+                super.onPullingDown(refreshLayout, fraction);
+
+               if(view.getVisibility() == View.GONE){
+                   view.setVisibility(View.VISIBLE);
+                   view.setAnimation(AndroidTool.moveToViewLocation(0, 0, -0.3f, 0));
+               }
+
+            }
+
+            @Override
+            public void onPullingUp(TwinklingRefreshLayout refreshLayout, float fraction) {
+                super.onPullingUp(refreshLayout, fraction);
+                view.setVisibility(View.GONE);
+            }
+        });
     }
+
+
 
 }

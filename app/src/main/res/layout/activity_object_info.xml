@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:gyf="http://schemas.android.com/apk/res-auto"
     android:id="@+id/page"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -12,27 +13,43 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
-
+    <RelativeLayout
+        android:id="@+id/btn_delete"
+        android:layout_gravity="center"
+        android:layout_marginTop="7dp"
+        android:layout_marginBottom="3dp"
+        android:background="@drawable/btn_bg_rad"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        >
+        <TextView
+            android:layout_centerInParent="true"
+            android:layout_marginLeft="10dp"
+            android:text="删除数据"
+            android:textColor="@color/white"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </RelativeLayout>
+    <com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/refreshLayout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        app:tr_head_height="100dp">
         <androidx.recyclerview.widget.RecyclerView
             xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/recy"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-
-            android:layout_weight="1"
+            android:layout_height="match_parent"
             app:layoutManager="LinearLayoutManager" />
+   </com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout>
 
 
 
-        <Button
-            android:id="@+id/btn_delete"
-            android:layout_marginTop="10dp"
-            android:textColor="@color/white"
-            android:layout_gravity="center"
-            android:text="删除数据"
-            android:background="@drawable/btn_bg_rad"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+
+
 
        <!-- <Button
             android:id="@+id/btn_update"

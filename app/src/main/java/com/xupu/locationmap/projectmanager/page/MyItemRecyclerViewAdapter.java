@@ -128,6 +128,7 @@ public class MyItemRecyclerViewAdapter extends BaseQuickAdapter<MyJSONObject, My
 
         ItemDataCustom itemDataCustom = new ItemDataCustom(null, json, tableDataCustom.getFieldCustoms());
         AndroidTool.setView(holder.mView, itemDataCustom, tableDataCustom.isEdit(), position);
+        holder.mView.setBackgroundColor(Color.WHITE);
         /**
          * 写入子对象的属性
          */

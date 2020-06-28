@@ -28,7 +28,11 @@ public class SFZPhotoTool {
     public static final int REQUEST_CODE_CAMERA = 102;
     private static SFZPhotoTool sfzPhotoTool;
     private static Activity activity;
-    public static  boolean INTERNET;//是否联网状态
+    public static boolean INTERNET;//是否联网状态
+
+    private SFZPhotoTool() {
+
+    }
 
     public static SFZPhotoTool getSFZPhotoTool(Activity activity) {
 
@@ -61,7 +65,7 @@ public class SFZPhotoTool {
                             // 本地自动识别需要初始化
                             sfzPhotoTool.initLicense();
                             Log.d("MainActivity", "onResult: " + result.toString());
-                            INTERNET =true;
+                            INTERNET = true;
                         }
 
                         @Override
@@ -83,6 +87,7 @@ public class SFZPhotoTool {
         }
         return sfzPhotoTool;
     }
+
     private void initLicense() {
         CameraNativeHelper.init(activity, OCR.getInstance(activity).getLicense(),
                 new CameraNativeHelper.CameraNativeInitCallback() {
@@ -131,7 +136,7 @@ public class SFZPhotoTool {
      * @param idCardSide 身份证正反面
      * @param filePath   图片路径
      */
-     public void recIDCard(String idCardSide, String filePath, MyCallback myCallback) {
+    public void recIDCard(String idCardSide, String filePath, MyCallback myCallback) {
         IDCardParams param = new IDCardParams();
         param.setImageFile(new File(filePath));
         // 设置身份证正反面
@@ -144,17 +149,18 @@ public class SFZPhotoTool {
             @Override
             public void onResult(IDCardResult result) {
                 if (result != null) {
-                    if(idCardSide.equals("back")){
+                    if (idCardSide.equals("back")) {
                         SFZBack sfz = new SFZBack();
                         sfz.setBack(result);
-                        myCallback.call(new ResultData<SFZBack>(0,sfz));
-                    }else{
+                        myCallback.call(new ResultData<SFZBack>(0, sfz));
+                    } else {
                         SFZFront sfz = new SFZFront();
                         sfz.setFont(result);
-                        myCallback.call(new ResultData<SFZFront>(0,sfz));
+                        myCallback.call(new ResultData<SFZFront>(0, sfz));
                     }
                 }
             }
+
             @Override
             public void onError(OCRError error) {
                 String er = error.getMessage();

@@ -103,6 +103,8 @@ public class TaskFragment extends Fragment {
                     intent.putExtra("medias", new Gson().toJson(myJSONObjects1));
                     intent.putExtra("index", myItemRecyclerViewAdapter.getmValues().indexOf(myJSONObject));
                     startActivity(intent);
+
+
                 }
             }
         });
@@ -138,10 +140,12 @@ public class TaskFragment extends Fragment {
             public void call(MyItemRecyclerViewAdapter.ViewHolder holder, int position) {
                 //默认显示下载图片icon
                 ImageView imageView = holder.mView.findViewById(R.id.img);
+               // holder.mView.findViewById(R.id.iv_delete).setVisibility(View.GONE);
                 if (position == medias.size() - 1) {
                     holder.mView.findViewById(R.id.iv_delete).setVisibility(View.GONE);
                     imageView.setImageResource(R.drawable.data_icon_add);
                 } else {
+
                     MyJSONObject item = myItemRecyclerViewAdapter.getItem(position);
                     if(item.getState() != TableTool.STATE_NONE){
                         //如果不是网络图片就不用再网上找
@@ -153,7 +157,6 @@ public class TaskFragment extends Fragment {
                     if(!srcpath.startsWith(AndroidTool.getRootDir())){
                         //如果不包含本地前缀，就增加，查看本地是否已经下载了
                         nativePath = AndroidTool.getRootDir() + srcpath;
-
                     }else{
                         nativePath = srcpath;
                     }
