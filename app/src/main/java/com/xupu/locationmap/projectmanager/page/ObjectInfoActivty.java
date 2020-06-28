@@ -290,7 +290,6 @@ public class ObjectInfoActivty extends AppCompatActivity {
                    view.setVisibility(View.VISIBLE);
                    view.setAnimation(AndroidTool.moveToViewLocation(0, 0, -0.3f, 0));
                }
-
             }
 
             @Override
@@ -300,7 +299,4 @@ public class ObjectInfoActivty extends AppCompatActivity {
             }
         });
     }
-
-
-
 }

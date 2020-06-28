@@ -83,6 +83,7 @@
             android:name=".MainActivity"
             android:screenOrientation="portrait"
             android:theme="@style/titlebarstyle"
+
             tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".common.imgview.ViewPagerActivity"

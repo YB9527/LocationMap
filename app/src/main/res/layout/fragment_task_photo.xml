@@ -25,7 +25,7 @@
             android:layout_width="match_parent"
             android:layout_height="80dp"
             android:layout_gravity="center"
-            android:scaleType="center"
+            android:scaleType="centerCrop"
             android:src="@mipmap/data_icon_download">
         </com.xupu.locationmap.common.page.ZQImageViewRoundOval>
         <!--<ImageView

@@ -151,6 +151,9 @@ public class TaskFragment extends Fragment {
                         //如果不是网络图片就不用再网上找
                         return;
                     }
+                    //先放置下载的图片
+                    setLoadImage(imageView);
+
                     //肯定是网络图片
                     String srcpath =MediaService.getPath(item).replace("\\","/").replace("#","%23");
                     String nativePath = null;
@@ -162,39 +165,29 @@ public class TaskFragment extends Fragment {
                     }
                     File file = new File(nativePath);
                     MediaService.setPath(item,nativePath);
+
                     if(file.exists()){
                         try {
-                            AndroidTool.setImgViewPath(imageView,nativePath);
-
+                            notifyImage(imageView,nativePath,position);
                         }catch (Exception e){
                             AndroidTool.showAnsyTost("图片有问题："+nativePath,1);
                         }
 
                     }else {
-                        String url = Tool.getPhotoHostAddress() + srcpath;
 
+                        String url = Tool.getPhotoHostAddress() + srcpath;
+                        String finalNativePath = nativePath;
                         new OkHttpClientUtils.GetBuild(url).photoBuild(nativePath, new Callback<Boolean>() {
                             @Override
                             public void call(Boolean hasePhoto) {
                                 if (hasePhoto) {
-                                    getActivity().runOnUiThread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            //下载好了，就更新item
-                                            myItemRecyclerViewAdapter.notifyItemChanged(position);
-                                            //保存图片到本地
-                                        }
-                                    });
-                                } /*else {
-                                    //照片失联
-                                    getActivity().runOnUiThread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            imageView.setImageResource(R.mipmap.data_icon_picture_loss);
-                                        }
-                                    });
 
-                                }*/
+                                    notifyImage(imageView, finalNativePath,position);
+                                } else {
+                                    setLoadLossImg(imageView);
+
+
+                                }
                             }
                         });
 
@@ -205,6 +198,47 @@ public class TaskFragment extends Fragment {
         });
 
         return view;
+    }
+
+    /**
+     * 下载失败的图片
+     * @param imageView
+     */
+    private void setLoadLossImg(ImageView imageView) {
+        //照片失联
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                imageView.setImageResource(R.mipmap.data_icon_picture_loss);
+            }
+        });
+    }
+    /**
+     * 下载中的图片
+     * @param imageView
+     */
+    private void setLoadImage(ImageView imageView) {
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                //下载好了，就更新item
+                imageView.setImageResource(R.mipmap.data_icon_download);
+                //myItemRecyclerViewAdapter.notifyItemChanged(position);
+                //保存图片到本地
+            }
+        });
+    }
+
+    private void notifyImage(ImageView imageView, String finalNativePath, int position) {
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                //下载好了，就更新item
+                AndroidTool.setImgViewPath(imageView, finalNativePath);
+                //myItemRecyclerViewAdapter.notifyItemChanged(position);
+                //保存图片到本地
+            }
+        });
     }
 
     private void initSelfPage(View view) {

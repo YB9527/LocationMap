@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.xupu.locationmap.MainActivity;
 import com.xupu.locationmap.R;
 import com.xupu.locationmap.common.po.Callback;
 import com.xupu.locationmap.common.po.MyCallback;
@@ -206,7 +207,6 @@ public class XZQYPage extends AppCompatActivity {
             }
         });
 
-
         List<MyJSONObject> xzdms =XZQYService.findByProject();
         List<FieldCustom> fs = new ArrayList<>();
         FieldCustom filedCustom ;
@@ -230,7 +230,8 @@ public class XZQYPage extends AppCompatActivity {
                     public void call(ResultData resultData) {
                         if (resultData.getStatus() == 0) {
                             XZQYService.setCurrentXZDM(myJSONObject);
-
+                            Intent intent = new Intent(XZQYPage.this, MainActivity.class);
+                            startActivity(intent);
                             AndroidTool.showAnsyTost("当前区域是：" + XZQYService.getCaption(myJSONObject), 0);
                         }
                     }

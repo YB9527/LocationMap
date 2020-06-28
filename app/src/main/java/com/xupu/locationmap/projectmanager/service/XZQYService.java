@@ -1,6 +1,9 @@
 package com.xupu.locationmap.projectmanager.service;
 
+import android.content.Intent;
+
 import com.alibaba.fastjson.JSONObject;
+import com.xupu.locationmap.MainActivity;
 import com.xupu.locationmap.common.tools.AndroidTool;
 import com.xupu.locationmap.common.tools.RedisTool;
 import com.xupu.locationmap.common.tools.TableTool;
@@ -42,6 +45,7 @@ public class XZQYService {
         //保存到数据库中，下次重新启动有记录
         RedisTool.updateRedis(CURRENT_XZDM_MARK, currentXZDM);
         XZQYService.currentXZDM = currentXZDM;
+
     }
 
     public static MyJSONObject newXZDM() {

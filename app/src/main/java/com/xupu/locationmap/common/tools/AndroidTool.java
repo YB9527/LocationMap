@@ -10,6 +10,7 @@ import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.text.Editable;
@@ -45,6 +46,7 @@ import com.xupu.locationmap.common.po.Media;
 import com.xupu.locationmap.common.po.MyCallback;
 import com.xupu.locationmap.common.po.ResultData;
 import com.xupu.locationmap.projectmanager.page.AddItemFragment;
+import com.xupu.locationmap.projectmanager.service.MediaService;
 import com.xupu.locationmap.projectmanager.view.BtuFieldCustom;
 import com.xupu.locationmap.projectmanager.po.Customizing;
 import com.xupu.locationmap.projectmanager.view.CheckBoxFieldCustom;
@@ -63,10 +65,14 @@ import org.w3c.dom.Text;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.lang.reflect.Array;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import me.panpf.sketch.SketchImageView;
 
 
 /**
@@ -372,7 +378,7 @@ public class AndroidTool {
                     return;//使用的是rid
                 }
                 if (FileTool.exitFile(path)) {
-                    setImgViewPath(img, path);
+                    setImgViewPath( img, path);
                     //img.setImageBitmap(BitmapFactory.decodeFile(jsonObject.getString("path")));
                 } else {
                     img.setImageResource(R.mipmap.data_icon_picture_loss);
@@ -837,25 +843,41 @@ public class AndroidTool {
         return mHiddenAction;
     }
 
+    private static long maxlength = 1024 * 1024 * 4;
+
     public static void setImgViewPath(ImageView imageView, String nativePath) {
-        if (nativePath.endsWith(".jpg")) {
+        //SketchImageView sketchImageView = (SketchImageView)imageView;
+        //sketchImageView.displayImage(nativePath);
+        //sketchImageView.setImageURI(Uri.fromFile(new File(nativePath)));
+
+        if (MediaService.IMG_TYPE.indexOf(FileTool.getExtension(nativePath)) != -1) {
+
             try {
+                File file = new File(nativePath);
+                //防止图片过大
+                /*if(file.length() > maxlength){
+                    return;
+                }*/
                 InputStream is = new FileInputStream(nativePath);
                 BitmapFactory.Options options = new BitmapFactory.Options();
                 options.inJustDecodeBounds = false;
                 options.inPreferredConfig = Bitmap.Config.RGB_565;
                 options.inPurgeable = true;
                 options.inInputShareable = true;
-                options.inSampleSize = 1;
+                options.inSampleSize = 10;
                 Bitmap btp = BitmapFactory.decodeStream(is, null, options);
                 imageView.setImageBitmap(btp);
                 imageView.setScaleType(ImageView.ScaleType.MATRIX);
+                //is.close();
                 //imageView.setImageBitmap(BitmapFactory.decodeStream (is));
             } catch (Exception e) {
                 AndroidTool.showAnsyTost(e.getMessage(), 1);
                 // AndroidTool.showAnsyTost("照片过大："+nativePath,1);
             }
 
-        }
+
+
+
     }
+}
 }

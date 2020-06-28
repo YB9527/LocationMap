@@ -23,6 +23,7 @@ import com.xupu.locationmap.usermanager.service.UserService;
 import java.io.File;
 import java.io.IOException;
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -31,6 +32,14 @@ public class MediaService {
 
     private static String MARK = "media";
 
+    public static ArrayList IMG_TYPE;
+    static {
+        IMG_TYPE = new ArrayList();
+        IMG_TYPE.add( "jpg");
+        IMG_TYPE.add( "JPG");
+        IMG_TYPE.add( "png");
+        IMG_TYPE.add( "PNG");
+    }
 
     public static String getMediaDir(MyJSONObject parent) {
         MyJSONObject project = ProjectService.getCurrentSugProject();
