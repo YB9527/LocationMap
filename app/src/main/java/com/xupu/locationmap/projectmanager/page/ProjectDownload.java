@@ -129,7 +129,7 @@ public class ProjectDownload extends AppCompatActivity {
                             break;
                         case 4:
                             //开始下载附件列表
-                            downFuJianTable(project, i);
+                           downFuJianTable(project, i);
                             break;
                         default:
                             //开始下载各种业务表格
@@ -255,7 +255,10 @@ public class ProjectDownload extends AppCompatActivity {
                         for (int i = 0; i < tableTasks.size(); i++) {
                             JSONObject tableItem = tableTasks.getJSONObject(i);
                             String tasktableid = ZTService.getTableIdByItemId(tableItem.getString("tableid"));
-                            tableitemsMyJson.add(new MyJSONObject(tableItem.getString("id"), ZTService.TASK_LIST, tasktableid, tableItem));
+                            if(tableid != null){
+                                tableitemsMyJson.add(new MyJSONObject(tableItem.getString("id"), ZTService.TASK_LIST, tasktableid, tableItem));
+                            }
+
                         }
                         //项目中表格保存
                         TableTool.insertMany(tableitemsMyJson, 0);

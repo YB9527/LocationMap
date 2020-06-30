@@ -30,6 +30,7 @@
             android:layout_centerVertical="true"
             android:text="地块"
             style="@style/itemtext2style"
+            android:textSize="12sp"
             android:layout_marginLeft="5dp"
          />
 

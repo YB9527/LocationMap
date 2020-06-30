@@ -287,6 +287,7 @@ public class AndroidTool {
                 CheckBoxFieldCustom checkBoxFieldCustom = (CheckBoxFieldCustom) fieldCustom;
                 boolean bl = jsonObject.getBoolean(checkBoxFieldCustom.getAttribute());
                 CheckBox checkBox = view.findViewById(checkBoxFieldCustom.getId());
+                checkBox.setClickable(false);
                 checkBox.setChecked(bl);
                 setCheckBox(checkBox, checkBoxFieldCustom);
                 view.findViewById(checkBoxFieldCustom.getItemRid()).setOnClickListener(new View.OnClickListener() {

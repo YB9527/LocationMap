@@ -108,6 +108,9 @@ public class ZTService {
 
     public static String getTableIdByItemId(String itemid) {
 
+        if(Tool.isEmpty(itemid)){
+            return  null;
+        }
         String tableid = getTableIdMap().get(itemid);
         if (tableid == null) {
             AndroidTool.showAnsyTost("没有找到对应的表格,需要改后台api:"+itemid, 1);

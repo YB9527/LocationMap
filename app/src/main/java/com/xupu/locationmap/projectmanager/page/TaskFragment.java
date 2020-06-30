@@ -185,8 +185,6 @@ public class TaskFragment extends Fragment {
                                     notifyImage(imageView, finalNativePath,position);
                                 } else {
                                     setLoadLossImg(imageView);
-
-
                                 }
                             }
                         });
@@ -206,7 +204,7 @@ public class TaskFragment extends Fragment {
      */
     private void setLoadLossImg(ImageView imageView) {
         //照片失联
-        getActivity().runOnUiThread(new Runnable() {
+        AndroidTool.getMainActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 imageView.setImageResource(R.mipmap.data_icon_picture_loss);

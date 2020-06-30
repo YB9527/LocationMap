@@ -15,14 +15,15 @@
         >
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="4"
             >
             <ImageView
                 android:id="@+id/num1"
                 android:src="@drawable/login_img_bg"
                 android:layout_width="match_parent"
                 android:scaleType="fitXY"
-                android:layout_height="200dp"/>
+                android:layout_height="match_parent"/>
             <TextView
                 android:text="登录"
                 android:layout_alignBottom="@+id/num1"
@@ -41,7 +42,7 @@
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1">
+            android:layout_weight="6">
             <LinearLayout
                 android:background="@drawable/bg_login_input"
                 android:orientation="horizontal"

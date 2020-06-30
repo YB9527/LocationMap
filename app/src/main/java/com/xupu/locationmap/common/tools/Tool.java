@@ -50,17 +50,18 @@ public class Tool {
     }
 
 
+    public static String getHostBasicAddress() {
+
+        String hostAddress = "http://192.168.30.105:9999/api/";
+        return hostAddress;
+    }
     /**
      * 获取本机ip地址
      *
      * @return
      */
     public static String getHostAddress() {
-        //String hostAddress = "http://192.168.2.176:3333/";
-        // String hostAddress = "http://192.168.3.3:3333/springboot/";
-        //String hostAddress = "http://192.168.3.3:3333/";
-        //String hostAddress = "http://prsmartoa.com:10529/springboot/";
-        String hostAddress = "http://192.168.30.105:9999/api/apidata/";
+        String hostAddress = getHostBasicAddress()+"apidata/";
         return hostAddress;
     }
     public static String getPhotoHostAddress() {

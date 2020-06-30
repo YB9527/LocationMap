@@ -34,16 +34,15 @@ public class OkHttpClientUtils {
 
     static {
         client = new OkHttpClient.Builder()
-                .connectTimeout(10, TimeUnit.SECONDS)
-                .writeTimeout(10, TimeUnit.SECONDS)
-                .readTimeout(10, TimeUnit.SECONDS)
+                .connectTimeout(5, TimeUnit.SECONDS)
+                .writeTimeout(5, TimeUnit.SECONDS)
+                .readTimeout(5, TimeUnit.SECONDS)
                 .build();
     }
 
     private OkHttpClientUtils() {
 
     }
-
 
     //单例的方法
     public static OkHttpClientUtils getInstance() {

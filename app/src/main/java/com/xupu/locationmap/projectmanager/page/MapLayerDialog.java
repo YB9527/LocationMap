@@ -78,7 +78,7 @@ public class MapLayerDialog extends RightDialogFragment {
         List<FieldCustom> fs = new ArrayList<>();
         //项目名称
         fs.add(new FieldCustom(R.id.tv_name, "name"));
-        fs.add(new CheckBoxFieldCustom(R.id.cb_isslect, LowMapManager.LOWIMAGE_SelectMark, R.id.cb_isslect).setImg(R.mipmap.layer_icon_eyesclose, R.mipmap.layer_icon_eyesopen));
+        fs.add(new CheckBoxFieldCustom(R.id.cb_isslect, LowMapManager.LOWIMAGE_SelectMark, R.id.num1).setImg(R.mipmap.layer_icon_eyesclose, R.mipmap.layer_icon_eyesopen));
         //点击设置为当前图层
         fs.add(new ViewFieldCustom(R.id.item) {
             @Override

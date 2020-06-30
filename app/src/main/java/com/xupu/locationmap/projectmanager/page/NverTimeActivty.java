@@ -128,7 +128,8 @@ public class NverTimeActivty extends AppCompatActivity {
 
         //第一个添加 添加按钮 ，任务名
 
-        MyJSONObject myJSONObject = MediaService.getMedia(ProjectService.getCurrentSugProject(), 0, "");
+        MyJSONObject myJSONObject = new MyJSONObject();
+        myJSONObject.setJsonobject(new JSONObject());
         myJSONObject.setId("-1");
         //MediaService.setPath(myJSONObject, getResourcesUri(R.drawable.good_night_img));
         medias.add(myJSONObject);
