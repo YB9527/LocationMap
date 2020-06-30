@@ -38,16 +38,22 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.esri.arcgisruntime.ArcGISRuntimeException;
 import com.esri.arcgisruntime.arcgisservices.TileInfo;
 import com.esri.arcgisruntime.concurrent.ListenableFuture;
+import com.esri.arcgisruntime.data.ShapefileFeatureTable;
 import com.esri.arcgisruntime.data.TileCache;
 import com.esri.arcgisruntime.geometry.Envelope;
 import com.esri.arcgisruntime.geometry.Geometry;
 import com.esri.arcgisruntime.geometry.GeometryEngine;
+import com.esri.arcgisruntime.geometry.GeometryType;
+import com.esri.arcgisruntime.geometry.ImmutablePart;
+import com.esri.arcgisruntime.geometry.ImmutablePartCollection;
 import com.esri.arcgisruntime.geometry.Point;
-import com.esri.arcgisruntime.geometry.PolygonBuilder;
+import com.esri.arcgisruntime.geometry.Polygon;
 import com.esri.arcgisruntime.geometry.SpatialReference;
 import com.esri.arcgisruntime.layers.ArcGISTiledLayer;
+import com.esri.arcgisruntime.layers.FeatureLayer;
 import com.esri.arcgisruntime.loadable.LoadStatus;
 import com.esri.arcgisruntime.mapping.ArcGISMap;
+import com.esri.arcgisruntime.mapping.Basemap;
 import com.esri.arcgisruntime.mapping.view.BackgroundGrid;
 import com.esri.arcgisruntime.mapping.view.DefaultMapViewOnTouchListener;
 import com.esri.arcgisruntime.mapping.view.Graphic;
@@ -62,6 +68,7 @@ import com.esri.arcgisruntime.symbology.SimpleMarkerSymbol;
 import com.esri.arcgisruntime.symbology.SimpleRenderer;
 import com.esri.arcgisruntime.util.ListenableList;
 import com.xupu.locationmap.R;
+import com.xupu.locationmap.arcruntime.WKT;
 import com.xupu.locationmap.common.dialog.DialogCallback;
 import com.xupu.locationmap.common.dialog.RightDialogFragment;
 import com.xupu.locationmap.common.po.Callback;
@@ -99,6 +106,7 @@ import com.xupu.locationmap.projectmanager.view.TableDataCustom_TableName;
 import com.xupu.locationmap.projectmanager.view.ViewFieldCustom;
 
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -164,6 +172,7 @@ public class MapFragment extends Fragment {
     private EditText serachEditText;
     public TextView tv_title;
     private static LowImage currentLayer;
+
     static {
         currentLayer = MapLayerDialog.getCurrentLayer();
     }
@@ -178,12 +187,20 @@ public class MapFragment extends Fragment {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_map, container, false);
         init();
-
-
         return view;
     }
 
     private void init() {
+        mMapView = view.findViewById(R.id.mv_tian_di_tu);
+
+        mMapView.setAttributionTextVisible(false); //隐藏Esri logo
+        //mMapView.setBackgroundColor(Color.WHITE);
+        // mMapView.setBackground(AndroidTool.getMainActivity().getResources().getDrawable(R.drawable.white1));
+        mMapView.setBackgroundGrid(new BackgroundGrid(0xffffff, 0xffffff, 1.0f, 100.0f));
+
+
+
+
         MyJSONObject myJSONObject = new MyJSONObject();
         myJSONObject.setJsonobject(new JSONObject());
         List<FieldCustom> filedCustoms = new ArrayList<>();
@@ -207,7 +224,10 @@ public class MapFragment extends Fragment {
         filedCustoms.add(new ViewFieldCustom(R.id.btn_state4) {
             @Override
             public void OnClick(View view, MyJSONObject myJSONObject) {
-                changeSate(R.id.state4_1);
+                if(haseProject()){
+                    changeSate(R.id.state4_1);
+                }
+
             }
         });
         /*绘制 时用的返回按钮 按钮*/
@@ -336,25 +356,7 @@ public class MapFragment extends Fragment {
     @SuppressLint("ClickableViewAccessibility")
     private void initView() {
         initButton();
-        mMapView = view.findViewById(R.id.mv_tian_di_tu);
-        try {
-            addLowMaps(mMapView);
-        } catch (Exception e) {
-            ProjectService.toProjectPage();
-            return;
-        }
-        mMapView.setAttributionTextVisible(false); //隐藏Esri logo
-        //mMapView.setBackgroundColor(Color.WHITE);
-       // mMapView.setBackground(AndroidTool.getMainActivity().getResources().getDrawable(R.drawable.white1));
-        mMapView.setBackgroundGrid(new BackgroundGrid(0xffffff, 0xffffff, 1.0f, 100.0f));
-        try {
-            addData();
-            addMarkGraphics();
-        } catch (Exception e) {
-            ProjectService.toProjectPage();
-            AndroidTool.showAnsyTost("项目有问题，请删除后下载！！！",1);
-            return;
-        }
+
 
 
 
@@ -374,17 +376,34 @@ public class MapFragment extends Fragment {
         backView = view.findViewById(R.id.back);
         nverTimeView = view.findViewById(R.id.nevertime);
         rl_xy = view.findViewById(R.id.rl_xy);
-        tv_title =view.findViewById(R.id.tv_title);
+        tv_title = view.findViewById(R.id.tv_title);
         setTitle(currentLayer);
 
+
+        try {
+            addLowMaps(mMapView);
+        } catch (Exception e) {
+            ProjectService.toProjectPage();
+            return;
+        }
+        try {
+            addData();
+            addMarkGraphics();
+        } catch (Exception e) {
+            ProjectService.toProjectPage();
+            AndroidTool.showAnsyTost("项目有问题，请删除后下载！！！", 1);
+            e.printStackTrace();
+            return;
+        }
     }
 
     /**
      * 设置标题  就是当前图层
+     *
      * @param currentLayer
      */
     private void setTitle(LowImage currentLayer) {
-        if(currentLayer != null){
+        if (currentLayer != null) {
             tv_title.setText(currentLayer.getName());
         }
     }
@@ -404,7 +423,12 @@ public class MapFragment extends Fragment {
         view.findViewById(R.id.btn_layers).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showLaerys();
+                //先检查时候又项目
+                if(haseProject()){
+                    showLaerys();
+                }
+
+
             }
         });
         /**
@@ -413,7 +437,7 @@ public class MapFragment extends Fragment {
         view.findViewById(R.id.btn_trajectory).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-               showTrajectory();
+                showTrajectory();
             }
         });
 
@@ -495,6 +519,18 @@ public class MapFragment extends Fragment {
 
     }
 
+    /**
+     * 检查是否有项目
+     * @return
+     */
+    private boolean haseProject() {
+        if(ProjectService.getCurrentSugProject() == null){
+            AndroidTool.showAnsyTost("请先设置当前项目",1);
+            return  false;
+        }
+        return true;
+    }
+
     private static String lineStr = "绘制线";
     private static String lineUnit = "长度：";
     private static String plygonStr = "绘制面";
@@ -531,7 +567,7 @@ public class MapFragment extends Fragment {
         }
     }
 
-    private GraphicsOverlay markGrapics;
+    private GraphicsOverlay markGrapics= new GraphicsOverlay();
 
     private void addMarkGraphics() {
 
@@ -546,12 +582,13 @@ public class MapFragment extends Fragment {
     /**
      * 显示 轨迹 dialog
      */
-    private void showTrajectory(){
+    private void showTrajectory() {
         Integer[] widthAndHeight = Utils.getWidthAndHeight();
         MapTrajectoryDialog mapTrajectoryDialog = new MapTrajectoryDialog(widthAndHeight[0] / 3 * 2, widthAndHeight[1]);
         mapTrajectoryDialog.show(getActivity().getSupportFragmentManager(), MapTrajectoryDialog.class.getSimpleName());
 
     }
+
     /**
      * 显示 图层 dialog
      */
@@ -576,9 +613,9 @@ public class MapFragment extends Fragment {
                         lowImage = (LowImage) obj;
                         scaleMapLayer(lowImage);
                         break;
-                    case  CURRENT_LAYER_CHANGE:
+                    case CURRENT_LAYER_CHANGE:
                         lowImage = (LowImage) obj;
-                         setTitle(lowImage);
+                        setTitle(lowImage);
                         break;
                 }
             }
@@ -588,7 +625,6 @@ public class MapFragment extends Fragment {
         mapLayerDialog.show(getActivity().getSupportFragmentManager(), RightDialogFragment.class.getSimpleName());
 
     }
-
 
 
     /**
@@ -724,7 +760,7 @@ public class MapFragment extends Fragment {
      */
     public Map<LowImage, List<MyJSONObject>> getLowImageListMap(List<MyJSONObject> shpdatas) {
 
-        Map<String, List<MyJSONObject>> map = ReflectTool.getListIDMap("getTablename",shpdatas);
+        Map<String, List<MyJSONObject>> map = ReflectTool.getListIDMap("getTablename", shpdatas);
         //考虑图层没有数据的问题
         List<LowImage> layerStatus = MapService.getLayerStatus();
         Map<LowImage, List<MyJSONObject>> lowImageListMap = new LinkedHashMap<>();
@@ -1324,13 +1360,13 @@ public class MapFragment extends Fragment {
                     //添加到记录中，方便控制图层
                     LowImageGraphicsLayer lowImageGraphicsLayer = null;
                     for (int i = 0; i < lowImageGraphicsLayers.size(); i++) {
-                        if(lowImageGraphicsLayers.get(i).getLowImage().equals(lowImage)){
-                            lowImageGraphicsLayer =  lowImageGraphicsLayers.get(i);
+                        if (lowImageGraphicsLayers.get(i).getLowImage().equals(lowImage)) {
+                            lowImageGraphicsLayer = lowImageGraphicsLayers.get(i);
                             lowImageGraphicsLayer.getLayerdatas().addAll(map.get(lowImage));
                             break;
                         }
                     }
-                    if(lowImageGraphicsLayer == null){
+                    if (lowImageGraphicsLayer == null) {
                         GraphicsOverlay pointGraphicOverlay = new GraphicsOverlay();
                         SimpleMarkerSymbol pointSymbol = new SimpleMarkerSymbol(SimpleMarkerSymbol.Style.DIAMOND, Color.RED, 10);
                         SimpleRenderer pointRenderer = new SimpleRenderer(pointSymbol);
@@ -1383,7 +1419,7 @@ public class MapFragment extends Fragment {
         Graphic textMark = getMapTextMark(myJSONObject, geometry);
         textGraphics.getGraphics().add(textMark);
     }
-
+    private WKT wkt = new WKT();
     /**
      * 转换为 图形数据
      *
@@ -1391,36 +1427,90 @@ public class MapFragment extends Fragment {
      * @return
      */
     private Geometry getGeometry(MyJSONObject geometryMyJson) {
-
         Geometry geometry = null;
         String jsonGeometry = geometryMyJson.getJsonobject().getString(GEOMETRY_KEY);
+
+
         String type = jsonGeometry.substring(0, jsonGeometry.indexOf("("));
         //原始坐标的point
-        List<Point> srcpoints = getPoints(jsonGeometry, SpatialReference.create(4526));
-        List<Point> descpoints = pointschangeSp(srcpoints, getSpatialReference());
+        //List<Point> srcpoints = getPoints(jsonGeometry, SpatialReference.create(4526));
+        //List<Point> descpoints = pointschangeSp(srcpoints, getSpatialReference());
         switch (type) {
             case "MULTIPOLYGON":
-                PolygonBuilder polygonGeometry = new PolygonBuilder(getSpatialReference());
-                for (Point descPoint : descpoints) {
-                    polygonGeometry.addPoint(descPoint);
+                String json = wkt.getMULTIPOLYGONWktToJson(jsonGeometry, 4526);
+                Geometry geometry1 = Geometry.fromJson(json);
+                geometry1 =  GeometryEngine.project(geometry1, getSpatialReference());
+                if(geometry1 != null){
+                   /* ImmutablePartCollection collection =  ((Polygon)geometry1).getParts();
+                    for (int i = 0; i < collection.size(); i++) {
+                        ImmutablePart segments = collection.get(i);
+
+                    }*/
+                    return  geometry1;
                 }
-                Point start = descpoints.get(0);
-                Point end = descpoints.get(descpoints.size() - 1);
-                //必须要首尾相连才能形成面
-                //polygonGeometry.addPoint(descpoints.get(0));
-                geometry = polygonGeometry.toGeometry();
+
 
                 break;
             case "MULTIPOINT":
-                for (Point srcPoint : descpoints) {
-                    //本图坐标系的point；
-                    geometry = GeometryEngine.project(srcPoint, getSpatialReference());
 
-                }
                 break;
         }
+        String json = geometry.toJson();
+
+
         return geometry;
     }
+
+    private void openShp1() {
+        // 构建ShapefileFeatureTable，引入本地存储的shapefile文件
+        ShapefileFeatureTable shapefileFeatureTable = new ShapefileFeatureTable(
+                getActivity().getFilesDir()+"/test.shp");
+        shapefileFeatureTable.loadAsync();
+        // 构建featureLayerr
+        FeatureLayer featureLayer = new FeatureLayer(shapefileFeatureTable);
+        // 设置Shapefile文件的渲染方式
+        SimpleLineSymbol lineSymbol = new SimpleLineSymbol(SimpleLineSymbol.Style.SOLID, Color.RED, 1.0f);
+        SimpleFillSymbol fillSymbol = new SimpleFillSymbol(SimpleFillSymbol.Style.SOLID, Color.YELLOW, lineSymbol);
+        SimpleRenderer renderer = new SimpleRenderer(fillSymbol);
+        featureLayer.setRenderer(renderer);
+        // 添加到地图的业务图层组中
+        ArcGISMap arcGISMap = new ArcGISMap(Basemap.createTopographic());
+        arcGISMap.getOperationalLayers().add(featureLayer);
+        // set the map to the map view
+
+    }
+
+    // 加载shapefile
+    private void featureLayerShapefile1() {
+        // 获取本地shapefile文件
+        String path = getActivity().getFilesDir()+"/test.shp";
+        boolean b = new File(path).exists();
+        ShapefileFeatureTable  mShapefileFeatureTable = new ShapefileFeatureTable(path);
+        mShapefileFeatureTable.loadAsync();
+        mShapefileFeatureTable.addDoneLoadingListener(new Runnable() {
+            @Override
+            public void run() {
+                GeometryType gt = mShapefileFeatureTable.getGeometryType();
+                String name = mShapefileFeatureTable.getTableName();
+                FeatureLayer mFeatureLayer = new FeatureLayer(mShapefileFeatureTable);
+                if (mFeatureLayer.getFullExtent() != null) {
+                    mMapView.setViewpointGeometryAsync(mFeatureLayer.getFullExtent());
+                } else {
+                    mFeatureLayer.addDoneLoadingListener(new Runnable() {
+                        @Override
+                        public void run() {
+                            Geometry geometry =mFeatureLayer.getFullExtent();
+                            mMapView.setViewpointGeometryAsync(mFeatureLayer.getFullExtent());
+                        }
+                    });
+                }
+
+            }
+        });
+
+
+    }
+
 
     private static SpatialReference spatialReference;
 
@@ -1467,6 +1557,7 @@ public class MapFragment extends Fragment {
     }
 
     private List<Point> getPoints(String jsonGeometry, SpatialReference spatialReference) {
+
         jsonGeometry = jsonGeometry.substring(jsonGeometry.indexOf("(")).replaceAll("\\(", "").replaceAll("\\)", "");
         List<Point> list = new ArrayList<>();
         String[] pointsStr = jsonGeometry.split(",");
@@ -1530,16 +1621,16 @@ public class MapFragment extends Fragment {
                 //得到屏幕中心
                 //mMapView.setBackgroundColor(Color.WHITE);
                 Point screenPoint = getScreenPoint();
-                if(screenPoint == null){
+                if (screenPoint == null) {
                     return;
                 }
 
                 Geometry geometry = GeometryEngine.project(screenPoint, SpatialReference.create(4326));
 
-                Point jinweiduPoint = (Point)geometry;
+                Point jinweiduPoint = (Point) geometry;
                 double x = jinweiduPoint.getX();
                 //可见状态 且 坐标被移动才变化
-                if (x != oldx &&rl_xy != null && rl_xy.getVisibility() == View.VISIBLE) {
+                if (x != oldx && rl_xy != null && rl_xy.getVisibility() == View.VISIBLE) {
                     activity.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -1575,9 +1666,9 @@ public class MapFragment extends Fragment {
         } else if (requestCode == NVER_TIME && resultCode == RESULT_OK) {
             //随手拍的返回值
             String path = getActivity().getIntent().getStringExtra("data");
-        } else if (requestCode == MapResult.XZQYCHANGE && resultCode == MapResult.XZQYCHANGE){
+        } else if (requestCode == MapResult.XZQYCHANGE && resultCode == MapResult.XZQYCHANGE) {
             reloadPage();
-        } else{
+        } else {
             if (data == null) {
                 return;
             }
@@ -1624,7 +1715,7 @@ public class MapFragment extends Fragment {
     private void reloadPage() {
         clearAll();
 
-       for (LowImageGraphicsLayer lowImageGraphicsLayer : lowImageGraphicsLayers) {
+        for (LowImageGraphicsLayer lowImageGraphicsLayer : lowImageGraphicsLayers) {
             lowImageGraphicsLayer.getShapeGraphics().getGraphics().clear();
             lowImageGraphicsLayer.getLayerdatas().clear();
             lowImageGraphicsLayer.getTextGraphics().getGraphics().clear();
@@ -1634,11 +1725,12 @@ public class MapFragment extends Fragment {
         addMarkGraphics();
         //缩放在该区区域， 如果图层是开启状态
         for (LowImageGraphicsLayer lowImageGraphicsLayer : lowImageGraphicsLayers) {
-            if(scaleMapLayer(lowImageGraphicsLayer.getLowImage())){
+            if (scaleMapLayer(lowImageGraphicsLayer.getLowImage())) {
                 break;
             }
         }
     }
+
     /**
      * 刷新页面 ，跟以前的老数据对比看看哪些时被删除 、修改、还没有增加
      */
@@ -1664,7 +1756,7 @@ public class MapFragment extends Fragment {
                     lowImageGraphicsLayer.getLayerdatas().remove(i);
 
                     //如果图形还没有加载就不用删除了
-                    if(lowImageGraphicsLayer.getLowImage().isIsload()){
+                    if (lowImageGraphicsLayer.getLowImage().isIsload()) {
                         //删除文字标注
                         lowImageGraphicsLayer.getTextGraphics().getGraphics().remove(i);
                         //删除图形

@@ -110,13 +110,13 @@ public class ZTService {
 
         String tableid = getTableIdMap().get(itemid);
         if (tableid == null) {
-            AndroidTool.showAnsyTost("没有找到对应的表格,需要改后台api", 1);
-            try {
-                Thread.sleep(2000);
-                throw new RuntimeException("没有找到对应的表格,需要改后台api:"+itemid);
+            AndroidTool.showAnsyTost("没有找到对应的表格,需要改后台api:"+itemid, 1);
+            /*try {
+                //Thread.sleep(2000);
+               // throw new RuntimeException("没有找到对应的表格,需要改后台api:"+itemid);
             } catch (InterruptedException e) {
                 e.printStackTrace();
-            }
+            }*/
         }
         return tableid;
     }

@@ -133,10 +133,10 @@ public class ProjectDownload extends AppCompatActivity {
                             break;
                         default:
                             //开始下载各种业务表格
-
                             downLoadTable(tasks.get(i).getJsonobject());
                             break;
                     }
+
                 }
             }
         }.setConfirm(true, "一旦下载，请勿断开"));
@@ -416,6 +416,7 @@ public class ProjectDownload extends AppCompatActivity {
                                     break;
                                 }
                             }
+
                             saveInDatabase(tableid, tableItem.getString("aliasname"), objects);
                             finishCount[0]++;
                             if (task != null && finishCount[0] == requestCount) {

@@ -566,11 +566,11 @@
                 </LinearLayout>
             </RelativeLayout>
         </LinearLayout>
-        <!--xy 经纬度显示-->
+        <!--xy 经纬度显示  android:background="#a0000000"-->
         <RelativeLayout
             android:id="@+id/rl_xy"
             android:layout_alignParentBottom="true"
-            android:background="#a0000000"
+            android:visibility="gone"
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

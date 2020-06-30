@@ -63,12 +63,15 @@ public class ToolActivty extends AppCompatActivity {
         fieldCustom.add(new ViewFieldCustom(R.id.btn_copy_database) {
             @Override
             public void OnClick(View view, MyJSONObject myJSONObject) {
-                boolean success = copyDBToSDcrad(ProjectService.getCurrentProjectDBName());
-                if (success) {
-                    AndroidTool.showAnsyTost("复制数据成功:" + ProjectService.getName(ProjectService.getCurrentSugProject()), 0);
-                } else {
-                    AndroidTool.showAnsyTost("复制数据 失败:", 1);
+                if(ProjectService.haseCurrentProject()){
+                    boolean success = copyDBToSDcrad(ProjectService.getCurrentProjectDBName());
+                    if (success) {
+                        AndroidTool.showAnsyTost("复制数据成功:" + ProjectService.getName(ProjectService.getCurrentSugProject()), 0);
+                    } else {
+                        AndroidTool.showAnsyTost("复制数据 失败:", 1);
+                    }
                 }
+
             }
         });
         fieldCustom.add(new ViewFieldCustom(R.id.btn_upload_database) {
@@ -102,13 +105,16 @@ public class ToolActivty extends AppCompatActivity {
         File[] files = new File(dir).listFiles(new FilenameFilter() {
             @Override
             public boolean accept(File file, String s) {
-                if (s.endsWith("jpg")) {
+                if(MediaService.IMG_TYPE.contains(FileTool.getExtension(s))){
                     return true;
                 }
                 return false;
             }
         });
-        if (files != null) {
+
+        if (files == null || files.length == 0) {
+             AndroidTool.showAnsyTost("此文件夹下，还没有可识别的身份证::"+dir,1);
+        }else {
             String path = dir + "/识别结果.txt";
             File text = new File(path);
             if (!text.exists()) {

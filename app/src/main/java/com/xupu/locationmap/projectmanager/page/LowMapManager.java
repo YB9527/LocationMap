@@ -33,10 +33,15 @@ public class LowMapManager extends AppCompatActivity {
     private static String Laerys_REDIS_Mark;
     MyItemRecyclerViewAdapter myItemRecyclerViewAdapter;
 
+    static {
+        Laerys_REDIS_Mark = "Current_" + "lowlayers";
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Laerys_REDIS_Mark = ProjectService.getCurrentProjectDBName() + "_" + "lowlayers";
+        //Laerys_REDIS_Mark = ProjectService.getCurrentProjectDBName() + "_" + "lowlayers";
+
+
         AndroidTool.setFullWindow(this);
         getSupportActionBar().hide();
         setContentView(R.layout.activity_low_map_manager);
@@ -110,7 +115,7 @@ public class LowMapManager extends AppCompatActivity {
      * @return
      */
     public static List<LowImage> getExitLowMaps() {
-        Laerys_REDIS_Mark = ProjectService.getCurrentProjectDBName() + "_" + "lowlayers";
+
         List<LowImage> layerStatus = RedisTool.findRedis(Laerys_REDIS_Mark, new TypeToken<List<LowImage>>() {
         }.getType());
 

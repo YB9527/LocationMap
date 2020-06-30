@@ -59,7 +59,8 @@ public class PermissionUtils {
                 Manifest.permission.READ_EXTERNAL_STORAGE,
                 //定位权限
                 Manifest.permission.ACCESS_COARSE_LOCATION,
-                Manifest.permission.ACCESS_FINE_LOCATION
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.CAMERA
         };
         List<String> permissionList = new ArrayList<>();
         for (String permission : permissions) {

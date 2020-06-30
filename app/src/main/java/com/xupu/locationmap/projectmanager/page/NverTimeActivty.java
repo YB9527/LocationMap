@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.media.ExifInterface;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
@@ -38,6 +39,7 @@ import com.xupu.locationmap.projectmanager.view.ViewFieldCustom;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -168,6 +170,14 @@ public class NverTimeActivty extends AppCompatActivity {
             String path = getIntent().getStringExtra("data");
             MyJSONObject media = getMedia(path);
             myItemRecyclerViewAdapter.addItem(medias.size() - 1, media);
+
+            try {
+                ExifInterface exifInterface = new ExifInterface(path);
+                String attribute = exifInterface.getAttribute(ExifInterface.TAG_EXIF_VERSION);
+                String s = "123";
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
     }

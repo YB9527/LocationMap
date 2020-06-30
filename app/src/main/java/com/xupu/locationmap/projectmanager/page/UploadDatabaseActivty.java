@@ -36,8 +36,19 @@ public class UploadDatabaseActivty extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        AndroidTool.setFullWindow(this);
+        getSupportActionBar().hide();
+
         setContentView(R.layout.activity_upload_database);
         initView();
+        initTitle();
+
+
+    }
+
+    private void initTitle() {
+        AndroidTool.addTitleFragment(this, "上传数据库");
     }
 
 
@@ -53,6 +64,9 @@ public class UploadDatabaseActivty extends AppCompatActivity {
                 return false;
             }
         });
+        if(paths == null){
+            return;
+        }
         List<MyJSONObject> myJSONObjects = new ArrayList<>();
         for (int i = 0; i < paths.length; i++) {
             String path = paths[i].getPath();

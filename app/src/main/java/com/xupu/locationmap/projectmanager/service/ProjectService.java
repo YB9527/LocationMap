@@ -145,4 +145,16 @@ public class ProjectService {
         RedisTool.saveRedis(ZTService.PROJECT_TABLE_NAME + "_" + ProjectService.getProjectDBName(project), project);
 
     }
+
+    /**
+     * 检查 并提示 是否有当前项目
+     * @return
+     */
+    public static boolean haseCurrentProject() {
+        if(getCurrentSugProject() == null){
+            AndroidTool.showAnsyTost("还没有当前项目",1);
+            return  false;
+        }
+        return true;
+    }
 }

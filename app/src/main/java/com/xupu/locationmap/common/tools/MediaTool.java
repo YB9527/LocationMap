@@ -1,5 +1,6 @@
 package com.xupu.locationmap.common.tools;
 
+import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
@@ -80,32 +81,49 @@ public class MediaTool {
     }*/
 
 
-    public static void photo(Activity activity,int requestCode,MyJSONObject media){
+    public static void photo(Activity activity, int requestCode, MyJSONObject media) {
         String path = MediaService.getPath(media);
 
-        Intent intent  = getPhotoIntent(activity,path);
+        Intent intent = getPhotoIntent(activity, path);
         activity.getIntent().putExtra("media", media);
         activity.startActivityForResult(intent, requestCode);
     }
-    public static void photo(Fragment fragment, int requestCode, MyJSONObject media){
+
+    public static void photo(Fragment fragment, int requestCode, MyJSONObject media) {
         String path = MediaService.getPath(media);
 
 
-        Intent intent  = getPhotoIntent(fragment.getActivity(),path);
+        Intent intent = getPhotoIntent(fragment.getActivity(), path);
         fragment.getActivity().getIntent().putExtra("media", media);
         fragment.startActivityForResult(intent, requestCode);
     }
-    public static void photo(Fragment fragment, int requestCode, String path ){
+
+    public static void photo(Fragment fragment, int requestCode, String path) {
+
 
         fragment.getActivity().getIntent().putExtra("data", path);
-        Intent intent  = getPhotoIntent(fragment.getActivity(),path);
+        Intent intent = getPhotoIntent(fragment.getActivity(), path);
         fragment.startActivityForResult(intent, requestCode);
+
+
+
+        /*Uri imageUri;
+        imageUri = FileProvider.getUriForFile(fragment.getActivity(), AndroidTool.FILEPROVIDER, new File(fragment.getActivity().getFilesDir()+"/123.jpg"));
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);//
+        fragment.startActivityForResult(intent, requestCode);*/
+
+
     }
-    public static void photo(Activity activity, int requestCode, String path ){
+
+    public static void photo(Activity activity, int requestCode, String path) {
 
         activity.getIntent().putExtra("data", path);
-        Intent intent  = getPhotoIntent(activity,path);
+
+        Intent intent = getPhotoIntent(activity, path);
         activity.startActivityForResult(intent, requestCode);
+
+
     }
 
    /* public static void photo(Fragment fragment, int requestCode, MyJSONObject media){
@@ -120,16 +138,21 @@ public class MediaTool {
         fragment.startActivityForResult(intent, requestCode);
     }*/
 
-    public static Intent getPhotoIntent(Activity activity, String path){
-        FileTool.exitsDir(FileTool.getDir(path),true);
-        //File outputImage = new File(media.getJsonobject().getString(Customizing.MEDIA_path));
-        //boolean bl = FileTool.exitsDir(FileTool.getDir(path),true);
+    public static Intent getPhotoIntent(Activity activity, String path) {
+
+
+
+
+        FileTool.exitsDir(FileTool.getDir(path), true);
+
         Intent intent = new Intent(activity, CameraActivity.class);
-        intent.putExtra(CameraActivity.KEY_OUTPUT_FILE_PATH,path
+        intent.putExtra(CameraActivity.KEY_OUTPUT_FILE_PATH, path
         );
         intent.putExtra(CameraActivity.KEY_CONTENT_TYPE,
                 CameraActivity.CONTENT_TYPE_GENERAL);
-        return  intent;
+
+
+        return intent;
     }
 
 
