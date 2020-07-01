@@ -4,10 +4,9 @@
     package="com.xupu.locationmap">
 
     <application
-        android:largeHeap="true"
         android:allowBackup="true"
-
         android:icon="@mipmap/logo"
+        android:largeHeap="true"
         android:networkSecurityConfig="@xml/network_security_config"
         android:roundIcon="@mipmap/logo"
         android:supportsRtl="true"
@@ -15,7 +14,8 @@
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning"
         tools:replace="android:icon, android:theme">
-        <activity android:name=".projectmanager.page.NverTimeActivty"></activity>
+        <activity android:name=".usermanager.page.PersonSetting"></activity>
+        <activity android:name=".projectmanager.page.NverTimeActivty" />
         <activity android:name=".projectmanager.page.UploadDatabaseActivty" />
         <activity android:name=".projectmanager.page.ToolActivty" />
         <activity
@@ -81,7 +81,6 @@
             android:name=".MainActivity"
             android:screenOrientation="portrait"
             android:theme="@style/titlebarstyle"
-
             tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".common.imgview.ViewPagerActivity"

@@ -238,7 +238,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:src="@mipmap/leftnav_icon_setting_gray" />
+                android:src="@mipmap/leftnav_icon_tool_gray" />
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -256,36 +256,7 @@
                 android:text="工具" />
         </RelativeLayout>
 
-        <RelativeLayout
-            android:id="@+id/m_help"
-            style="@style/nv_click"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/item_height_50"
-            android:paddingLeft="20dp"
-            android:paddingRight="20dp">
 
-            <ImageView
-                android:id="@+id/num7"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:src="@mipmap/leftnav_icon_help_gray" />
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:src="@mipmap/leftnav_icon_next" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="20dp"
-                android:layout_toRightOf="@+id/num7"
-                android:text="帮助" />
-        </RelativeLayout>
 
         <RelativeLayout
             android:id="@+id/m_setting"
@@ -316,6 +287,36 @@
                 android:layout_marginLeft="20dp"
                 android:layout_toRightOf="@+id/num8"
                 android:text="设置" />
+        </RelativeLayout>
+        <RelativeLayout
+            android:id="@+id/m_help"
+            style="@style/nv_click"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/item_height_50"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp">
+
+            <ImageView
+                android:id="@+id/num7"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:src="@mipmap/leftnav_icon_help_gray" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:src="@mipmap/leftnav_icon_next" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="20dp"
+                android:layout_toRightOf="@+id/num7"
+                android:text="帮助" />
         </RelativeLayout>
     </LinearLayout>
 

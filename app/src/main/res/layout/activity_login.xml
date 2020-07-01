@@ -105,7 +105,6 @@
 
             <RelativeLayout
                 android:id="@+id/btn_sign_in"
-
                 android:layout_marginTop="40dp"
                 android:layout_marginBottom="10dp"
                 android:background="@drawable/btn_bg_blue2"
@@ -120,19 +119,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
             </RelativeLayout>
-
-
-
-
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
-                <Button android:background="@drawable/whiteimg" android:id="@+id/btn_youke_login" android:textSize="@dimen/text_s15" android:textColor="@color/textblue"  android:layout_width="wrap_content" android:layout_height="wrap_content"  android:text="游客登录"  />
-                <Button android:background="@drawable/whiteimg"  android:id="@+id/btn_sign_up" android:layout_alignParentRight="true" android:textSize="@dimen/text_s15" android:textColor="@color/textblue"  android:layout_width="wrap_content" android:layout_height="wrap_content"  android:text="注册"  />
+                <TextView android:id="@+id/btn_youke_login"  style="@style/whitejpg_click" android:textSize="@dimen/text_s15" android:textColor="@color/textblue"  android:layout_width="wrap_content" android:layout_height="wrap_content"  android:text="游客登录"  />
+                <TextView  android:id="@+id/btn_sign_up"   style="@style/whitejpg_click" android:layout_alignParentRight="true" android:textSize="@dimen/text_s15" android:textColor="@color/textblue"  android:layout_width="wrap_content" android:layout_height="wrap_content"  android:text="注册"  />
             </RelativeLayout>
         </LinearLayout>
         </LinearLayout>
-
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="40dp">
@@ -143,9 +137,4 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
     </RelativeLayout>
-
-
-
-
-
 </LinearLayout>

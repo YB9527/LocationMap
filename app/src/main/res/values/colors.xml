@@ -12,7 +12,7 @@
     <color name="colorAccent">#D81B60</color>
 
     <color name="textInputLayout">#96ffffff</color>
-
+    <color name="themcolor">#fffafafa</color>
 
 
     <color name="abc_input_method_navigation_guard">@android:color/black</color>

@@ -85,7 +85,7 @@ dependencies {
     annotationProcessor 'com.jakewharton:butterknife-compiler:10.0.0'
 
     /*图片浏览*/
-    implementation  'me.panpf:sketch:2.7.1'
+    implementation 'me.panpf:sketch:2.7.1'
     implementation 'com.davemorrissey.labs:subsampling-scale-image-view-androidx:3.10.0'
 
     //下拉刷新上拉加载
